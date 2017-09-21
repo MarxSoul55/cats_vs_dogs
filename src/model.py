@@ -25,8 +25,6 @@ def model(input_):
     # Returns
         The output of the model.
     """
-    # output = zeropadding_2d(input_, 3)
-    # output = convolution_2d(output, 32, filter_size=8, strides=2)
     output = convolution_2d(input_, 32)
     output = elu(output)
     output = maxpooling_2d(output)
@@ -71,7 +69,7 @@ def train(steps, resuming):
     Trains the model with SGD + Momentum.
 
     # Parameters
-        steps (int): Amount of batches to train.
+        steps (int): Amount of images from each class that the model will train on.
         resuming (bool): Whether or not to train from scratch.
     """
     # Create placeholders and define operations.
@@ -90,15 +88,13 @@ def train(steps, resuming):
     if resuming:
         saver.restore(sess, os.path.join(os.getcwd(), 'saved_model'))
     # Create preprocessor and `order` argument.
-    preproc = ImagePreprocessor()
+    preprocessor = ImagePreprocessor()
     order = ['cats', 'dogs']
     # List of moving-average of accuracies for reporting-purposes.
     accuracies = []
-    # Keep track of step for reporting-purposes.
-    step = 1
-    for data_subset, labels_subset in preproc.preprocess_directory(steps, 'data/train', order):
+    for step, data_, label_ in preprocessor.preprocess_directory(steps, 'data/train', order):
         # Evaluate accuracy and handle moving-average.
-        current_accuracy = accuracy.eval(feed_dict={data: data_subset, labels: labels_subset})
+        current_accuracy = accuracy.eval(feed_dict={data: data_, labels: label_})
         current_accuracy = round(current_accuracy.item() * 100)
         accuracies.append(current_accuracy)
         if len(accuracies) == 10:
@@ -107,16 +103,15 @@ def train(steps, resuming):
         else:
             reporting_accuracy = 'WTNG'
         # Evaluate objective and print along with other stats.
-        current_objective = objective.eval(feed_dict={data: data_subset, labels: labels_subset})
+        current_objective = objective.eval(feed_dict={data: data_, labels: label_})
         print('Step: {}/{} | Accuracy: {}% | Objective: {}'.format(step, steps, reporting_accuracy,
                                                                    current_objective))
         # TODO debugging info - start
-        current_pred = raw_output.eval(feed_dict={data: data_subset, labels: labels_subset})
+        current_pred = raw_output.eval(feed_dict={data: data_, labels: label_})
         print('Pred: {}'.format(current_pred))
         # TODO debugging info - end
         # Update weights with SGD and momentum.
-        optimizer.run(feed_dict={data: data_subset, labels: labels_subset})
-        step += 1
+        optimizer.run(feed_dict={data: data_, labels: label_})
     saver.save(sess, os.path.join(os.getcwd(), 'saved_model'))
 
 
