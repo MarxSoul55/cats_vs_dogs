@@ -69,7 +69,7 @@ def train(steps, resuming):
     Trains the model with SGD + Momentum.
 
     # Parameters
-        steps (int): Amount of images from each class that the model will train on.
+        steps (int): Amount of images to train on.
         resuming (bool): Whether or not to train from scratch.
     """
     # Create placeholders and define operations.
