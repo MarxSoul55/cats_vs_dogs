@@ -92,9 +92,9 @@ def train(steps, resuming):
     order = ['cats', 'dogs']
     # List of moving-average of accuracies for reporting-purposes.
     accuracies = []
-    for step, data_, label_ in preprocessor.preprocess_directory(steps, 'data/train', order):
+    for step, data_arg, label_arg in preprocessor.preprocess_directory(steps, 'data/train', order):
         # Evaluate accuracy and handle moving-average.
-        current_accuracy = accuracy.eval(feed_dict={data: data_, labels: label_})
+        current_accuracy = accuracy.eval(feed_dict={data: data_arg, labels: label_arg})
         current_accuracy = round(current_accuracy.item() * 100)
         accuracies.append(current_accuracy)
         if len(accuracies) == 10:
@@ -103,15 +103,15 @@ def train(steps, resuming):
         else:
             reporting_accuracy = 'WTNG'
         # Evaluate objective and print along with other stats.
-        current_objective = objective.eval(feed_dict={data: data_, labels: label_})
+        current_objective = objective.eval(feed_dict={data: data_arg, labels: label_arg})
         print('Step: {}/{} | Accuracy: {}% | Objective: {}'.format(step, steps, reporting_accuracy,
                                                                    current_objective))
         # TODO debugging info - start
-        current_pred = raw_output.eval(feed_dict={data: data_, labels: label_})
+        current_pred = raw_output.eval(feed_dict={data: data_arg, labels: label_arg})
         print('Pred: {}'.format(current_pred))
         # TODO debugging info - end
         # Update weights with SGD and momentum.
-        optimizer.run(feed_dict={data: data_, labels: label_})
+        optimizer.run(feed_dict={data: data_arg, labels: label_arg})
     saver.save(sess, os.path.join(os.getcwd(), 'saved_model'))
 
 
