@@ -30,11 +30,11 @@ class ImagePreprocessor:
 
     def preprocess_directory(self, steps, train_dir, order, rescale=(256, 256)):
         """
-        Given a directory of subdirectories of classes, preprocesses their contents and yields
-        the results along with one-hot labels.
+        Given a directory of subdirectories of classes, preprocesses their contents one-by-one and
+        yields (step, data_array, label_array), going class-to-class for the next image.
 
         # Parameters
-            steps (int): Preprocess `steps` amount of samples from each class.
+            steps (int): Amount of data-label pairs to generate.
             train_dir (str): Path to the directory of classes.
             order (list): Classes; order determines the one-hot label.
             rescale (tuple): (width, height) that each image will be resized to.
@@ -47,8 +47,13 @@ class ImagePreprocessor:
         for class_ in classes:
             cursors[class_] = 0
             images[class_] = sorted(os.listdir(train_dir + '/' + class_))
-        for step in range(steps):
+        step = 0
+        while True:
             for class_ in classes:
+                if step < steps:
+                    step += 1
+                else:
+                    return
                 absolute_path = os.path.abspath(train_dir + '/' + class_ + '/' +
                                                 images[class_][cursors[class_]])
                 preprocessed = self.preprocess_image(absolute_path, rescale)
@@ -60,4 +65,4 @@ class ImagePreprocessor:
                     cursors[class_] = 0
                 else:
                     cursors[class_] += 1
-                yield step + 1, data, label
+                yield step, data, label
