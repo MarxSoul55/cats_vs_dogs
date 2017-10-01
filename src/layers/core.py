@@ -16,6 +16,6 @@ def dense(input_, output_col):
         A tensor.
     """
     input_col = input_.shape.as_list()[1]
-    weight = tf.Variable(tf.random_normal([input_col, output_col], mean=0.0, stddev=0.05))
+    weight = tf.Variable(tf.random_normal([input_col, output_col], mean=0.0, stddev=0.01))
     bias = tf.Variable(tf.constant(0.0, shape=[output_col]))
     return tf.matmul(input_, weight) + bias

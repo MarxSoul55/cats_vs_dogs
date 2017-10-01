@@ -39,13 +39,39 @@ def convolution_2d(input_, output_chan, filter_size=3, strides=1, padding='SAME'
         strides (int): Amount of steps to jump for each filter.
         padding (str): Either 'SAME' or 'VALID'. Whether or not to use zero-padding.
     # Returns
-        An `output_chan`-dimensional tensor.
+        A `batch_size` x `output_dim` x `output_dim` x `output_chan` tensor.
     """
     input_chan = input_.shape.as_list()[3]
     weight = tf.Variable(tf.random_normal([filter_size, filter_size, input_chan, output_chan],
-                                          mean=0.0, stddev=0.05))
+                                          mean=0.0, stddev=0.01))
     bias = tf.Variable(tf.constant(0.0, shape=[output_chan]))
     return tf.nn.conv2d(input_, weight, [1, strides, strides, 1], padding) + bias
+
+
+def deconvolution_2d(input_, output_dim, output_chan, filter_size=3, strides=1, padding='SAME'):
+    """
+    Performs deconvolution on rows, columns, and channels of `input_`.
+    Initializes weights from a normal distribution with mean 0 and STD 0.01.
+    A bias-tensor (initialized to 0) is added to the resulting tensor.
+
+    # Parameters
+        input_ (tensor): A tensor of shape [samples, rows, columns, channels].
+        output_dim (int): Height and width of the resulting tensor.
+        output_chan (int): Amount of channels in output; AKA number of filters.
+        filter_size (int): Width and height of each filter.
+        strides (int): Amount of steps to jump for each filter.
+        padding (str): Either 'SAME' or 'VALID'. Whether or not to use zero-padding.
+    # Returns
+        A `batch_size` x `output_dim` x `output_dim` x `output_chan` tensor.
+    """
+    batch_size = input_.shape.as_list(0)
+    input_chan = input_.shape.as_list(3)
+    weight = tf.Variable(tf.random_normal([filter_size, filter_size, output_chan, input_chan],
+                                          mean=0.0, stddev=0.01))
+    bias = tf.Variable(tf.constant(0.0, shape=[output_chan]))
+    return tf.nn.conv2d_transpose(input_, weight,
+                                  [batch_size, output_dim, output_dim, output_chan],
+                                  [1, strides, strides, 1], padding=padding) + bias
 
 
 def flatten_2d(input_):
