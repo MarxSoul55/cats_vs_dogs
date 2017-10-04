@@ -2,14 +2,18 @@
 
 import argparse
 import os
+from collections import deque
 
 import cv2
 import tensorflow as tf
 
-from layers.activations import elu
+from layers.activations import elu, sigmoid
 from layers.convolutional import convolution_2d, flatten_2d, globalaveragepooling_2d, maxpooling_2d
 from layers.core import dense
+from layers.objectives import mean_binary_entropy
+from layers.optimizers import momentum
 from layers.preprocessing import ImagePreprocessor
+from layers.reporters import accuracy_reporter, report
 
 # Inside of this directory, there should be 2 more directories, `cats` and `dogs`.
 # Those directories will contain the actual images.
@@ -75,12 +79,11 @@ def train(steps, resuming):
     # Create placeholders and define operations.
     data = tf.placeholder(tf.float32, shape=[None, 256, 256, 3])
     labels = tf.placeholder(tf.float32, shape=[None, 2])
-    raw_output = model(data)
-    objective = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(labels=labels,
-                                                                       logits=raw_output))
-    optimizer = tf.train.MomentumOptimizer(0.01, 0.9).minimize(objective)
-    correct_prediction = tf.equal(tf.argmax(labels, axis=1), tf.argmax(raw_output, axis=1))
-    accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
+    logits = model(data)
+    output = sigmoid(logits)
+    objective = mean_binary_entropy(labels, logits)
+    accuracy = accuracy_reporter(labels, output)
+    optimizer = momentum(objective)
     # Create session, initialize global-variables and saver.
     sess = tf.InteractiveSession()
     sess.run(tf.global_variables_initializer())
@@ -90,27 +93,19 @@ def train(steps, resuming):
     # Create preprocessor and `order` argument.
     preprocessor = ImagePreprocessor()
     order = ['cats', 'dogs']
-    # List of moving-average of accuracies for reporting-purposes.
-    accuracies = []
-    for step, data_arg, label_arg in preprocessor.preprocess_directory(steps, 'data/train', order):
-        # Evaluate accuracy and handle moving-average.
+    # Deque of moving-average of accuracies for reporting-purposes.
+    accuracies = deque()
+    for step, data_arg, label_arg in preprocessor.preprocess_directory(steps, 'data/train', order,
+                                                                       rescale=(128, 128)):
         current_accuracy = accuracy.eval(feed_dict={data: data_arg, labels: label_arg})
-        current_accuracy = round(current_accuracy.item() * 100)
         accuracies.append(current_accuracy)
-        if len(accuracies) == 10:
-            reporting_accuracy = sum(accuracies) / len(accuracies)
-            del accuracies[0]
+        if len(accuracies) == 100:
+            moving_accuracy = sum(accuracies) / len(accuracies)
+            accuracies.popleft()
         else:
-            reporting_accuracy = 'WTNG'
-        # Evaluate objective and print along with other stats.
+            moving_accuracy = 'WTNG'
         current_objective = objective.eval(feed_dict={data: data_arg, labels: label_arg})
-        print('Step: {}/{} | Accuracy: {}% | Objective: {}'.format(step, steps, reporting_accuracy,
-                                                                   current_objective))
-        # TODO debugging info - start
-        current_pred = raw_output.eval(feed_dict={data: data_arg, labels: label_arg})
-        print('Pred: {}'.format(current_pred))
-        # TODO debugging info - end
-        # Update weights with SGD and momentum.
+        report(step, steps, moving_accuracy, current_objective)
         optimizer.run(feed_dict={data: data_arg, labels: label_arg})
     saver.save(sess, os.path.join(os.getcwd(), 'saved_model'))
 
