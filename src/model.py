@@ -1,7 +1,6 @@
 """Provides an interface for interacting with the model."""
 
 import argparse
-import os
 from collections import deque
 
 import cv2
@@ -10,8 +9,9 @@ import tensorflow as tf
 from layers.activations import elu, sigmoid
 from layers.convolutional import convolution_2d, flatten_2d, globalaveragepooling_2d, maxpooling_2d
 from layers.core import dense
+from layers.meta import restore_model, save_model
 from layers.objectives import mean_binary_entropy
-from layers.optimizers import momentum
+from layers.optimizers import nesterov_momentum
 from layers.preprocessing import ImagePreprocessor
 from layers.reporters import accuracy_reporter, report
 
@@ -77,37 +77,37 @@ def train(steps, resuming):
         resuming (bool): Whether or not to train from scratch.
     """
     # Create placeholders and define operations.
-    data = tf.placeholder(tf.float32, shape=[None, 256, 256, 3])
+    data = tf.placeholder(tf.float32, shape=[None, 128, 128, 3])
     labels = tf.placeholder(tf.float32, shape=[None, 2])
     logits = model(data)
     output = sigmoid(logits)
     objective = mean_binary_entropy(labels, logits)
     accuracy = accuracy_reporter(labels, output)
-    optimizer = momentum(objective)
+    optimizer = nesterov_momentum(objective)
     # Create session, initialize global-variables and saver.
-    sess = tf.InteractiveSession()
-    sess.run(tf.global_variables_initializer())
-    saver = tf.train.Saver()
-    if resuming:
-        saver.restore(sess, os.path.join(os.getcwd(), 'saved_model'))
-    # Create preprocessor and `order` argument.
-    preprocessor = ImagePreprocessor()
-    order = ['cats', 'dogs']
-    # Deque of moving-average of accuracies for reporting-purposes.
-    accuracies = deque()
-    for step, data_arg, label_arg in preprocessor.preprocess_directory(steps, 'data/train', order,
-                                                                       rescale=(128, 128)):
-        current_accuracy = accuracy.eval(feed_dict={data: data_arg, labels: label_arg})
-        accuracies.append(current_accuracy)
-        if len(accuracies) == 100:
-            moving_accuracy = sum(accuracies) / len(accuracies)
-            accuracies.popleft()
-        else:
-            moving_accuracy = 'WTNG'
-        current_objective = objective.eval(feed_dict={data: data_arg, labels: label_arg})
-        report(step, steps, moving_accuracy, current_objective)
-        optimizer.run(feed_dict={data: data_arg, labels: label_arg})
-    saver.save(sess, os.path.join(os.getcwd(), 'saved_model'))
+    sess = tf.Session()
+    with sess.as_default():
+        tf.global_variables_initializer().run()
+        if resuming:
+            restore_model(sess)
+        # Create preprocessor and `order` argument.
+        prepro = ImagePreprocessor()
+        order = ['cats', 'dogs']
+        # Deque of moving-average of accuracies for reporting-purposes.
+        accuracies = deque()
+        for step, data_arg, label_arg in prepro.preprocess_directory(steps, 'data/train', order,
+                                                                     rescale=(128, 128)):
+            current_accuracy = accuracy.eval(feed_dict={data: data_arg, labels: label_arg})
+            accuracies.append(current_accuracy)
+            if len(accuracies) == 100:
+                moving_accuracy = sum(accuracies) / len(accuracies)
+                accuracies.popleft()
+            else:
+                moving_accuracy = 'WTNG'
+            current_objective = objective.eval(feed_dict={data: data_arg, labels: label_arg})
+            report(step, steps, moving_accuracy, current_objective)
+            optimizer.run(feed_dict={data: data_arg, labels: label_arg})
+        save_model(sess)
 
 
 def test():
