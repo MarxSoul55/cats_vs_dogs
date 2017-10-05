@@ -50,24 +50,6 @@ def model(input_):
     return output
 
 
-def preprocess(image):
-    """
-    Preprocesses an image for the model.
-    Converts image to a 256x256x3, 8-bit LAB representation.
-
-    # Parameters
-        image (str): Path to the image.
-    # Returns
-        A preprocessed image (numpy array).
-    """
-    image = cv2.imread(image)
-    image = cv2.resize(image, (256, 256))
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2LAB)
-    image = image.astype('float32')
-    image /= 255
-    return image
-
-
 def train(steps, resuming):
     """
     Trains the model with SGD + Momentum.
