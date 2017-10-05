@@ -14,4 +14,20 @@ def momentum(objective, learning_rate=0.01, discount=0.9):
     # Returns
         An optimization operation.
     """
-    return tf.train.MomentumOptimizer(learning_rate, discount).minimize(objective)
+    return tf.train.MomentumOptimizer(learning_rate, discount,
+                                      use_nesterov=False).minimize(objective)
+
+
+def nesterov_momentum(objective, learning_rate=0.01, discount=0.9):
+    """
+    Performs gradient-descent with nesterov-momentum.
+
+    # Parameters
+        learning_rate (float): Cuts the gradient.
+        discount (float): Frictional coefficient that slows momentum.
+        objective (operation): Objective function being used.
+    # Returns
+        An optimization operation.
+    """
+    return tf.train.MomentumOptimizer(learning_rate, discount,
+                                      use_nesterov=True).minimize(objective)
