@@ -77,7 +77,7 @@ def train(steps, resuming):
         # Deque of moving-average of accuracies for reporting-purposes.
         accuracies = deque()
         for step, data_arg, label_arg in prepro.preprocess_directory(steps, 'data/train', order,
-                                                                     rescale=(128, 128)):
+                                                                     rescale=[256, 256]):
             current_accuracy = accuracy.eval(feed_dict={data: data_arg, labels: label_arg})
             accuracies.append(current_accuracy)
             if len(accuracies) == 100:

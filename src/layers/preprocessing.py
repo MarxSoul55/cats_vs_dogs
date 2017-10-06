@@ -17,12 +17,12 @@ class ImagePreprocessor:
 
         # Parameters
             image (str): Path to the image.
-            rescale (tuple): (width, height) of the resulting image.
+            rescale (list): [width, height] of the resulting image.
         # Returns
             A preprocessed image as a numpy-array.
         """
         image = cv2.imread(image)
-        image = cv2.resize(image, rescale)
+        image = cv2.resize(image, tuple(rescale), interpolation=cv2.INTER_LINEAR)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2LAB)
         if image.dtype != 'uint8':
             raise TypeError('When preprocessing `{}`, expected `uint8`, but got `{}`.'
@@ -31,7 +31,7 @@ class ImagePreprocessor:
         image /= 255
         return image
 
-    def preprocess_directory(self, steps, train_dir, order, rescale=(256, 256)):
+    def preprocess_directory(self, steps, train_dir, order, rescale=[256, 256]):
         """
         Given a directory of subdirectories of classes, preprocesses their contents one-by-one and
         yields (step, data_array, label_array), going class-to-class for the next image.
@@ -40,7 +40,7 @@ class ImagePreprocessor:
             steps (int): Amount of data-label pairs to generate.
             train_dir (str): Path to the directory of classes.
             order (list): Classes; order determines the one-hot label.
-            rescale (tuple): (width, height) that each image will be resized to.
+            rescale (list): [width, height] that each image will be resized to.
         # Yields
             Current step (starting from 1) and a data-label pair.
         """
