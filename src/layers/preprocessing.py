@@ -24,6 +24,9 @@ class ImagePreprocessor:
         image = cv2.imread(image)
         image = cv2.resize(image, rescale)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2LAB)
+        if image.dtype != 'uint8':
+            raise TypeError('When preprocessing `{}`, expected `uint8`, but got `{}`.'
+                            .format(image, image.dtype))
         image = image.astype('float32')
         image /= 255
         return image
