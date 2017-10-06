@@ -3,7 +3,6 @@
 import argparse
 from collections import deque
 
-import cv2
 import tensorflow as tf
 
 from layers.activations import elu, sigmoid
