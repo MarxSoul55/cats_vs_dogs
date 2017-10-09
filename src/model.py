@@ -51,14 +51,14 @@ def model(input_):
 
 def train(steps, resuming):
     """
-    Trains the model with SGD + Momentum.
+    Trains the model and saves the result.
 
     # Parameters
         steps (int): Amount of images to train on.
         resuming (bool): Whether or not to train from scratch.
     """
     # Create placeholders and define operations.
-    data = tf.placeholder(tf.float32, shape=[None, 128, 128, 3])
+    data = tf.placeholder(tf.float32, shape=[None, 256, 256, 3])
     labels = tf.placeholder(tf.float32, shape=[None, 2])
     logits = model(data)
     output = sigmoid(logits)
@@ -77,10 +77,10 @@ def train(steps, resuming):
         # Deque of moving-average of accuracies for reporting-purposes.
         accuracies = deque()
         for step, data_arg, label_arg in prepro.preprocess_directory(steps, 'data/train', order,
-                                                                     rescale=[256, 256]):
+                                                                     rescale=(256, 256)):
             current_accuracy = accuracy.eval(feed_dict={data: data_arg, labels: label_arg})
             accuracies.append(current_accuracy)
-            if len(accuracies) == 100:
+            if len(accuracies) == 25:
                 moving_accuracy = sum(accuracies) / len(accuracies)
                 accuracies.popleft()
             else:
