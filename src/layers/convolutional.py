@@ -29,8 +29,6 @@ def averagepooling_2d(input_, filter_size=2, strides=2, padding='VALID'):
 def convolution_2d(input_, output_chan, filter_size=3, strides=1, padding='SAME'):
     """
     Performs convolution on rows, columns, and channels of `input_`.
-    Initializes weights from a normal distribution with mean 0 and STD 0.01.
-    A bias-tensor (initialized to 0) is added to the resulting tensor.
 
     # Parameters
         input_ (tensor): A tensor of shape [samples, rows, columns, channels].
@@ -42,13 +40,15 @@ def convolution_2d(input_, output_chan, filter_size=3, strides=1, padding='SAME'
         A `batch_size` x `output_dim` x `output_dim` x `output_chan` tensor.
     """
     input_chan = input_.shape.as_list()[3]
-    weight = tf.Variable(tf.random_normal([filter_size, filter_size, input_chan, output_chan],
-                                          mean=0.0, stddev=0.01))
+    filter_shape = [filter_size, filter_size, input_chan, output_chan]
+    initializer = tf.orthogonal_initializer(gain=1.0, dtype=tf.float32)
+    weight = tf.Variable(initializer(filter_shape, dtype=tf.float32))
     bias = tf.Variable(tf.constant(0.0, shape=[output_chan]))
     return tf.nn.conv2d(input_, weight, [1, strides, strides, 1], padding) + bias
 
 
 def deconvolution_2d(input_, output_dim, output_chan, filter_size=3, strides=1, padding='SAME'):
+    # TODO: Fix this function. May be incorrect.
     """
     Performs deconvolution on rows, columns, and channels of `input_`.
     Initializes weights from a normal distribution with mean 0 and STD 0.01.
