@@ -1,7 +1,7 @@
 """Provides an interface for interacting with the model."""
 
 import argparse
-from collections import deque
+import time
 
 import tensorflow as tf
 
@@ -57,7 +57,6 @@ def train(steps, resuming):
         steps (int): Amount of images to train on.
         resuming (bool): Whether or not to train from scratch.
     """
-    # Create placeholders and define operations.
     data = tf.placeholder(tf.float32, shape=[None, 256, 256, 3])
     labels = tf.placeholder(tf.float32, shape=[None, 2])
     logits = model(data)
@@ -65,28 +64,35 @@ def train(steps, resuming):
     objective = mean_binary_entropy(labels, logits)
     accuracy = accuracy_reporter(labels, output)
     optimizer = nesterov_momentum(objective)
-    # Create session, initialize global-variables and saver.
+    # TODO: Refactor. Code is ugly as fuck!
     sess = tf.Session()
     with sess.as_default():
         tf.global_variables_initializer().run()
         if resuming:
             restore_model(sess)
-        # Create preprocessor and `order` argument.
         prepro = ImagePreprocessor()
         order = ['cats', 'dogs']
-        # Deque of moving-average of accuracies for reporting-purposes.
-        accuracies = deque()
+        accuracies = []
+        objectives = []
         for step, data_arg, label_arg in prepro.preprocess_directory(steps, 'data/train', order,
                                                                      rescale=(256, 256)):
             current_accuracy = accuracy.eval(feed_dict={data: data_arg, labels: label_arg})
+            current_objective = objective.eval(feed_dict={data: data_arg, labels: label_arg})
             accuracies.append(current_accuracy)
-            if len(accuracies) == 25:
+            objectives.append(current_objective)
+            if step % 10 == 0:
                 moving_accuracy = sum(accuracies) / len(accuracies)
-                accuracies.popleft()
+                moving_objective = sum(objectives) / len(objectives)
+                accuracies.clear()
+                objectives.clear()
+                wait = True
             else:
                 moving_accuracy = 'WTNG'
-            current_objective = objective.eval(feed_dict={data: data_arg, labels: label_arg})
-            report(step, steps, moving_accuracy, current_objective)
+                moving_objective = 'WTNG'
+                wait = False
+            report(step, steps, moving_accuracy, moving_objective)
+            if wait:
+                time.sleep(1)
             optimizer.run(feed_dict={data: data_arg, labels: label_arg})
         save_model(sess)
 
