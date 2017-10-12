@@ -13,8 +13,6 @@ from layers.optimizers import nesterov_momentum
 from layers.preprocessing import ImagePreprocessor
 from layers.accuracies import categorical_accuracy_reporter
 
-# Inside of this directory, there should be 2 more directories, `cats` and `dogs`.
-# Those directories will contain the actual images.
 DATA_DIR = 'data/train'
 
 
