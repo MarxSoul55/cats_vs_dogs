@@ -7,3 +7,6 @@ __pycache__/
 
 # And no .vscode either...
 .vscode/
+
+# Don't store tensorboard stuff...
+tensorboard/

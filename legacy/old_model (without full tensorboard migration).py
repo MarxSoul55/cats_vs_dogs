@@ -80,6 +80,7 @@ def train(steps, resuming):
     tf.summary.scalar('objective', objective)
     tf.summary.scalar('accuracy', accuracy)
     summary = tf.summary.merge_all()
+    # TODO: Refactor. Code is ugly as fuck!
     sess = tf.Session()
     with sess.as_default():
         tf.global_variables_initializer().run()
@@ -87,10 +88,24 @@ def train(steps, resuming):
         if resuming:
             restore_model(sess)
         prepro = ImagePreprocessor()
+        accuracies = []
+        objectives = []
         for step, data_arg, label_arg in prepro.preprocess_directory(steps, 'data/train',
                                                                      ['cats', 'dogs'],
                                                                      rescale=(256, 256)):
-            print(step)
+            current_accuracy = accuracy.eval(feed_dict={data: data_arg, labels: label_arg})
+            current_objective = objective.eval(feed_dict={data: data_arg, labels: label_arg})
+            accuracies.append(current_accuracy)
+            objectives.append(current_objective)
+            if step % 10 == 0:
+                moving_accuracy = sum(accuracies) / len(accuracies)
+                moving_objective = sum(objectives) / len(objectives)
+                accuracies.clear()
+                objectives.clear()
+            else:
+                moving_accuracy = 'WTNG'
+                moving_objective = 'WTNG'
+            report(step, steps, moving_accuracy, moving_objective)
             optimizer.run(feed_dict={data: data_arg, labels: label_arg})
             current_summary = summary.eval(feed_dict={data: data_arg, labels: label_arg})
             writer.add_summary(current_summary, step)
