@@ -1,7 +1,6 @@
 """Provides an interface for interacting with the model."""
 
 import argparse
-import time
 
 import tensorflow as tf
 
@@ -12,7 +11,7 @@ from layers.meta import restore_model, save_model
 from layers.objectives import mean_binary_entropy
 from layers.optimizers import nesterov_momentum
 from layers.preprocessing import ImagePreprocessor
-from layers.reporters import accuracy_reporter, report
+from layers.reporters import categorical_accuracy_reporter, report
 
 # Inside of this directory, there should be 2 more directories, `cats` and `dogs`.
 # Those directories will contain the actual images.
@@ -28,19 +27,28 @@ def model(input_):
     # Returns
         The output of the model.
     """
-    output = convolution_2d(input_, 32)
+    output = convolution_2d(input_, 8)
+    output = elu(output)
+    output = maxpooling_2d(output)
+    output = convolution_2d(output, 16)
+    output = elu(output)
+    output = convolution_2d(output, 16)
+    output = elu(output)
+    output = maxpooling_2d(output)
+    output = convolution_2d(output, 32)
+    output = elu(output)
+    output = convolution_2d(output, 32)
+    output = elu(output)
+    output = convolution_2d(output, 32)
     output = elu(output)
     output = maxpooling_2d(output)
     output = convolution_2d(output, 64)
     output = elu(output)
-    output = maxpooling_2d(output)
-    output = convolution_2d(output, 128)
+    output = convolution_2d(output, 64)
     output = elu(output)
-    output = maxpooling_2d(output)
-    output = convolution_2d(output, 256)
+    output = convolution_2d(output, 64)
     output = elu(output)
-    output = maxpooling_2d(output)
-    output = convolution_2d(output, 512)
+    output = convolution_2d(output, 64)
     output = elu(output)
     output = maxpooling_2d(output)
     output = globalaveragepooling_2d(output)
@@ -57,24 +65,33 @@ def train(steps, resuming):
         steps (int): Amount of images to train on.
         resuming (bool): Whether or not to train from scratch.
     """
-    data = tf.placeholder(tf.float32, shape=[None, 256, 256, 3])
-    labels = tf.placeholder(tf.float32, shape=[None, 2])
-    logits = model(data)
-    output = sigmoid(logits)
-    objective = mean_binary_entropy(labels, logits)
-    accuracy = accuracy_reporter(labels, output)
-    optimizer = nesterov_momentum(objective)
+    with tf.name_scope('input'):
+        data = tf.placeholder(tf.float32, shape=[None, 256, 256, 3])
+        labels = tf.placeholder(tf.float32, shape=[None, 2])
+    with tf.name_scope('output'):
+        logits = model(data)
+        output = sigmoid(logits)
+    with tf.name_scope('objective'):
+        objective = mean_binary_entropy(labels, logits)
+    with tf.name_scope('accuracy'):
+        accuracy = categorical_accuracy_reporter(labels, output)
+    with tf.name_scope('optimizer'):
+        optimizer = nesterov_momentum(objective)
+    tf.summary.scalar('objective', objective)
+    tf.summary.scalar('accuracy', accuracy)
+    summary = tf.summary.merge_all()
     # TODO: Refactor. Code is ugly as fuck!
     sess = tf.Session()
     with sess.as_default():
         tf.global_variables_initializer().run()
+        writer = tf.summary.FileWriter('test', graph=tf.get_default_graph())
         if resuming:
             restore_model(sess)
         prepro = ImagePreprocessor()
-        order = ['cats', 'dogs']
         accuracies = []
         objectives = []
-        for step, data_arg, label_arg in prepro.preprocess_directory(steps, 'data/train', order,
+        for step, data_arg, label_arg in prepro.preprocess_directory(steps, 'data/train',
+                                                                     ['cats', 'dogs'],
                                                                      rescale=(256, 256)):
             current_accuracy = accuracy.eval(feed_dict={data: data_arg, labels: label_arg})
             current_objective = objective.eval(feed_dict={data: data_arg, labels: label_arg})
@@ -85,15 +102,13 @@ def train(steps, resuming):
                 moving_objective = sum(objectives) / len(objectives)
                 accuracies.clear()
                 objectives.clear()
-                wait = True
             else:
                 moving_accuracy = 'WTNG'
                 moving_objective = 'WTNG'
-                wait = False
             report(step, steps, moving_accuracy, moving_objective)
-            if wait:
-                time.sleep(1)
             optimizer.run(feed_dict={data: data_arg, labels: label_arg})
+            current_summary = summary.eval(feed_dict={data: data_arg, labels: label_arg})
+            writer.add_summary(current_summary, step)
         save_model(sess)
 
 
