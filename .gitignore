@@ -10,3 +10,6 @@ __pycache__/
 
 # Don't store tensorboard stuff...
 tensorboard/
+
+# Don't store the saved model... ya'll can train yo own damn models yourselves.
+saved_model/
