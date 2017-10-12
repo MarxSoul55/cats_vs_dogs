@@ -43,7 +43,7 @@ def convolution_2d(input_, output_chan, filter_size=3, strides=1, padding='SAME'
     filter_shape = [filter_size, filter_size, input_chan, output_chan]
     initializer = tf.orthogonal_initializer(gain=1.0, dtype=tf.float32)
     weight = tf.Variable(initializer(filter_shape, dtype=tf.float32))
-    bias = tf.Variable(tf.constant(0.0, shape=[output_chan]))
+    bias = tf.Variable(tf.constant(0, dtype=tf.float32, shape=[output_chan]))
     return tf.nn.conv2d(input_, weight, [1, strides, strides, 1], padding) + bias
 
 
@@ -68,7 +68,7 @@ def deconvolution_2d(input_, output_dim, output_chan, filter_size=3, strides=1, 
     input_chan = input_.shape.as_list(3)
     weight = tf.Variable(tf.random_normal([filter_size, filter_size, output_chan, input_chan],
                                           mean=0.0, stddev=0.01))
-    bias = tf.Variable(tf.constant(0.0, shape=[output_chan]))
+    bias = tf.Variable(tf.constant(0, dtype=tf.float32, shape=[output_chan]))
     return tf.nn.conv2d_transpose(input_, weight,
                                   [batch_size, output_dim, output_dim, output_chan],
                                   [1, strides, strides, 1], padding=padding) + bias
