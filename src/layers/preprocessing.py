@@ -31,7 +31,7 @@ class ImagePreprocessor:
         image /= 255
         return image
 
-    def preprocess_directory(self, steps, train_dir, order, rescale=(256, 256)):
+    def preprocess_directory(self, steps, train_dir, order, rescale):
         """
         Given a directory of subdirectories of classes, preprocesses their contents one-by-one and
         yields (step, data_array, label_array), going class-to-class for the next image.
