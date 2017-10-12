@@ -11,7 +11,7 @@ from layers.meta import restore_model, save_model
 from layers.objectives import mean_binary_entropy
 from layers.optimizers import nesterov_momentum
 from layers.preprocessing import ImagePreprocessor
-from layers.reporters import categorical_accuracy_reporter, report
+from layers.accuracies import categorical_accuracy_reporter
 
 # Inside of this directory, there should be 2 more directories, `cats` and `dogs`.
 # Those directories will contain the actual images.
@@ -83,7 +83,7 @@ def train(steps, resuming):
     sess = tf.Session()
     with sess.as_default():
         tf.global_variables_initializer().run()
-        writer = tf.summary.FileWriter('test', graph=tf.get_default_graph())
+        writer = tf.summary.FileWriter('tensorboard', graph=tf.get_default_graph())
         if resuming:
             restore_model(sess)
         prepro = ImagePreprocessor()
