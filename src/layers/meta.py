@@ -1,6 +1,7 @@
 """Provides interface for meta-ops that deal with TensorFlow and the model."""
 
 import os
+import shutil
 
 import tensorflow as tf
 
@@ -18,25 +19,29 @@ def predict_binary(output):
     return tf.cast(tf.greater_equal(output, halves), tf.float32)
 
 
-def restore_model(session, name='saved_model'):
+def restore_model(session, tag, savedir='saved_model'):
     """
     Restores the model to the session of choice.
 
     # Parameters
         session (tf.Session): Session to restore to.
-        name (str): Name of the `.meta` and `checkpoint` files.
+        tag (str): An ID for the model.
+        savedir (str): Name of the save-dir.
     """
-    saver = tf.train.Saver()
-    saver.restore(session, os.path.join(os.getcwd(), '{}/{}'.format(name, name)))
+    tf.saved_model.loader.load(session, [tag], savedir)
 
 
-def save_model(session, name='saved_model'):
+def save_model(session, tag, savedir='saved_model'):
     """
-    Saves the model in the current directory.
+    Saves the model to a directory.
 
     # Parameters
         session (tf.Session): A session to save.
-        name (str): Name of the save-dir.
+        tag (str): An ID for the model.
+        savedir (str): Name of the save-dir.
     """
-    saver = tf.train.Saver()
-    saver.save(session, os.path.join(os.getcwd(), '{}/{}'.format(name, name)))
+    if savedir in os.listdir():
+        shutil.rmtree(savedir)
+    saver = tf.saved_model.builder.SavedModelBuilder(savedir)
+    saver.add_meta_graph_and_variables(session, [tag])
+    saver.save()

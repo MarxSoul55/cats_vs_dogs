@@ -84,7 +84,7 @@ def train(steps, resuming):
         tf.global_variables_initializer().run()
         writer = tf.summary.FileWriter('tensorboard', graph=tf.get_default_graph())
         if resuming:
-            restore_model(sess)
+            restore_model(sess, 'cats_vs_dogs')
         prepro = ImagePreprocessor()
         for step, data_arg, label_arg in prepro.preprocess_directory(steps, 'data/train',
                                                                      ['cats', 'dogs'],
@@ -93,7 +93,7 @@ def train(steps, resuming):
             optimizer.run(feed_dict={data: data_arg, labels: label_arg})
             current_summary = summary.eval(feed_dict={data: data_arg, labels: label_arg})
             writer.add_summary(current_summary, step)
-        save_model(sess)
+        save_model(sess, 'cats_vs_dogs')
 
 
 def test(image):
@@ -105,6 +105,7 @@ def test(image):
     # Returns
         A string; either 'cat' or 'dog'.
     """
+    '''
     data = tf.placeholder(tf.float32, shape=[1, 256, 256, 3])
     logits = model(data)
     output = sigmoid(logits)
@@ -119,6 +120,9 @@ def test(image):
             return 'cat'
         else:
             return 'dog'
+    '''
+    pass  # TODO
+
 
 
 if __name__ == '__main__':
