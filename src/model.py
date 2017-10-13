@@ -9,10 +9,11 @@ from layers.accuracies import categorical_accuracy_reporter
 from layers.activations import elu, sigmoid
 from layers.convolutional import convolution_2d, flatten_2d, globalaveragepooling_2d, maxpooling_2d
 from layers.core import dense
-from layers.meta import predict_binary, restore_model, save_model
 from layers.objectives import mean_binary_entropy
 from layers.optimizers import nesterov_momentum
 from layers.preprocessing import ImagePreprocessor
+from layers.serving import predict_binary, restore_protobuf, save_protobuf
+from layers.training import restore_model, save_model
 
 DATA_DIR = 'data/train'
 
@@ -98,31 +99,14 @@ def train(steps, resuming):
 
 def test(image):
     """
-    Test the model on a single image.
+    Serve the model on a single image.
 
     # Parameters
         image (str): Path to the image in question.
     # Returns
         A string; either 'cat' or 'dog'.
     """
-    '''
-    data = tf.placeholder(tf.float32, shape=[1, 256, 256, 3])
-    logits = model(data)
-    output = sigmoid(logits)
-    prediction = predict_binary(output)
-    sess = tf.Session()
-    with sess.as_default():
-        restore_model(sess)
-        prepro = ImagePreprocessor()
-        data_arg = np.array([prepro.preprocess_image(image, rescale=(256, 256))])
-        pred = prediction.eval(feed_dict={data: data_arg})
-        if pred[0][0] == 1:
-            return 'cat'
-        else:
-            return 'dog'
-    '''
     pass  # TODO
-
 
 
 if __name__ == '__main__':
