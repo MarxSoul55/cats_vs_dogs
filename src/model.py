@@ -85,16 +85,16 @@ def train(steps, resuming):
         tf.global_variables_initializer().run()
         writer = tf.summary.FileWriter('tensorboard', graph=tf.get_default_graph())
         if resuming:
-            restore_model(sess, 'cats_vs_dogs')
+            restore_model(sess)
         prepro = ImagePreprocessor()
         for step, data_arg, label_arg in prepro.preprocess_directory(steps, 'data/train',
                                                                      ['cats', 'dogs'],
                                                                      rescale=(256, 256)):
-            print(step)
+            print('Step: {}/{}'.format(step, steps))
             optimizer.run(feed_dict={data: data_arg, labels: label_arg})
             current_summary = summary.eval(feed_dict={data: data_arg, labels: label_arg})
             writer.add_summary(current_summary, step)
-        save_model(sess, 'cats_vs_dogs')
+        save_model(sess)
 
 
 def test(image):
