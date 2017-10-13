@@ -16,7 +16,7 @@ def predict_binary(output):
         A binary version of it (half-rounded-up).
     """
     halves = tf.constant(0.5, dtype=tf.float32, shape=output.shape.as_list())
-    return tf.cast(tf.greater_equal(output, halves), tf.float32)
+    return tf.cast(tf.greater_equal(output, halves), tf.int32)
 
 
 def restore_protobuf(session, tag, savedir='saved_protobuf'):
