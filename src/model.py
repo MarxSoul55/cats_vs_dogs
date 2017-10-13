@@ -57,13 +57,14 @@ def model(input_):
     return output
 
 
-def train(steps, resuming):
+def train(steps, resuming, save_pb):
     """
     Trains the model and saves the result.
 
     # Parameters
         steps (int): Amount of images to train on.
         resuming (bool): Whether or not to train from scratch.
+        save_pb (bool): Whether or not to save a protobuf.
     """
     with tf.name_scope('input'):
         data = tf.placeholder(tf.float32, shape=[None, 256, 256, 3])
@@ -95,9 +96,11 @@ def train(steps, resuming):
             current_summary = summary.eval(feed_dict={data: data_arg, labels: label_arg})
             writer.add_summary(current_summary, step)
         save_model(sess)
+        if save_pb:
+            save_protobuf(sess, 'cats_vs_dogs')
 
 
-def test(image):
+def serve(image):
     """
     Serve the model on a single image.
 
@@ -114,10 +117,12 @@ if __name__ == '__main__':
     parser.add_argument('-tr', '--train', action='store_true')
     parser.add_argument('-r', '--resuming', action='store_true')
     parser.add_argument('-s', '--steps', type=int)
-    parser.add_argument('-te', '--test', action='store_true')
-    parser.set_defaults(resuming=False)
+    parser.add_argument('-sp', '--saveprotobuf', action='store_true')
+    parser.add_argument('-se', '--serve', action='store_true')
+    parser.add_argument('-i', '--image')
+    parser.set_defaults(resuming=False, saveprotobuf=False)
     args = parser.parse_args()
     if args.train:
-        train(args.steps, args.resuming)
-    elif args.test:
-        test()
+        train(args.steps, args.resuming, args.saveprotobuf)
+    elif args.serve:
+        serve(args.image)
