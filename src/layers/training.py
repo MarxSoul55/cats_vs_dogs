@@ -1,5 +1,7 @@
 """Provides interface for meta-functions for use in tandem with the training-process."""
 
+import os
+
 import tensorflow as tf
 
 
