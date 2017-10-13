@@ -94,7 +94,7 @@ def train(steps, resuming, save_pb):
             print('Step: {}/{}'.format(step, steps))
             optimizer.run(feed_dict={data: data_arg, labels: label_arg})
             current_summary = summary.eval(feed_dict={data: data_arg, labels: label_arg})
-            writer.add_summary(current_summary, step)
+            writer.add_summary(current_summary, global_step=step)
         save_model(sess)
         if save_pb:
             save_protobuf(sess, 'cats_vs_dogs')
