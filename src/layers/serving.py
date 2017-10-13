@@ -6,19 +6,6 @@ import shutil
 import tensorflow as tf
 
 
-def predict_binary(output):
-    """
-    Converts a sigmoidal tensor to a binary tensor.
-
-    # Parameters
-        output (tensor): A tensor of values put through a logistic-sigmoid function.
-    # Returns
-        A binary version of it (half-rounded-up).
-    """
-    halves = tf.constant(0.5, dtype=tf.float32, shape=output.shape.as_list())
-    return tf.cast(tf.greater_equal(output, halves), tf.int32)
-
-
 def restore_protobuf(session, tag, savedir='saved_protobuf'):
     """
     Restores the model to the session of choice.
