@@ -5,25 +5,26 @@ import os
 import tensorflow as tf
 
 
-def restore_model(session, name='saved_model'):
+def restore_model(session, savedir='saved_model'):
     """
     Restores the model to the session of choice.
 
     # Parameters
         session (tf.Session): Session to restore to.
-        name (str): Name of the `.meta` and `checkpoint` files.
+        savedir (str): Name of the save-dir.
     """
     saver = tf.train.Saver()
-    saver.restore(session, os.path.join(os.getcwd(), '{}/{}'.format(name, name)))
+    saver.restore(session, os.path.join(os.getcwd(), '{}/{}'.format(savedir, savedir)))
 
 
-def save_model(session, name='saved_model'):
+def save_model(session, savedir='saved_model'):
     """
-    Saves the model in the current directory.
+    Saves the model in the current directory, along with global-step.
 
     # Parameters
         session (tf.Session): A session to save.
-        name (str): Name of the save-dir.
+        savedir (str): Name of the save-dir.
     """
+    # TODO: Add global-step.
     saver = tf.train.Saver()
-    saver.save(session, os.path.join(os.getcwd(), '{}/{}'.format(name, name)))
+    saver.save(session, os.path.join(os.getcwd(), '{}/{}'.format(savedir, savedir)))
