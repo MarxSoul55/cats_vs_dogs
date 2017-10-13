@@ -1,4 +1,4 @@
-"""Provides interface for meta-ops that deal with TensorFlow and the model."""
+"""Provides interface for meta-functions that help serve the model."""
 
 import os
 import shutil
@@ -19,7 +19,7 @@ def predict_binary(output):
     return tf.cast(tf.greater_equal(output, halves), tf.float32)
 
 
-def restore_model(session, tag, savedir='saved_model'):
+def restore_protobuf(session, tag, savedir='saved_protobuf'):
     """
     Restores the model to the session of choice.
 
@@ -31,7 +31,7 @@ def restore_model(session, tag, savedir='saved_model'):
     tf.saved_model.loader.load(session, [tag], savedir)
 
 
-def save_model(session, tag, savedir='saved_model'):
+def save_protobuf(session, tag, savedir='saved_protobuf'):
     """
     Saves the model to a directory.
 
