@@ -2,7 +2,6 @@
 
 import argparse
 
-import numpy as np
 import tensorflow as tf
 
 from layers.accuracies import categorical_accuracy_reporter
@@ -12,7 +11,7 @@ from layers.core import dense
 from layers.objectives import mean_binary_entropy
 from layers.optimizers import nesterov_momentum
 from layers.preprocessing import ImagePreprocessor
-from layers.serving import predict_binary, restore_protobuf, save_protobuf
+from layers.serving import save_protobuf
 from layers.training import restore_model, save_model
 
 DATA_DIR = 'data/train'
@@ -68,14 +67,13 @@ def model(input_):
     return output
 
 
-def train(steps, resuming, save_pb):
+def train(steps, resuming):
     """
     Trains the model and saves the result.
 
     # Parameters
         steps (int): Amount of images to train on.
         resuming (bool): Whether or not to train from scratch.
-        save_pb (bool): Whether or not to save a protobuf.
     """
     with tf.name_scope('input'):
         data = tf.placeholder(tf.float32, shape=[None, 256, 256, 3])
@@ -99,16 +97,15 @@ def train(steps, resuming, save_pb):
         if resuming:
             restore_model(sess)
         prepro = ImagePreprocessor()
-        for step, data_arg, label_arg in prepro.preprocess_directory(steps, 'data/train',
-                                                                     ['cats', 'dogs'],
+        encoding = {'cats': [1, 0], 'dogs': [0, 1]}
+        for step, data_arg, label_arg in prepro.preprocess_directory(steps, 'data/train', encoding,
                                                                      rescale=(256, 256)):
             print('Step: {}/{}'.format(step, steps))
             optimizer.run(feed_dict={data: data_arg, labels: label_arg})
             current_summary = summary.eval(feed_dict={data: data_arg, labels: label_arg})
             writer.add_summary(current_summary, global_step=step)
         save_model(sess)
-        if save_pb:
-            save_protobuf(sess, 'cats_vs_dogs')
+        save_protobuf(sess, 'cats_vs_dogs')
 
 
 def serve(image):
@@ -128,12 +125,11 @@ if __name__ == '__main__':
     parser.add_argument('-tr', '--train', action='store_true')
     parser.add_argument('-r', '--resuming', action='store_true')
     parser.add_argument('-s', '--steps', type=int)
-    parser.add_argument('-sp', '--saveprotobuf', action='store_true')
     parser.add_argument('-se', '--serve', action='store_true')
     parser.add_argument('-i', '--image')
-    parser.set_defaults(resuming=False, saveprotobuf=False)
+    parser.set_defaults(resuming=False)
     args = parser.parse_args()
     if args.train:
-        train(args.steps, args.resuming, args.saveprotobuf)
+        train(args.steps, args.resuming)
     elif args.serve:
         serve(args.image)
