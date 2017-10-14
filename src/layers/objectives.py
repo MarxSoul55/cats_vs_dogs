@@ -5,7 +5,7 @@ import tensorflow as tf
 
 def mean_absolute_error(labels, predictions):
     """
-    Calculates the mean absolute error.
+    Calculates the mean-absolute error.
 
     # Parameters
         labels (tensor): Tensor for the labels.
@@ -18,7 +18,7 @@ def mean_absolute_error(labels, predictions):
 
 def mean_binary_entropy(labels, logits):
     """
-    Calculates the mean binary entropy.
+    Calculates the mean binary-entropy.
 
     # Parameters
         labels (tensor): Tensor for the labels.
@@ -29,9 +29,22 @@ def mean_binary_entropy(labels, logits):
     return tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(labels=labels, logits=logits))
 
 
+def mean_categorical_entropy(labels, logits):
+    """
+    Calculates the mean categorical-entropy for use with softmax.
+
+    # Parameters
+        labels (tensor): Tensor for the labels.
+        logits (tensor): The (raw) output of the model, or unscaled log-probabilities.
+    # Returns
+        The (scalar) mean result from the elementwise errors.
+    """
+    return tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=labels, logits=logits))
+
+
 def mean_squared_error(labels, predictions):
     """
-    Calculates the mean squared error.
+    Calculates the mean-squared error.
 
     # Parameters
         labels (tensor): Tensor for the labels.
@@ -44,7 +57,7 @@ def mean_squared_error(labels, predictions):
 
 def root_mean_squared_error(labels, predictions):
     """
-    Calculates the root mean squared error.
+    Calculates the root-mean-squared error.
 
     # Parameters
         labels (tensor): Tensor for the labels.
