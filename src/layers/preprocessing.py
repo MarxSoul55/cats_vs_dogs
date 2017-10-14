@@ -31,18 +31,22 @@ class ImagePreprocessor:
         image /= 255
         return image
 
-    def preprocess_directory(self, steps, train_dir, order, rescale):
+    def preprocess_directory(self, steps, train_dir, encoding, rescale):
         """
-        Given a directory of subdirectories of classes, preprocesses their contents one-by-one and
-        yields (step, data_array, label_array), going class-to-class for the next image.
+        Given a directory of subdirectories of images, loops through the subdirectories,
+        preprocessing one image from each then moving to the next subdirectory,
+        and loops back when the last subdirectory is passed.
+        Preprocesses the image using the `preprocess_image` method,
+        and generates a binary-encoded label based off of `encoding`.
 
         # Parameters
             steps (int): Amount of data-label pairs to generate.
             train_dir (str): Path to the directory of classes.
-            order (list): Classes; order determines the one-hot label.
+            encoding (dict, str -> list): Maps the name of the subdirectory (class) to a
+                                          binary-encoded label.
             rescale (tuple): (width, height) that each image will be resized to.
         # Yields
-            Current step (starting from 1) and a data-label pair.
+            `(step, data_array, label_array)` starting from step 1.
         """
         classes = os.listdir(train_dir)
         cursors = {}
@@ -61,9 +65,7 @@ class ImagePreprocessor:
                                                 images[class_][cursors[class_]])
                 preprocessed = self.preprocess_image(absolute_path, rescale)
                 data = np.array([preprocessed])
-                label = np.array([np.zeros(len(classes))])
-                label[0][order.index(class_)] = 1
-                label = label.astype('float32')
+                label = np.array(encoding[class_]).astype('float32')
                 if cursors[class_] == (len(images[class_]) - 1):
                     cursors[class_] = 0
                 else:
