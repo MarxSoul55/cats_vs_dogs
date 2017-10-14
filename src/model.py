@@ -5,13 +5,12 @@ import argparse
 import tensorflow as tf
 
 from layers.accuracies import categorical_accuracy_reporter
-from layers.activations import elu, sigmoid
+from layers.activations import elu
 from layers.convolutional import convolution_2d, flatten_2d, globalaveragepooling_2d, maxpooling_2d
 from layers.core import dense
-from layers.objectives import mean_binary_entropy
+from layers.objectives import mean_absolute_error
 from layers.optimizers import nesterov_momentum
 from layers.preprocessing import ImagePreprocessor
-from layers.serving import save_protobuf
 from layers.training import restore_model, save_model
 
 DATA_DIR = 'data/train'
@@ -79,10 +78,9 @@ def train(steps, resuming):
         data = tf.placeholder(tf.float32, shape=[None, 256, 256, 3])
         labels = tf.placeholder(tf.float32, shape=[None, 2])
     with tf.name_scope('output'):
-        logits = model(data)
-        output = sigmoid(logits)
+        output = model(data)
     with tf.name_scope('objective'):
-        objective = mean_binary_entropy(labels, logits)
+        objective = mean_absolute_error(labels, output)
     with tf.name_scope('accuracy'):
         accuracy = categorical_accuracy_reporter(labels, output)
     with tf.name_scope('optimizer'):
@@ -105,7 +103,6 @@ def train(steps, resuming):
             current_summary = summary.eval(feed_dict={data: data_arg, labels: label_arg})
             writer.add_summary(current_summary, global_step=step)
         save_model(sess)
-        save_protobuf(sess, 'cats_vs_dogs')
 
 
 def serve(image):
