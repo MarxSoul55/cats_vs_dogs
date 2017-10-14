@@ -3,9 +3,14 @@
 import tensorflow as tf
 
 
-def binary_accuracy_reporter(labels, output):
+def binary_accuracy_reporter(labels, output):  # TODO: This is fucked. Gotta change it.
     """
-    Generates a tensor for reporting accuracy. Assumes multi-class labels.
+    Generates a tensor for reporting accuracy.
+    Assumes binary encoding of the labels.
+    Rules for elements in `output`:
+    If `output` < 0, rounds to 0.
+    If `output` > 1, rounds to 1.
+    If 0 <= `output` <= 1, rounds half-up.
 
     # Parameters
         labels (tensor): Tensor for holding labels.
@@ -22,7 +27,9 @@ def binary_accuracy_reporter(labels, output):
 
 def categorical_accuracy_reporter(labels, output):
     """
-    Generates a tensor for reporting accuracy. Assumes one-class-only labels.
+    Generates a tensor for reporting accuracy.
+    Assumes one-hot encoding of labels.
+    Argmaxes for the corresponding result in `output`.
 
     # Parameters
         labels (tensor): Tensor for holding labels.
