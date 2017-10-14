@@ -65,7 +65,7 @@ class ImagePreprocessor:
                                                 images[class_][cursors[class_]])
                 preprocessed = self.preprocess_image(absolute_path, rescale)
                 data = np.array([preprocessed])
-                label = np.array(encoding[class_]).astype('float32')
+                label = np.array([encoding[class_]]).astype('float32')
                 if cursors[class_] == (len(images[class_]) - 1):
                     cursors[class_] = 0
                 else:
