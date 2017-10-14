@@ -11,7 +11,7 @@ from layers.core import dense
 from layers.objectives import mean_absolute_error
 from layers.optimizers import nesterov_momentum
 from layers.preprocessing import ImagePreprocessor
-from layers.training import restore_model, save_model
+from layers.training import restore_model, save_model, tensorboard_writer
 
 DATA_DIR = 'data/train'
 
@@ -91,7 +91,7 @@ def train(steps, resuming):
     sess = tf.Session()
     with sess.as_default():
         tf.global_variables_initializer().run()
-        writer = tf.summary.FileWriter('tensorboard', graph=tf.get_default_graph())
+        writer = tensorboard_writer()
         if resuming:
             restore_model(sess)
         prepro = ImagePreprocessor()
