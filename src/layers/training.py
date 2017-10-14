@@ -25,6 +25,5 @@ def save_model(session, savedir='saved_model'):
         session (tf.Session): A session to save.
         savedir (str): Name of the save-dir.
     """
-    # TODO: Add global-step.
     saver = tf.train.Saver()
     saver.save(session, os.path.join(os.getcwd(), '{}/{}'.format(savedir, savedir)))
