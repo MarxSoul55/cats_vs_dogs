@@ -72,7 +72,7 @@ def train(steps, resuming):
 
     # Parameters
         steps (int): Amount of images to train on.
-        resuming (bool): Whether or not to train from scratch.
+        resuming (bool): Whether or not to resume training on a saved model.
     """
     with tf.name_scope('input'):
         data = tf.placeholder(tf.float32, shape=[None, 256, 256, 3])
