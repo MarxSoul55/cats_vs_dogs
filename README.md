@@ -5,7 +5,7 @@ whether a cat or dog is in a given picture.
 
 The data used to train the model was [Kaggle's dataset.](https://www.kaggle.com/c/dogs-vs-cats-redux-kernels-edition/data)
 # Want to use and modify this program?
-## If you have no idea what you're doing here...
+### If you have no idea what you're doing here...
 If you want to use and modify this program to your fullest potential, you'll need to have *a lot*
 of background knowledge about artificial neural-networks and machine-learning in general. There's
 no way around these requirements, unfortunately. You have to put in the time, read lots of books
@@ -33,7 +33,7 @@ resources, however:
 Even having a solid background in machine-learning, you still need to (obviously) know how to
 program in Python and how to use the TensorFlow framework. There are so many tutorials for both of
 these that I won't even bother to list any, as a google-search will yield everything you seek.
-## If you do have an idea of what you're doing...
+### If you do have an idea of what you're doing...
 *...follow these steps:*
 1. Go to the aforementioned dataset and download the data to your directory of choice.
 2. Set up your directory in the following way:
