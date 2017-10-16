@@ -16,9 +16,9 @@ resources, however:
 
 * http://neuralnetworksanddeeplearning.com/
     * Awesome online book. Many people will list this as a resource if you ask around, and I can
-      tell you it's a damn fine one. I learned so much from this book.
+      tell you, from personal experience, that it's a fine one.
 * http://cs231n.github.io/
-    * Lecture-notes and other resources from a course at Stanford University. Helped me out a ton!
+    * Lecture-notes and other resources from a course at Stanford University. Very helpful!
 * https://www.coursera.org/learn/machine-learning
     * Another well-respected resource like the first one I listed. Haven't gone through it myself
       but people who have say it's good.
@@ -27,9 +27,9 @@ resources, however:
       in the field of AI and well-respected too.
 * https://www.youtube.com/watch?v=aircAruvnKk
     * This video was created by 3Blue1Brown as part of a series, which is actually being created as
-      I speak (October 15th, 2017). 3Blue1Brown is fucking amazing, that's all I have to say. He
-      teaches things in an intuitive manner with lots of nice visualizations. Whatever comes out of
-      this series, I'm sure it'll be good. He also has series' on linear algebra and calculus too.
+      I speak (October 15th, 2017). 3Blue1Brown is great; he teaches things in an intuitive manner
+      with lots of nice visualizations. Whatever comes out of this series, I'm sure it'll be good.
+      He also has series' on linear algebra and calculus too.
 * https://www.youtube.com/watch?v=bxe2T-V8XRs&list=PLiaHhY2iBX9hdHaRr6b7XevZtgZRa1PoU
     * This video is part of a short series on artificial neural-networks. It's just a small
       overview of some of the general concepts. It does throw in a few implementation-level
