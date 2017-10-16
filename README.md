@@ -15,21 +15,20 @@ knowledge, since I do not have anywhere near the time to explain everything. I w
 resources, however:
 
 * http://neuralnetworksanddeeplearning.com/
-    * Awesome online book. Many people will list this as a resource if you ask around, and I can
-      tell you, from personal experience, that it's a fine one.
+    * Great online book. Many people will list this as a resource if you ask around. Well-written
+      and very informative.
 * http://cs231n.github.io/
-    * Lecture-notes and other resources from a course at Stanford University. Very helpful!
+    * Lecture-notes and other resources from a course at Stanford University.
 * https://www.coursera.org/learn/machine-learning
-    * Another well-respected resource like the first one I listed. Haven't gone through it myself
-      but people who have say it's good.
+    * Another well-respected resource like the first one listed. If you want a more traditional
+      "lecture and listen" setting, this will suffice.
 * http://www.deeplearningbook.org/
     * A bit of a newbie on the field, but has some top-notch authors behind it. They're well-known
-      in the field of AI and well-respected too.
+      and well-respected in the field of AI.
 * https://www.youtube.com/watch?v=aircAruvnKk
     * This video was created by 3Blue1Brown as part of a series, which is actually being created as
-      I speak (October 15th, 2017). 3Blue1Brown is great; he teaches things in an intuitive manner
-      with lots of nice visualizations. Whatever comes out of this series, I'm sure it'll be good.
-      He also has series' on linear algebra and calculus too.
+      I speak (October 15th, 2017). 3Blue1Brown has a reputation of teaching things in an intuitive
+      manner with lots of nice visualizations.
 * https://www.youtube.com/watch?v=bxe2T-V8XRs&list=PLiaHhY2iBX9hdHaRr6b7XevZtgZRa1PoU
     * This video is part of a short series on artificial neural-networks. It's just a small
       overview of some of the general concepts. It does throw in a few implementation-level
