@@ -1,7 +1,8 @@
 # Hello World!
 This repository contains the code for a computer-vision program. Using a convolutional
 neural-network (made with [TensorFlow](https://www.tensorflow.org/)), this program can tell
-whether a cat or dog is in a given picture.
+whether a cat or dog is in a given picture to any arbitrary precision, depending on how you choose
+to structure the model's architecture and how long you choose to train it.
 
 The data used to train the model was [Kaggle's dataset.](https://www.kaggle.com/c/dogs-vs-cats-redux-kernels-edition/data)
 # Want to use and modify this program?
@@ -30,9 +31,9 @@ resources, however:
       teaches things in an intuitive manner with lots of nice visualizations. Whatever comes out of
       this series, I'm sure it'll be good. He also has series' on linear algebra and calculus too.
 * https://www.youtube.com/watch?v=bxe2T-V8XRs&list=PLiaHhY2iBX9hdHaRr6b7XevZtgZRa1PoU
-    * This video is part of a short series on artificial neural-networks. I don't consider it to be
-      a complete overview of the topic in any way whatsoever. It's just a small overview of some
-      general topics. Might be helpful to you.
+    * This video is part of a short series on artificial neural-networks. It's just a small
+      overview of some of the general concepts. It does throw in a few implementation-level
+      concepts, like gradient-descent with matrices, which is a nice feature.
 
 Even having a solid background in machine-learning, you still need to (obviously) know how to
 program in Python and how to use the TensorFlow framework. There are so many tutorials for both of
