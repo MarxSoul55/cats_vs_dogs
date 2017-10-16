@@ -2,6 +2,7 @@
 
 import argparse
 
+import numpy as np
 import tensorflow as tf
 
 from layers.accuracies import categorical_accuracy_reporter
@@ -94,10 +95,10 @@ def train(steps, resuming):
         writer = tensorboard_writer()
         if resuming:
             restore_model(sess)
-        prepro = ImagePreprocessor()
+        preprocessor = ImagePreprocessor()
         encoding = {'cats': [1, 0], 'dogs': [0, 1]}
-        for step, data_arg, label_arg in prepro.preprocess_directory(steps, 'data/train', encoding,
-                                                                     rescale=(256, 256)):
+        for step, data_arg, label_arg in preprocessor.preprocess_directory(steps, 'data/train',
+                                                                           encoding, (256, 256)):
             print('Step: {}/{}'.format(step, steps))
             optimizer.run(feed_dict={data: data_arg, labels: label_arg})
             current_summary = summary.eval(feed_dict={data: data_arg, labels: label_arg})
@@ -105,16 +106,28 @@ def train(steps, resuming):
         save_model(sess)
 
 
-def serve(image):
+def test(image):
     """
-    Serve the model on a single image.
+    Test the model on a single image.
 
     # Parameters
         image (str): Path to the image in question.
-    # Returns
-        A string; either 'cat' or 'dog'.
+    # Prints
+        The resulting tensor of predictions.
+        In this case, argmax==0 means 'cat' and argmax==1 means 'dog'.
     """
-    pass  # TODO
+    sess = tf.Session()
+    with tf.name_scope('input'):
+        data = tf.placeholder(tf.float32, shape=[None, 256, 256, 3])
+    with tf.name_scope('output'):
+        output = model(data)
+    with sess.as_default():
+        tf.global_variables_initializer().run()
+        restore_model(sess)
+        preprocessor = ImagePreprocessor()
+        data_arg = np.array([preprocessor.preprocess_image(image, (256, 256))])
+        result = output.eval(feed_dict={data: data_arg})
+        print(result)
 
 
 if __name__ == '__main__':
@@ -122,11 +135,11 @@ if __name__ == '__main__':
     parser.add_argument('-tr', '--train', action='store_true')
     parser.add_argument('-r', '--resuming', action='store_true')
     parser.add_argument('-s', '--steps', type=int)
-    parser.add_argument('-se', '--serve', action='store_true')
+    parser.add_argument('-te', '--test', action='store_true')
     parser.add_argument('-i', '--image')
     parser.set_defaults(resuming=False)
     args = parser.parse_args()
     if args.train:
         train(args.steps, args.resuming)
-    elif args.serve:
-        serve(args.image)
+    elif args.test:
+        test(args.image)
