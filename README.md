@@ -29,6 +29,10 @@ resources, however:
       I speak (October 15th, 2017). 3Blue1Brown is fucking amazing, that's all I have to say. He
       teaches things in an intuitive manner with lots of nice visualizations. Whatever comes out of
       this series, I'm sure it'll be good. He also has series' on linear algebra and calculus too.
+* https://www.youtube.com/watch?v=bxe2T-V8XRs&list=PLiaHhY2iBX9hdHaRr6b7XevZtgZRa1PoU
+    * This video is part of a short series on artificial neural-networks. I don't consider it to be
+      a complete overview of the topic in any way whatsoever. It's just a small overview of some
+      general topics. Might be helpful to you.
 
 Even having a solid background in machine-learning, you still need to (obviously) know how to
 program in Python and how to use the TensorFlow framework. There are so many tutorials for both of
