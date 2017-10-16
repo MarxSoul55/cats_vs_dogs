@@ -14,8 +14,6 @@ from layers.optimizers import nesterov_momentum
 from layers.preprocessing import ImagePreprocessor
 from layers.training import restore_model, save_model, tensorboard_writer
 
-DATA_DIR = 'data/train'
-
 
 def model(input_):
     """
