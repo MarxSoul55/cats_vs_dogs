@@ -14,5 +14,8 @@ tensorboard/
 # Don't store the saved model...
 saved_model/
 
-# Don't store the global-step...
-*.pkl
+# Keras? No .h5 files either.
+*.h5
+
+# Ahh, legacy. To store or not to store? NOT!
+legacy/
