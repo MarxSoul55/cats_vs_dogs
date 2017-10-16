@@ -39,8 +39,9 @@ program in Python and how to use the TensorFlow framework. There are so many tut
 these that I won't even bother to list any, as a google-search will yield everything you seek.
 ### If you do have an idea of what you're doing...
 *...follow these steps:*
-1. Go to the aforementioned dataset and download the data to your directory of choice.
-2. Set up your directory in the following way:
+1. Download [Kaggle's dataset of cats and dogs](https://www.kaggle.com/c/dogs-vs-cats-redux-kernels-edition/data).
+2. Download the release: [v0.1](https://github.com/MarxSoul55/cats_vs_dogs/releases/tag/v0.1)
+3. Set up your directory in the following way:
     * model.py (the file in `src`)
     * layers (my custom TensorFlow-wrapper, also in `src`)
     * data
@@ -48,7 +49,7 @@ these that I won't even bother to list any, as a google-search will yield everyt
             * cats (will contain the images of cats from Kaggle)
             * dogs (will contain the images of dogs from Kaggle)
         * test (will contain test-images from Kaggle)
-3. Now you need to learn how to use `model.py`, which acts as the interface by which you'll train
+4. Now you need to learn how to use `model.py`, which acts as the interface by which you'll train
 and test the model. There are three main commands you'll need to know.
     * `python model.py -tr -s 25000`
         * The `-tr` tells the program to train the model, and the `-s` tells the program how many
@@ -74,5 +75,5 @@ and test the model. There are three main commands you'll need to know.
     * `python model.py -te -i data/test/1.jpg`
         * The `-te` tells the program to test the model on an image, whose path is given by
           `-i data/test/1.jpg`.
-4. That's all there is to it! I highly encourage you to tinker around with my code and change it as
+5. That's all there is to it! I highly encourage you to tinker around with my code and change it as
 it suits your purposes—it currently suits mine very well, but for you, it may not!
