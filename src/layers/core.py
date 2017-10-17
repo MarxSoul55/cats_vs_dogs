@@ -6,7 +6,7 @@ import tensorflow as tf
 def dense(input_, output_col):
     """
     A fully-connected layer of neurons.
-    Weights are initialized orthogonally.
+    Weights are initialized orthogonally from [-1, 1].
     Biases initialized to 0.
 
     # Parameters

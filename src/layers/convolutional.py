@@ -29,7 +29,7 @@ def averagepooling_2d(input_, filter_size=2, strides=2, padding='VALID'):
 def convolution_2d(input_, output_chan, filter_size=3, strides=1, padding='SAME'):
     """
     Performs convolution on rows, columns, and channels of `input_`.
-    Weights of the filter are initialized orthogonally.
+    Weights of the filter are initialized orthogonally from [-1, 1].
     Adds a bias-parameter after the summation, whose initial value is 0.
 
     # Parameters
