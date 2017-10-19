@@ -21,3 +21,21 @@ def dense(input_, output_col):
     weight = tf.Variable(initializer(weight_shape, dtype=tf.float32))
     bias = tf.Variable(tf.constant(0.0, shape=[output_col]))
     return tf.matmul(input_, weight) + bias
+
+
+def residual(prev_layer, layer):
+    """
+    Given some tensor, adds the output from a previous tensor to it.
+    Use to implement residual neural-networks.
+    Requires that both `prev_layer` and `layer` are of the same shape.
+
+    # Parameters
+        prev_layer (tensor): The output of the previous layer in question.
+        layer (tensor): The new tensor that `prev_layer` will be added to.
+    # Raises
+        ValueError: if `prev_layer` and `layer` are different shapes.
+    """
+    prev_shape = prev_layer.shape.as_list()
+    if prev_shape != layer.shape.as_list():
+        raise ValueError('`prev_layer` and `layer` must be the same shape.')
+    return tf.add(prev_layer, layer)
