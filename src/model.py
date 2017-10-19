@@ -8,7 +8,7 @@ import tensorflow as tf
 from layers.accuracies import categorical_accuracy_reporter
 from layers.activations import elu
 from layers.convolutional import convolution_2d, flatten_2d, globalaveragepooling_2d, maxpooling_2d
-from layers.core import dense, residual
+from layers.core import dense
 from layers.objectives import mean_absolute_error
 from layers.optimizers import nesterov_momentum
 from layers.preprocessing import ImagePreprocessor
@@ -24,69 +24,39 @@ def model(input_):
     # Returns
         The output of the model.
     """
-    resput = input_
     output = convolution_2d(input_, 8)
     output = elu(output)
-    output = convolution_2d(output, 8)
-    output = residual(resput, output)
-    output = elu(output)
     output = maxpooling_2d(output)
-    resput = output
     output = convolution_2d(output, 16)
     output = elu(output)
     output = convolution_2d(output, 16)
-    output = residual(resput, output)
     output = elu(output)
     output = maxpooling_2d(output)
-    resput = output
     output = convolution_2d(output, 32)
     output = elu(output)
     output = convolution_2d(output, 32)
-    output = residual(resput, output)
-    output = elu(output)
-    resput = output
-    output = convolution_2d(output, 32)
     output = elu(output)
     output = convolution_2d(output, 32)
-    output = residual(resput, output)
     output = elu(output)
     output = maxpooling_2d(output)
-    resput = output
     output = convolution_2d(output, 64)
     output = elu(output)
     output = convolution_2d(output, 64)
-    output = residual(resput, output)
     output = elu(output)
-    resput = output
     output = convolution_2d(output, 64)
     output = elu(output)
     output = convolution_2d(output, 64)
-    output = residual(resput, output)
     output = elu(output)
     output = maxpooling_2d(output)
-    resput = output
     output = convolution_2d(output, 128)
     output = elu(output)
     output = convolution_2d(output, 128)
-    output = residual(resput, output)
     output = elu(output)
-    resput = output
     output = convolution_2d(output, 128)
     output = elu(output)
     output = convolution_2d(output, 128)
-    output = residual(resput, output)
-    output = elu(output)
-    resput = output
-    output = convolution_2d(output, 128)
     output = elu(output)
     output = convolution_2d(output, 128)
-    output = residual(resput, output)
-    output = elu(output)
-    resput = output
-    output = convolution_2d(output, 128)
-    output = elu(output)
-    output = convolution_2d(output, 128)
-    output = residual(resput, output)
     output = elu(output)
     output = maxpooling_2d(output)
     output = globalaveragepooling_2d(output)
