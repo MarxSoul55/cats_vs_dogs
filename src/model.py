@@ -24,71 +24,74 @@ def model(input_):
     # Returns
         The output of the model.
     """
-    # Blocks are separated by layers of pooling.
-    # ---------- Block 1 ----------
-    conv1 = convolution_2d(input_, 8)  # conv
-    elu1 = elu(conv1)  # elu
-    conv2 = convolution_2d(elu1, 8)  # conv
-    residual1 = residual(input_, conv2)  # residual
-    elu2 = elu(residual1)  # after-elu
-    pool1 = maxpooling_2d(elu2)  # pool
-    # ---------- Block 2 ----------
-    conv3 = convolution_2d(pool1, 16)  # conv
-    elu3 = elu(conv3)  # elu
-    conv4 = convolution_2d(elu3, 16)  # conv
-    residual2 = residual(pool1, conv4)  # residual
-    elu4 = elu(residual2)  # after-elu
-    pool2 = maxpooling_2d(elu4)  # pool
-    # ---------- Block 3 ----------
-    conv5 = convolution_2d(pool2, 32)  # conv
-    elu5 = elu(conv5)  # elu
-    conv6 = convolution_2d(elu5, 32)  # conv
-    residual3 = residual(pool2, conv6)  # residual
-    elu6 = elu(residual3)  # after-elu
-    conv7 = convolution_2d(elu6, 32)  # conv
-    elu7 = elu(conv7)  # elu
-    conv8 = convolution_2d(elu7, 32)  # conv
-    residual4 = residual(elu6, conv8)  # residual
-    elu8 = elu(residual4)  # after-elu
-    pool3 = maxpooling_2d(elu8)  # pool
-    # ---------- Block 4 ----------
-    conv9 = convolution_2d(pool3, 64)  # conv
-    elu9 = elu(conv9)  # elu
-    conv10 = convolution_2d(elu9, 64)  # conv
-    residual5 = residual(pool3, conv10)  # residual
-    elu10 = elu(residual5)  # after-elu
-    conv11 = convolution_2d(elu10, 64)  # conv
-    elu11 = elu(conv11)  # elu
-    conv12 = convolution_2d(elu11, 64)  # conv
-    residual6 = residual(elu10, conv12)  # residual
-    elu12 = elu(residual6)  # after-elu
-    pool4 = maxpooling_2d(elu12)  # pool
-    # ---------- Block 5 ----------
-    conv13 = convolution_2d(pool4, 128)  # conv
-    elu13 = elu(conv13)  # elu
-    conv14 = convolution_2d(elu13, 128)  # conv
-    residual7 = residual(pool4, conv14)  # residual
-    elu14 = elu(residual7)  # after-elu
-    conv15 = convolution_2d(elu14, 128)  # conv
-    elu15 = elu(conv15)  # elu
-    conv16 = convolution_2d(elu15, 128)  # conv
-    residual8 = residual(elu14, conv16)  # residual
-    elu16 = elu(residual8)  # after-elu
-    conv17 = convolution_2d(elu16, 128)  # conv
-    elu17 = elu(conv17)  # elu
-    conv18 = convolution_2d(elu17, 128)  # conv
-    residual9 = residual(elu16, conv18)  # residual
-    elu18 = elu(residual9)  # after-elu
-    conv19 = convolution_2d(elu18, 128)  # conv
-    elu19 = elu(conv19)  # elu
-    conv20 = convolution_2d(elu19, 128)  # conv
-    residual10 = residual(elu18, conv20)  # residual
-    elu20 = elu(residual10)  # after-elu
-    pool5 = maxpooling_2d(elu20)  # pool
-    # ---------- Block 6 ----------
-    pool6 = globalaveragepooling_2d(pool5)
-    flatten1 = flatten_2d(pool6)
-    output = dense(flatten1, 2)
+    resput = input_
+    output = convolution_2d(input_, 8)
+    output = elu(output)
+    output = convolution_2d(output, 8)
+    output = residual(resput, output)
+    output = elu(output)
+    output = maxpooling_2d(output)
+    resput = output
+    output = convolution_2d(output, 16)
+    output = elu(output)
+    output = convolution_2d(output, 16)
+    output = residual(resput, output)
+    output = elu(output)
+    output = maxpooling_2d(output)
+    resput = output
+    output = convolution_2d(output, 32)
+    output = elu(output)
+    output = convolution_2d(output, 32)
+    output = residual(resput, output)
+    output = elu(output)
+    resput = output
+    output = convolution_2d(output, 32)
+    output = elu(output)
+    output = convolution_2d(output, 32)
+    output = residual(resput, output)
+    output = elu(output)
+    output = maxpooling_2d(output)
+    resput = output
+    output = convolution_2d(output, 64)
+    output = elu(output)
+    output = convolution_2d(output, 64)
+    output = residual(resput, output)
+    output = elu(output)
+    resput = output
+    output = convolution_2d(output, 64)
+    output = elu(output)
+    output = convolution_2d(output, 64)
+    output = residual(resput, output)
+    output = elu(output)
+    output = maxpooling_2d(output)
+    resput = output
+    output = convolution_2d(output, 128)
+    output = elu(output)
+    output = convolution_2d(output, 128)
+    output = residual(resput, output)
+    output = elu(output)
+    resput = output
+    output = convolution_2d(output, 128)
+    output = elu(output)
+    output = convolution_2d(output, 128)
+    output = residual(resput, output)
+    output = elu(output)
+    resput = output
+    output = convolution_2d(output, 128)
+    output = elu(output)
+    output = convolution_2d(output, 128)
+    output = residual(resput, output)
+    output = elu(output)
+    resput = output
+    output = convolution_2d(output, 128)
+    output = elu(output)
+    output = convolution_2d(output, 128)
+    output = residual(resput, output)
+    output = elu(output)
+    output = maxpooling_2d(output)
+    output = globalaveragepooling_2d(output)
+    output = flatten_2d(output)
+    output = dense(output, 2)
     return output
 
 
