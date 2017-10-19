@@ -36,6 +36,7 @@ def residual(prev_layer, layer):
         ValueError: if `prev_layer` and `layer` are different shapes.
     """
     prev_shape = prev_layer.shape.as_list()
-    if prev_shape != layer.shape.as_list():
+    shape = layer.shape.as_list()
+    if prev_shape != shape:
         raise ValueError('`prev_layer` and `layer` must be the same shape.')
     return tf.add(prev_layer, layer)
