@@ -3,6 +3,18 @@
 import tensorflow as tf
 
 
+def crelu(input_):
+    """
+    Applies the concatenated rectified-linear-unit (CReLU) on the input, element-wise.
+
+    # Parameters
+        input_ (tensor): The tensor to be CReLU'd.
+    # Returns
+        The resulting tensor.
+    """
+    return tf.nn.crelu(input_)
+
+
 def elu(input_):
     """
     Applies the exponential-linear-unit (ELU) on the input, element-wise.
