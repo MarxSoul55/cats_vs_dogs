@@ -121,6 +121,12 @@ def maxpooling_2d(input_, filter_size=2, strides=2, padding='VALID'):
                           padding)
 
 
+def spatial_transformer():
+    """
+    """
+    # TODO: Gonna be fun!
+
+
 def zeropadding_2d(input_, padding):
     """
     Pads `input_` by its rows and columns over each channel with zeros.
