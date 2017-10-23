@@ -27,6 +27,24 @@ def elu(input_):
     return tf.nn.elu(input_)
 
 
+def prelu(input_, looks_linear=False):
+    """
+    Applies the parametric linear-unit (PReLU) on the input, element-wise.
+
+    # Parameters
+        input_ (tensor): The tensor to be PReLU'd.
+        looks_linear (bool): Whether `alpha` is initialized to 1 or not.
+                             See https://arxiv.org/pdf/1702.08591.pdf for details.
+    # Returns
+        The resulting tensor.
+    """
+    if looks_linear:
+        alpha = tf.Variable(tf.constant(1, dtype=tf.float32, shape=input_.shape.as_list()[-1]))
+    else:
+        alpha = tf.Variable(tf.constant(0, dtype=tf.float32, shape=input_.shape.as_list()[-1]))
+    return tf.maximum(0.0, input_) + alpha * tf.minimum(0.0, input_)
+
+
 def relu(input_):
     """
     Applies rectified-linear-unit (ReLU) on the input, element-wise.
