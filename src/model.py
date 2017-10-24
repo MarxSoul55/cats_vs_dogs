@@ -8,7 +8,7 @@ import tensorflow as tf
 from layers.accuracies import categorical_accuracy_reporter
 from layers.activations import elu
 from layers.convolutional import convolution_2d, flatten_2d, globalaveragepooling_2d, maxpooling_2d
-from layers.core import dense
+from layers.misc import dense
 from layers.objectives import mean_absolute_error
 from layers.optimizers import nesterov_momentum
 from layers.preprocessing import ImagePreprocessor

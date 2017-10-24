@@ -1,4 +1,4 @@
-"""Provides interface for core-functions. Arranged in alphanumeric order."""
+"""Provides interface for miscellaneous fuctions. Arranged in alphanumeric order."""
 
 import tensorflow as tf
 
