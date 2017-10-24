@@ -120,7 +120,6 @@ def test(image):
     with tf.name_scope('output'):
         output = model(data)
     with sess.as_default():
-        # tf.global_variables_initializer().run()
         restore_model(sess)
         preprocessor = ImagePreprocessor()
         data_arg = np.array([preprocessor.preprocess_image(image, (256, 256))])
