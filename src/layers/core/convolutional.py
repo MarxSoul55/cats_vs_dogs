@@ -1,5 +1,6 @@
 """
-Provides interface for convolutional operations. Arranged in alphanumeric order.
+Provides interface for convolutional operations. Arranged in alphanumeric order, but composite
+functions (composed of the others) are placed at the bottom as an exception to the rule.
 
 `_Nd` indicates dimensionality of the data, NOT the input-tensor itself! For example, if the
 input-tensor is of shape [samples, rows, columns, channels], the dimensionality of the data is 2,
@@ -66,7 +67,7 @@ def deconvolution_2d(input_, output_dim, output_chan, filter_size=3, strides=1, 
     # Returns
         A `batch_size` x `output_dim` x `output_dim` x `output_chan` tensor.
     """
-    batch_size = input_.shape.as_list(0)
+    batch_size = input_.shape.as_list(0)  # This will be `None`, will certainly cause error. Fix!
     input_chan = input_.shape.as_list(3)
     weight = tf.Variable(tf.random_normal([filter_size, filter_size, output_chan, input_chan],
                                           mean=0.0, stddev=0.01))
@@ -121,12 +122,6 @@ def maxpooling_2d(input_, filter_size=2, strides=2, padding='VALID'):
                           padding)
 
 
-def spatial_transformer():
-    """
-    """
-    # TODO: Gonna be fun!
-
-
 def zeropadding_2d(input_, padding):
     """
     Pads `input_` by its rows and columns over each channel with zeros.
@@ -139,3 +134,25 @@ def zeropadding_2d(input_, padding):
     """
     return tf.pad(input_, [[0, 0], [padding, padding], [padding, padding], [0, 0]],
                   mode='CONSTANT')
+
+
+# ---------- COMPOSITE FUNCTIONS BELOW ----------
+
+
+def spatial_transformer(input_):
+    """
+    Uses a small convolutional neural-network to implement a spatial-transformer network.
+    See https://arxiv.org/pdf/1506.02025.pdf
+
+    # Parameters
+        input_ (tensor): A tensor of shape [samples, rows, columns, channels].
+        # TODO
+    # Returns
+        # TODO
+    """
+    # Localization network.
+        # TODO
+    # Grid generator.
+        # TODO
+    # Sampler.
+        # TODO
