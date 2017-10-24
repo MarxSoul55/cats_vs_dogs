@@ -5,14 +5,15 @@ import argparse
 import numpy as np
 import tensorflow as tf
 
-from layers.accuracies import categorical_accuracy_reporter
-from layers.activations import elu
-from layers.convolutional import convolution_2d, flatten_2d, globalaveragepooling_2d, maxpooling_2d
-from layers.misc import dense
-from layers.objectives import mean_absolute_error
-from layers.optimizers import nesterov_momentum
-from layers.preprocessing import ImagePreprocessor
-from layers.training import restore_model, save_model, tensorboard_writer
+from layers.core.accuracies import categorical_accuracy_reporter
+from layers.core.activations import elu
+from layers.core.convolutional import (convolution_2d, flatten_2d, globalaveragepooling_2d,
+                                       maxpooling_2d)
+from layers.core.misc import dense
+from layers.core.objectives import mean_absolute_error
+from layers.core.optimizers import nesterov_momentum
+from layers.core.preprocessing import ImagePreprocessor
+from layers.core.training import restore_model, save_model, tensorboard_writer
 
 
 def model(input_):
