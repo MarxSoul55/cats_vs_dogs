@@ -1,6 +1,5 @@
 """
-Provides interface for convolutional operations. Arranged in alphanumeric order, but composite
-functions (composed of the others) are placed at the bottom as an exception to the rule.
+Provides interface for convolutional operations. Arranged in alphanumeric order.
 
 `_Nd` indicates dimensionality of the data, NOT the input-tensor itself! For example, if the
 input-tensor is of shape [samples, rows, columns, channels], the dimensionality of the data is 2,
@@ -134,25 +133,3 @@ def zeropadding_2d(input_, padding):
     """
     return tf.pad(input_, [[0, 0], [padding, padding], [padding, padding], [0, 0]],
                   mode='CONSTANT')
-
-
-# ---------- COMPOSITE FUNCTIONS BELOW ----------
-
-
-def spatial_transformer(input_):
-    """
-    Uses a small convolutional neural-network to implement a spatial-transformer network.
-    See https://arxiv.org/pdf/1506.02025.pdf
-
-    # Parameters
-        input_ (tensor): A tensor of shape [samples, rows, columns, channels].
-        # TODO
-    # Returns
-        # TODO
-    """
-    # Localization network.
-        # TODO
-    # Grid generator.
-        # TODO
-    # Sampler.
-        # TODO
