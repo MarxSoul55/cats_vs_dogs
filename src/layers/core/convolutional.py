@@ -12,7 +12,9 @@ import tensorflow as tf
 
 def averagepooling_2d(input_, filter_size=2, strides=2, padding='VALID'):
     """
-    Pools `input_` by its rows and columns over each channel; replaces with average value.
+    Pools `input_` by its rows and columns over each channel.
+    Replaces its window with the average value.
+    Akin to "blurring" out a feature-map.
 
     # Parameters
         input_ (tensor): A tensor of shape [samples, rows, columns, channels].
@@ -30,7 +32,7 @@ def convolution_2d(input_, output_chan, filter_size=3, strides=1, padding='SAME'
     """
     Performs convolution on rows, columns, and channels of `input_`.
     Weights of the filter are initialized orthogonally from [-1, 1].
-    Adds a bias-parameter after the summation, whose initial value is 0.
+    Adds a bias-parameter after the merge; initial value is 0.
 
     # Parameters
         input_ (tensor): A tensor of shape [samples, rows, columns, channels].
@@ -50,7 +52,6 @@ def convolution_2d(input_, output_chan, filter_size=3, strides=1, padding='SAME'
 
 
 def deconvolution_2d(input_, output_dim, output_chan, filter_size=3, strides=1, padding='SAME'):
-    # TODO: Fix this function. May be incorrect.
     """
     Performs deconvolution on rows, columns, and channels of `input_`.
     Initializes weights from a normal distribution with mean 0 and STD 0.01.
@@ -66,6 +67,8 @@ def deconvolution_2d(input_, output_dim, output_chan, filter_size=3, strides=1, 
     # Returns
         A `batch_size` x `output_dim` x `output_dim` x `output_chan` tensor.
     """
+    # TODO: Fix this function. Note: `batch_size` error may not be the only thing wrong here...
+    raise Exception('Function not implemented yet.')
     batch_size = input_.shape.as_list(0)  # This will be `None`, will certainly cause error. Fix!
     input_chan = input_.shape.as_list(3)
     weight = tf.Variable(tf.random_normal([filter_size, filter_size, output_chan, input_chan],
@@ -76,10 +79,39 @@ def deconvolution_2d(input_, output_dim, output_chan, filter_size=3, strides=1, 
                                   [1, strides, strides, 1], padding=padding) + bias
 
 
+def depthwise_separable_convolution_2d(input_, output_chan, filter_size=3, strides=1,
+                                       padding='SAME'):
+    """
+    Performs depthwise, separable convolution on rows, columns, and channels of `input_`.
+    i.e. Applies one filter without merging channels, then does pointwise convolution to merge.
+    Used mainly due to efficiency; has fewer parameters than normal convolution.
+    Weights of each filter are initialized orthogonally from [-1, 1].
+    Adds a bias-parameter after the merging of channels; initial value is 0.
+
+    # Parameters
+        input_ (tensor): A tensor of shape [samples, rows, columns, channels].
+        output_chan (int): Amount of channels in output; AKA number of filters.
+        filter_size (int): Size of the depthwise filter.
+        strides (int): Amount of steps to jump for each filter.
+        padding (str): Either 'SAME' or 'VALID'. Whether or not to use zero-padding.
+    # Returns
+        A `batch_size` x `output_dim` x `output_dim` x `output_chan` tensor.
+    """
+    input_chan = input_.shape.as_list()[3]
+    initializer = tf.orthogonal_initializer(gain=1.0, dtype=tf.float32)
+    depthwise_shape = [filter_size, filter_size, input_chan, 1]
+    pointwise_shape = [1, 1, input_chan, output_chan]
+    depthwise_weight = tf.Variable(initializer(depthwise_shape, dtype=tf.float32))
+    pointwise_weight = tf.Variable(initializer(pointwise_shape, dtype=tf.float32))
+    bias = tf.Variable(tf.constant(0, dtype=tf.float32, shape=[output_chan]))
+    return tf.nn.separable_conv2d(input_, depthwise_weight, pointwise_weight,
+                                  [1, strides, strides, 1], padding) + bias
+
+
 def flatten_2d(input_):
     """
-    Flattens `input_` from its multiple rows, columns, and channels into a rank-2 tensor with shape
-    [samples, rows * columns * channels].
+    Flattens `input_` from its multiple rows, columns, and channels into a rank-2 tensor.
+    Shape will be [samples, rows * columns * channels].
 
     # Parameters
         input_ (tensor): A tensor of shape [samples, rows, columns, channels].
@@ -95,8 +127,10 @@ def flatten_2d(input_):
 
 def globalaveragepooling_2d(input_):
     """
-    Globally pools `input_` by its rows and columns over each channel; replaces with average value.
+    Globally pools `input_` by its rows and columns over each channel.
+    Replaces the entire feature-map with the average value.
     Does not flatten into vector(s).
+    Used mainly as a substitute for dense layers (besides output-layer) to save parameters.
 
     # Parameters
         input_ (tensor): A tensor of shape [samples, rows, columns, channels].
@@ -107,7 +141,9 @@ def globalaveragepooling_2d(input_):
 
 def maxpooling_2d(input_, filter_size=2, strides=2, padding='VALID'):
     """
-    Pools `input_` by its rows and columns over each channel; replaces with maximum value.
+    Pools `input_` by its rows and columns over each channel.
+    Replaces its window with the maximum value.
+    Akin to picking out features that were detected strongly and leaving out the rest.
 
     # Parameters
         input_ (tensor): A tensor of shape [samples, rows, columns, channels].
@@ -123,7 +159,9 @@ def maxpooling_2d(input_, filter_size=2, strides=2, padding='VALID'):
 
 def zeropadding_2d(input_, padding):
     """
-    Pads `input_` by its rows and columns over each channel with zeros.
+    Goes across the channels of `input_` and...
+    Adds `padding` rows and columns of zeros.
+    Akin to fitting a square of zeros around each feature-map.
 
     # Parameters
         input_ (tensor): A tensor of shape [samples, rows, columns, channels].
