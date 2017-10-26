@@ -7,8 +7,7 @@ import tensorflow as tf
 
 from layers.core.accuracies import categorical_accuracy_reporter
 from layers.core.activations import elu
-from layers.core.convolutional import (convolution_2d, flatten_2d, globalaveragepooling_2d,
-                                       maxpooling_2d)
+from layers.core.convolutional import conv_2d, flatten_2d, global_avg_pool_2d, max_pool_2d
 from layers.core.misc import dense
 from layers.core.objectives import mean_absolute_error
 from layers.core.optimizers import nesterov_momentum
@@ -25,42 +24,42 @@ def model(input_):
     # Returns
         The output of the model.
     """
-    output = convolution_2d(input_, 8)
+    output = conv_2d(input_, 8)
     output = elu(output)
-    output = maxpooling_2d(output)
-    output = convolution_2d(output, 16)
+    output = max_pool_2d(output)
+    output = conv_2d(output, 16)
     output = elu(output)
-    output = convolution_2d(output, 16)
+    output = conv_2d(output, 16)
     output = elu(output)
-    output = maxpooling_2d(output)
-    output = convolution_2d(output, 32)
+    output = max_pool_2d(output)
+    output = conv_2d(output, 32)
     output = elu(output)
-    output = convolution_2d(output, 32)
+    output = conv_2d(output, 32)
     output = elu(output)
-    output = convolution_2d(output, 32)
+    output = conv_2d(output, 32)
     output = elu(output)
-    output = maxpooling_2d(output)
-    output = convolution_2d(output, 64)
+    output = max_pool_2d(output)
+    output = conv_2d(output, 64)
     output = elu(output)
-    output = convolution_2d(output, 64)
+    output = conv_2d(output, 64)
     output = elu(output)
-    output = convolution_2d(output, 64)
+    output = conv_2d(output, 64)
     output = elu(output)
-    output = convolution_2d(output, 64)
+    output = conv_2d(output, 64)
     output = elu(output)
-    output = maxpooling_2d(output)
-    output = convolution_2d(output, 128)
+    output = max_pool_2d(output)
+    output = conv_2d(output, 128)
     output = elu(output)
-    output = convolution_2d(output, 128)
+    output = conv_2d(output, 128)
     output = elu(output)
-    output = convolution_2d(output, 128)
+    output = conv_2d(output, 128)
     output = elu(output)
-    output = convolution_2d(output, 128)
+    output = conv_2d(output, 128)
     output = elu(output)
-    output = convolution_2d(output, 128)
+    output = conv_2d(output, 128)
     output = elu(output)
-    output = maxpooling_2d(output)
-    output = globalaveragepooling_2d(output)
+    output = max_pool_2d(output)
+    output = global_avg_pool_2d(output)
     output = flatten_2d(output)
     output = dense(output, 2)
     return output

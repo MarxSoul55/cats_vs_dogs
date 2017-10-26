@@ -10,7 +10,7 @@ channels, the channels aren't an intrinsic dimension of the data.
 import tensorflow as tf
 
 
-def averagepooling_2d(input_, filter_size=2, strides=2, padding='VALID'):
+def avg_pool_2d(input_, filter_size=2, strides=2, padding='VALID'):
     """
     Pools `input_` by its rows and columns over each channel.
     Replaces its window with the average value.
@@ -28,7 +28,7 @@ def averagepooling_2d(input_, filter_size=2, strides=2, padding='VALID'):
                           padding)
 
 
-def convolution_2d(input_, output_chan, filter_size=3, strides=1, padding='SAME'):
+def conv_2d(input_, output_chan, filter_size=3, strides=1, padding='SAME'):
     """
     Performs convolution on rows, columns, and channels of `input_`.
     Weights of the filter are initialized orthogonally from [-1, 1].
@@ -51,9 +51,9 @@ def convolution_2d(input_, output_chan, filter_size=3, strides=1, padding='SAME'
     return tf.nn.conv2d(input_, weight, [1, strides, strides, 1], padding) + bias
 
 
-def deconvolution_2d(input_, output_dim, output_chan, filter_size=3, strides=1, padding='SAME'):
+def transposed_conv_2d(input_, output_dim, output_chan, filter_size=3, strides=1, padding='SAME'):
     """
-    Performs deconvolution on rows, columns, and channels of `input_`.
+    Performs transposed convolution on rows, columns, and channels of `input_`.
     Initializes weights from a normal distribution with mean 0 and STD 0.01.
     A bias-tensor (initialized to 0) is added to the resulting tensor.
 
@@ -67,10 +67,12 @@ def deconvolution_2d(input_, output_dim, output_chan, filter_size=3, strides=1, 
     # Returns
         A `batch_size` x `output_dim` x `output_dim` x `output_chan` tensor.
     """
+    # TODO: Change function-name... perhaps "transposed_conv"?
     # TODO: Fix this function. Note: `batch_size` error may not be the only thing wrong here...
     raise Exception('Function not implemented yet.')
     batch_size = input_.shape.as_list(0)  # This will be `None`, will certainly cause error. Fix!
     input_chan = input_.shape.as_list(3)
+    # TODO: WTF? Why not using othorgonal init?
     weight = tf.Variable(tf.random_normal([filter_size, filter_size, output_chan, input_chan],
                                           mean=0.0, stddev=0.01))
     bias = tf.Variable(tf.constant(0, dtype=tf.float32, shape=[output_chan]))
@@ -79,8 +81,8 @@ def deconvolution_2d(input_, output_dim, output_chan, filter_size=3, strides=1, 
                                   [1, strides, strides, 1], padding=padding) + bias
 
 
-def depthwise_separable_convolution_2d(input_, output_chan, filter_size=3, strides=1,
-                                       padding='SAME'):
+def depthwise_separable_conv_2d(input_, output_chan, filter_size=3, strides=1,
+                                padding='SAME'):
     """
     Performs depthwise, separable convolution on rows, columns, and channels of `input_`.
     i.e. Applies one filter without merging channels, then does pointwise convolution to merge.
@@ -125,7 +127,7 @@ def flatten_2d(input_):
     return tf.reshape(input_, [-1, output_col])
 
 
-def globalaveragepooling_2d(input_):
+def global_avg_pool_2d(input_):
     """
     Globally pools `input_` by its rows and columns over each channel.
     Replaces the entire feature-map with the average value.
@@ -135,11 +137,12 @@ def globalaveragepooling_2d(input_):
     # Parameters
         input_ (tensor): A tensor of shape [samples, rows, columns, channels].
     """
-    input_dim = input_.shape.as_list()[1]
-    return tf.nn.avg_pool(input_, [1, input_dim, input_dim, 1], [1, 1, 1, 1], 'VALID')
+    input_rows = input_.shape.as_list()[1]
+    input_columns = input_.shape.as_list()[2]
+    return tf.nn.avg_pool(input_, [1, input_rows, input_columns, 1], [1, 1, 1, 1], 'VALID')
 
 
-def maxpooling_2d(input_, filter_size=2, strides=2, padding='VALID'):
+def max_pool_2d(input_, filter_size=2, strides=2, padding='VALID'):
     """
     Pools `input_` by its rows and columns over each channel.
     Replaces its window with the maximum value.
@@ -157,7 +160,7 @@ def maxpooling_2d(input_, filter_size=2, strides=2, padding='VALID'):
                           padding)
 
 
-def zeropadding_2d(input_, padding):
+def zero_pad_2d(input_, padding):
     """
     Goes across the channels of `input_` and...
     Adds `padding` rows and columns of zeros.
