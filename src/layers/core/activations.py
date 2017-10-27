@@ -47,7 +47,9 @@ def prelu(input_, looks_linear=False):
     # Returns
         The resulting tensor.
     """
-    alpha_shape = input_.shape.as_list()[1:]
+    alpha_shape = input_.shape.as_list()
+    if alpha_shape[0] != 1:
+        raise IndexError('PReLU only works with constant batch-size of 1.')
     if looks_linear:
         alpha = tf.Variable(tf.constant(1, dtype=tf.float32, shape=alpha_shape))
     else:
