@@ -44,9 +44,9 @@ def conv_2d(input_, output_chan, filter_size=3, strides=1, padding='SAME'):
         A `batch_size` x `output_dim` x `output_dim` x `output_chan` tensor.
     """
     input_chan = input_.shape.as_list()[3]
-    filter_shape = [filter_size, filter_size, input_chan, output_chan]
     initializer = tf.orthogonal_initializer(gain=1.0, dtype=tf.float32)
-    weight = tf.Variable(initializer(filter_shape, dtype=tf.float32))
+    weight = tf.Variable(initializer([filter_size, filter_size, input_chan, output_chan],
+                                     dtype=tf.float32))
     bias = tf.Variable(tf.constant(0, dtype=tf.float32, shape=[output_chan]))
     return tf.nn.conv2d(input_, weight, [1, strides, strides, 1], padding) + bias
 
@@ -54,8 +54,8 @@ def conv_2d(input_, output_chan, filter_size=3, strides=1, padding='SAME'):
 def transposed_conv_2d(input_, output_dim, output_chan, filter_size=3, strides=1, padding='SAME'):
     """
     Performs transposed convolution on rows, columns, and channels of `input_`.
-    Initializes weights from a normal distribution with mean 0 and STD 0.01.
-    A bias-tensor (initialized to 0) is added to the resulting tensor.
+    Weights of the filter are initialized orthogonally from [-1, 1].
+    Adds a bias-parameter after the merge; initial value is 0.
 
     # Parameters
         input_ (tensor): A tensor of shape [samples, rows, columns, channels].
@@ -67,18 +67,18 @@ def transposed_conv_2d(input_, output_dim, output_chan, filter_size=3, strides=1
     # Returns
         A `batch_size` x `output_dim` x `output_dim` x `output_chan` tensor.
     """
-    # TODO: Change function-name... perhaps "transposed_conv"?
-    # TODO: Fix this function. Note: `batch_size` error may not be the only thing wrong here...
-    raise Exception('Function not implemented yet.')
-    batch_size = input_.shape.as_list(0)  # This will be `None`, will certainly cause error. Fix!
     input_chan = input_.shape.as_list(3)
-    # TODO: WTF? Why not using othorgonal init?
-    weight = tf.Variable(tf.random_normal([filter_size, filter_size, output_chan, input_chan],
-                                          mean=0.0, stddev=0.01))
+    initializer = tf.orthogonal_initializer(gain=1.0, dtype=tf.float32)
+    weight = tf.Variable(initializer([filter_size, filter_size, output_chan, input_chan],
+                                     dtype=tf.float32))
     bias = tf.Variable(tf.constant(0, dtype=tf.float32, shape=[output_chan]))
+    batch_size = input_.shape.as_list()[0]
+    if batch_size != 1:
+        raise IndexError('Transposed convolution only works with a constant batch-size of 1.')
     return tf.nn.conv2d_transpose(input_, weight,
                                   [batch_size, output_dim, output_dim, output_chan],
-                                  [1, strides, strides, 1], padding=padding) + bias
+                                  [1, strides, strides, 1],
+                                  padding=padding) + bias
 
 
 def depthwise_separable_conv_2d(input_, output_chan, filter_size=3, strides=1,
