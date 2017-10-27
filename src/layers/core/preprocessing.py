@@ -33,17 +33,17 @@ class ImagePreprocessor:
 
     def preprocess_directory(self, steps, train_dir, encoding, rescale):
         """
-        Given a directory of subdirectories of images, loops through the subdirectories,
-        preprocessing one image from each then moving to the next subdirectory,
-        and loops back when the last subdirectory is passed.
-        Preprocesses the image using the `preprocess_image` method,
-        and generates a binary-encoded label based off of `encoding`.
+        Given a directory of subdirectories of images, where each subdirectory is a "class"...
+        preprocesses one image from each subdirectory and moves onto the next...
+        when reaching the last subdirectory, loops back to the first.
+
+        Uses the `preprocess_image` method.
+        The label is converted from a list (`encoding[subdirectory]`) to a numpy-array.
 
         # Parameters
             steps (int): Amount of data-label pairs to generate.
             train_dir (str): Path to the directory of classes.
-            encoding (dict, str -> list): Maps the name of the subdirectory (class) to a
-                                          binary-encoded label.
+            encoding (dict, str -> list): Maps the name of the subdirectory (class) to a label.
             rescale (tuple): (width, height) that each image will be resized to.
         # Yields
             `(step, data_array, label_array)` starting from step 1.
