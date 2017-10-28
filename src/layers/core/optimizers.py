@@ -1,4 +1,4 @@
-"""Provides interface for optimizers."""
+"""Provides interface for optimizers. Hyperparameters are set to mimic https://keras.io."""
 
 import tensorflow as tf
 
@@ -36,7 +36,7 @@ def adam(objective, learning_rate=0.001, beta1=0.9, beta2=0.999, epsilon=1E-8):
                                   epsilon=epsilon).minimize(objective)
 
 
-def momentum(objective, learning_rate=0.001, discount=0.9):
+def momentum(objective, learning_rate=0.01, discount=0.9):
     """
     Performs gradient-descent with momentum.
 
@@ -51,7 +51,7 @@ def momentum(objective, learning_rate=0.001, discount=0.9):
                                       use_nesterov=False).minimize(objective)
 
 
-def nesterov_momentum(objective, learning_rate=0.001, discount=0.9):
+def nesterov_momentum(objective, learning_rate=0.01, discount=0.9):
     """
     Performs gradient-descent with nesterov-momentum.
 
@@ -66,7 +66,7 @@ def nesterov_momentum(objective, learning_rate=0.001, discount=0.9):
                                       use_nesterov=True).minimize(objective)
 
 
-def rmsprop(objective, learning_rate=0.001, decay=0.9, momentum=0.0, epsilon=1E-10):
+def rmsprop(objective, learning_rate=0.001, decay=0.0, momentum=0.0, epsilon=1E-8):
     """
     Performs gradient-descent with RMSProp.
 
