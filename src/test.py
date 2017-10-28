@@ -12,7 +12,8 @@ from layers.core.misc import dense
 from layers.core.objectives import mean_absolute_error
 from layers.core.optimizers import nesterov_momentum
 from layers.core.preprocessing import ImagePreprocessor
-from layers.core.training import restore_model, save_model, tensorboard_writer
+from layers.core.training import tensorboard_writer
+from layers.core.serving import restore_protobuf, save_protobuf
 
 
 def model(input_):
@@ -62,6 +63,7 @@ def model(input_):
     output = global_avg_pool_2d(output)
     output = flatten_2d(output)
     output = dense(output, 2)
+    # return tf.Variable(output, name='model', expected_shape=[1, 2])
     return output
 
 
@@ -82,9 +84,8 @@ def train(steps, resuming):
         objective = mean_absolute_error(labels, output)
     with tf.name_scope('accuracy'):
         accuracy = categorical_accuracy_reporter(labels, output)
-    # TODO: TensorFlow don't play nice when you got this below... but why?
-    with tf.name_scope('optimizer'):
-        optimizer = nesterov_momentum(objective)
+    # with tf.name_scope('optimizer'):
+    optimizer = nesterov_momentum(objective)
     tf.summary.scalar('objective', objective)
     tf.summary.scalar('accuracy', accuracy)
     summary = tf.summary.merge_all()
@@ -93,7 +94,8 @@ def train(steps, resuming):
         tf.global_variables_initializer().run()
         writer = tensorboard_writer()
         if resuming:
-            restore_model(sess)
+            restore_protobuf(sess, 'cats_vs_dogs')
+            tf.reset_default_graph()
         preprocessor = ImagePreprocessor()
         encoding = {'cats': [1, 0], 'dogs': [0, 1]}
         for step, data_arg, label_arg in preprocessor.preprocess_directory(steps, 'data/train',
@@ -102,7 +104,7 @@ def train(steps, resuming):
             optimizer.run(feed_dict={data: data_arg, labels: label_arg})
             current_summary = summary.eval(feed_dict={data: data_arg, labels: label_arg})
             writer.add_summary(current_summary, global_step=step)
-        save_model(sess)
+        save_protobuf(sess, 'cats_vs_dogs')
 
 
 def test(image):
@@ -115,15 +117,17 @@ def test(image):
         The resulting tensor of predictions.
         In this case, argmax==0 means 'cat' and argmax==1 means 'dog'.
     """
-    data = tf.placeholder(tf.float32, shape=[None, 256, 256, 3])
-    output = model(data)
     sess = tf.Session()
+    data = tf.placeholder(tf.float32, shape=[None, 256, 256, 3])
+    # with tf.name_scope('output'):
+    output = model(data)
     with sess.as_default():
-        restore_model(sess)
+        restore_protobuf(sess, 'cats_vs_dogs')
         tf.global_variables_initializer().run()
         preprocessor = ImagePreprocessor()
         data_arg = np.array([preprocessor.preprocess_image(image, (256, 256))])
-        result = output.eval(feed_dict={data: data_arg})
+        # result = output.eval(feed_dict={data: data_arg})
+        result = sess.run(output, feed_dict={data: data_arg})
         print(result)
 
 

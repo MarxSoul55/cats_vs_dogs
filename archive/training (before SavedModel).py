@@ -6,32 +6,28 @@ import shutil
 import tensorflow as tf
 
 
-def restore_model(session, tag='default', savedir='saved_model'):
+def restore_model(session, savedir='saved_model'):
     """
     Restores the model to the session of choice.
 
     # Parameters
         session (tf.Session): Session to restore to.
-        tag (str): An ID for the model, e.g. "training" or "serving".
         savedir (str): Name of the save-dir.
     """
-    tf.saved_model.loader.load(session, [tag], savedir)
+    saver = tf.train.Saver()
+    saver.restore(session, os.path.join(os.getcwd(), '{}/{}'.format(savedir, savedir)))
 
 
-def save_model(session, tag='default', savedir='saved_model'):
+def save_model(session, savedir='saved_model'):
     """
-    Saves the model to a directory.
+    Saves the model in the current directory.
 
     # Parameters
         session (tf.Session): A session to save.
-        tag (str): An ID for the model, e.g. "training" or "serving".
         savedir (str): Name of the save-dir.
     """
-    if savedir in os.listdir():
-        shutil.rmtree(savedir)
-    saver = tf.saved_model.builder.SavedModelBuilder(savedir)
-    saver.add_meta_graph_and_variables(session, [tag])
-    saver.save()
+    saver = tf.train.Saver()
+    saver.save(session, os.path.join(os.getcwd(), '{}/{}'.format(savedir, savedir)))
 
 
 def tensorboard_writer(logdir='tensorboard'):

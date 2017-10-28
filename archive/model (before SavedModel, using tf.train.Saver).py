@@ -74,15 +74,14 @@ def train(steps, resuming):
         resuming (bool): Whether or not to resume training on a saved model.
     """
     with tf.name_scope('input'):
-        data = tf.placeholder(tf.float32, shape=[None, 256, 256, 3])
-        labels = tf.placeholder(tf.float32, shape=[None, 2])
+        data = tf.placeholder(tf.float32, shape=[1, 256, 256, 3])
+        labels = tf.placeholder(tf.float32, shape=[1, 2])
     with tf.name_scope('output'):
         output = model(data)
     with tf.name_scope('objective'):
         objective = mean_absolute_error(labels, output)
     with tf.name_scope('accuracy'):
         accuracy = categorical_accuracy_reporter(labels, output)
-    # TODO: TensorFlow don't play nice when you got this below... but why?
     with tf.name_scope('optimizer'):
         optimizer = nesterov_momentum(objective)
     tf.summary.scalar('objective', objective)
@@ -115,12 +114,12 @@ def test(image):
         The resulting tensor of predictions.
         In this case, argmax==0 means 'cat' and argmax==1 means 'dog'.
     """
-    data = tf.placeholder(tf.float32, shape=[None, 256, 256, 3])
-    output = model(data)
     sess = tf.Session()
+    data = tf.placeholder(tf.float32, shape=[1, 256, 256, 3])
+    with tf.name_scope('output'):
+        output = model(data)
     with sess.as_default():
         restore_model(sess)
-        tf.global_variables_initializer().run()
         preprocessor = ImagePreprocessor()
         data_arg = np.array([preprocessor.preprocess_image(image, (256, 256))])
         result = output.eval(feed_dict={data: data_arg})
