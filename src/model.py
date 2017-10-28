@@ -8,7 +8,7 @@ import tensorflow as tf
 from layers.core.accuracies import categorical_accuracy_reporter
 from layers.core.activations import elu
 from layers.core.convolutional import conv_2d, flatten_2d, global_avg_pool_2d, max_pool_2d
-from layers.core.misc import dense
+from layers.core.misc import dense, identity
 from layers.core.objectives import mean_absolute_error
 from layers.core.optimizers import nesterov_momentum
 from layers.core.preprocessing import ImagePreprocessor
@@ -82,7 +82,6 @@ def train(steps, resuming):
         objective = mean_absolute_error(labels, output)
     with tf.name_scope('accuracy'):
         accuracy = categorical_accuracy_reporter(labels, output)
-    # TODO: TensorFlow don't play nice when you got this below... but why?
     with tf.name_scope('optimizer'):
         optimizer = nesterov_momentum(objective)
     tf.summary.scalar('objective', objective)
@@ -116,11 +115,11 @@ def test(image):
         In this case, argmax==0 means 'cat' and argmax==1 means 'dog'.
     """
     data = tf.placeholder(tf.float32, shape=[None, 256, 256, 3])
-    output = model(data)
+    with tf.name_scope('output'):
+        output = model(data)
     sess = tf.Session()
     with sess.as_default():
         restore_model(sess)
-        tf.global_variables_initializer().run()
         preprocessor = ImagePreprocessor()
         data_arg = np.array([preprocessor.preprocess_image(image, (256, 256))])
         result = output.eval(feed_dict={data: data_arg})
