@@ -12,7 +12,7 @@ from layers.core.misc import dense
 from layers.core.objectives import mean_absolute_error
 from layers.core.optimizers import nesterov_momentum
 from layers.core.preprocessing import ImagePreprocessor
-from layers.core.training import restore_model, save_model, tensorboard_writer
+from layers.core.training import restore_variables, save_variables, tensorboard_writer
 
 
 def model(input_):
@@ -92,7 +92,7 @@ def train(steps, resuming):
         tf.global_variables_initializer().run()
         writer = tensorboard_writer()
         if resuming:
-            restore_model(sess)
+            restore_variables(sess)
         preprocessor = ImagePreprocessor()
         encoding = {'cats': [1, 0], 'dogs': [0, 1]}
         for step, data_arg, label_arg in preprocessor.preprocess_directory(steps, 'data/train',
@@ -101,7 +101,7 @@ def train(steps, resuming):
             optimizer.run(feed_dict={data: data_arg, labels: label_arg})
             current_summary = summary.eval(feed_dict={data: data_arg, labels: label_arg})
             writer.add_summary(current_summary, global_step=step)
-        save_model(sess)
+        save_variables(sess)
 
 
 def test(image):
@@ -119,7 +119,7 @@ def test(image):
         output = model(data)
     sess = tf.Session()
     with sess.as_default():
-        restore_model(sess)
+        restore_variables(sess)
         preprocessor = ImagePreprocessor()
         data_arg = np.array([preprocessor.preprocess_image(image, (256, 256))])
         result = output.eval(feed_dict={data: data_arg})

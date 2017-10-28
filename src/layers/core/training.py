@@ -6,9 +6,11 @@ import shutil
 import tensorflow as tf
 
 
-def restore_model(session, savedir='saved_model'):
+def restore_variables(session, savedir='saved_model'):
     """
-    Restores the model to the session of choice.
+    Restores variables of the graph (whose data is in `savedir`).
+    Note that the model (plus any namescopes it's associated with)...
+    ...must be redeclared with standard API commands before this function.
 
     # Parameters
         session (tf.Session): Session to restore to.
@@ -18,9 +20,9 @@ def restore_model(session, savedir='saved_model'):
     saver.restore(session, os.path.join(os.getcwd(), '{}/{}'.format(savedir, savedir)))
 
 
-def save_model(session, savedir='saved_model'):
+def save_variables(session, savedir='saved_model'):
     """
-    Saves the model in the current directory.
+    Saves variables of the current graph being used by the sesion.
 
     # Parameters
         session (tf.Session): A session to save.
