@@ -41,9 +41,10 @@ these that I won't even bother to list any, as a google-search will yield everyt
 *...follow these steps:*
 1. Download [Kaggle's dataset of cats and dogs](https://www.kaggle.com/c/dogs-vs-cats-redux-kernels-edition/data).
 2. Download the release: [v0.1](https://github.com/MarxSoul55/cats_vs_dogs/releases/tag/v0.1)
+    * **Note that these directions are all based off of v0.1**
 3. Set up your directory in the following way:
     * model.py (the file in `src`)
-    * layers (my custom TensorFlow-wrapper, also in `src`)
+    * layers (custom convenience code for TensorFlow, also in `src`)
     * data
         * train
             * cats (will contain the images of cats from Kaggle)
