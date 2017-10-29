@@ -92,10 +92,10 @@ def train(steps, resuming):
         objective = tf.losses.absolute_difference(labels, output,
                                                   reduction=tf.losses.Reduction.MEAN)
     with tf.name_scope('accuracy'):
-        accuracy = tf.cast(tf.equal(tf.argmax(labels, axis=1), tf.argmax(output, axis=1)),
-                           tf.float32)
+        bools = tf.equal(tf.argmax(labels, axis=1), tf.argmax(output, axis=1))
+        accuracy = tf.reduce_mean(tf.cast(bools, tf.float32))
     with tf.name_scope('optimizer'):
-        optimizer = tf.train.MomentumOptimizer(0.01, 0.9, use_nesterov=True)
+        optimizer = tf.train.MomentumOptimizer(0.01, 0.9, use_nesterov=True).minimize(objective)
     tf.summary.scalar('objective', objective)
     tf.summary.scalar('accuracy', accuracy)
     summary = tf.summary.merge_all()
@@ -103,7 +103,6 @@ def train(steps, resuming):
     with sess:
         saver = tf.train.Saver()
         if resuming:
-            # saver.restore(sess, os.path.join(os.getcwd(), 'saved_model/saved_model'))
             saver.restore(sess, 'saved_model/saved_model')
         else:
             tf.global_variables_initializer().run()
@@ -118,7 +117,6 @@ def train(steps, resuming):
             optimizer.run(feed_dict={data: data_arg, labels: label_arg})
             current_summary = summary.eval(feed_dict={data: data_arg, labels: label_arg})
             writer.add_summary(current_summary, global_step=step)
-        # saver.save(sess, os.path.join(os.getcwd(), 'saved_model/saved_model'))
         saver.save(sess, 'saved_model/saved_model')
 
 
@@ -138,7 +136,6 @@ def test(image):
     sess = tf.Session()
     with sess.as_default():
         saver = tf.train.Saver()
-        # saver.restore(sess, os.path.join(os.getcwd(), 'saved_model/saved_model'))
         saver.restore(sess, 'saved_model/saved_model')
         preprocessor = ImagePreprocessor()
         data_arg = np.array([preprocessor.preprocess_image(image, (256, 256))])
