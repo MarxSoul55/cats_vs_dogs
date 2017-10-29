@@ -8,9 +8,9 @@ import tensorflow as tf
 
 def restore_variables(session, savedir='saved_model'):
     """
-    Restores variables of the graph (whose data is in `savedir`).
-    Note that the model (plus any namescopes it's associated with)...
-    ...must be redeclared with standard API commands before this function.
+    Restores (and initializes) variables of the graph (whose data is in `savedir`).
+    Note that any variables (plus any namescopes in affiliation)...
+    must be redeclared before this function is called.
 
     # Parameters
         session (tf.Session): Session to restore to.
