@@ -70,7 +70,7 @@ def model(input_):
     output = tf.nn.elu(output)
     output = tf.layers.max_pooling2d(output, 2, 2)
     output = tf.layers.average_pooling2d(output, output.shape.as_list()[1], 1)
-    output = tf.reshape(output, [-1, output.shape.as_list()[3]])
+    output = tf.reshape(output, [1, output.shape.as_list()[3]])
     output = tf.layers.dense(output, 2, kernel_initializer=tf.orthogonal_initializer())
     return output
 
