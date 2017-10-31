@@ -74,7 +74,7 @@ and test the model. There are three main commands you'll need to know.
         * With this flag, the training will start where it left off from your `saved_model`
           directory. It will overwrite `saved_model` and `tensorboard`.
     * `python model.py -te -i data/test/1.jpg`
-        * The `-te` tells the program to test the model on an image, whose path is given by
-          `-i data/test/1.jpg`.
+        * The `-te` tells the program to test the model on an image, whose path is given by the
+          portion after the `-i` flag: `data/test/1.jpg`.
 5. That's all there is to it! I highly encourage you to tinker around with my code and change it as
 it suits your purposes—it currently suits mine very well, but for you, it may not!
