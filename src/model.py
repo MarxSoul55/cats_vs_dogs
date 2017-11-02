@@ -7,72 +7,8 @@ import shutil
 import numpy as np
 import tensorflow as tf
 
+from architecture import model
 from preprocessing import ImagePreprocessor
-
-
-def model(input_):
-    """
-    Defines the model's architecture.
-
-    # Parameters
-        input_ (tf.placeholder): Placeholder for the input data.
-    # Returns
-        The output of the model.
-    """
-    output = tf.layers.conv2d(input_, 8, 3, padding='same',
-                              kernel_initializer=tf.orthogonal_initializer())
-    output = tf.nn.elu(output)
-    output = tf.layers.max_pooling2d(output, 2, 2)
-    output = tf.layers.conv2d(output, 16, 3, padding='same',
-                              kernel_initializer=tf.orthogonal_initializer())
-    output = tf.nn.elu(output)
-    output = tf.layers.conv2d(output, 16, 3, padding='same',
-                              kernel_initializer=tf.orthogonal_initializer())
-    output = tf.nn.elu(output)
-    output = tf.layers.max_pooling2d(output, 2, 2)
-    output = tf.layers.conv2d(output, 32, 3, padding='same',
-                              kernel_initializer=tf.orthogonal_initializer())
-    output = tf.nn.elu(output)
-    output = tf.layers.conv2d(output, 32, 3, padding='same',
-                              kernel_initializer=tf.orthogonal_initializer())
-    output = tf.nn.elu(output)
-    output = tf.layers.conv2d(output, 32, 3, padding='same',
-                              kernel_initializer=tf.orthogonal_initializer())
-    output = tf.nn.elu(output)
-    output = tf.layers.max_pooling2d(output, 2, 2)
-    output = tf.layers.conv2d(output, 64, 3, padding='same',
-                              kernel_initializer=tf.orthogonal_initializer())
-    output = tf.nn.elu(output)
-    output = tf.layers.conv2d(output, 64, 3, padding='same',
-                              kernel_initializer=tf.orthogonal_initializer())
-    output = tf.nn.elu(output)
-    output = tf.layers.conv2d(output, 64, 3, padding='same',
-                              kernel_initializer=tf.orthogonal_initializer())
-    output = tf.nn.elu(output)
-    output = tf.layers.conv2d(output, 64, 3, padding='same',
-                              kernel_initializer=tf.orthogonal_initializer())
-    output = tf.nn.elu(output)
-    output = tf.layers.max_pooling2d(output, 2, 2)
-    output = tf.layers.conv2d(output, 128, 3, padding='same',
-                              kernel_initializer=tf.orthogonal_initializer())
-    output = tf.nn.elu(output)
-    output = tf.layers.conv2d(output, 128, 3, padding='same',
-                              kernel_initializer=tf.orthogonal_initializer())
-    output = tf.nn.elu(output)
-    output = tf.layers.conv2d(output, 128, 3, padding='same',
-                              kernel_initializer=tf.orthogonal_initializer())
-    output = tf.nn.elu(output)
-    output = tf.layers.conv2d(output, 128, 3, padding='same',
-                              kernel_initializer=tf.orthogonal_initializer())
-    output = tf.nn.elu(output)
-    output = tf.layers.conv2d(output, 128, 3, padding='same',
-                              kernel_initializer=tf.orthogonal_initializer())
-    output = tf.nn.elu(output)
-    output = tf.layers.max_pooling2d(output, 2, 2)
-    output = tf.layers.average_pooling2d(output, output.shape.as_list()[1], 1)
-    output = tf.reshape(output, [1, output.shape.as_list()[3]])
-    output = tf.layers.dense(output, 2, kernel_initializer=tf.orthogonal_initializer())
-    return output
 
 
 def train(steps, resuming):
@@ -134,7 +70,7 @@ def test(image):
     with tf.name_scope('output'):
         output = model(data)
     sess = tf.Session()
-    with sess.as_default():
+    with sess:
         saver = tf.train.Saver()
         saver.restore(sess, 'saved_model/saved_model')
         preprocessor = ImagePreprocessor()
