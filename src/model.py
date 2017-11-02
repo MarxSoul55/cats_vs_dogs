@@ -20,8 +20,8 @@ def train(steps, resuming):
         resuming (bool): Whether or not to resume training on a saved model.
     """
     with tf.name_scope('input'):
-        data = tf.placeholder(tf.float32, shape=[None, 256, 256, 3])
-        labels = tf.placeholder(tf.float32, shape=[None, 2])
+        data = tf.placeholder(tf.float32, shape=[1, 256, 256, 3])
+        labels = tf.placeholder(tf.float32, shape=[1, 2])
     with tf.name_scope('output'):
         output = model(data)
     with tf.name_scope('objective'):
@@ -66,7 +66,7 @@ def test(image):
         The resulting tensor of predictions.
         In this case, argmax==0 means 'cat' and argmax==1 means 'dog'.
     """
-    data = tf.placeholder(tf.float32, shape=[None, 256, 256, 3])
+    data = tf.placeholder(tf.float32, shape=[1, 256, 256, 3])
     with tf.name_scope('output'):
         output = model(data)
     sess = tf.Session()
