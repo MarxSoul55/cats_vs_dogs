@@ -1,3 +1,8 @@
+## Note: If you're a UC application-reviewer... yes, it's really me—the guy applying for Fall 2018 :)
+### If you don't believe me... the middle of my SSN (which I gave you guys) contains part of my DOB. Only I would know that.
+***
+***
+***
 # Hello World!
 This repository contains the code for a computer-vision program. Using a convolutional
 neural-network (made with [TensorFlow](https://www.tensorflow.org/)), this program can tell
@@ -13,7 +18,6 @@ no way around these requirements, unfortunately. You have to put in the time, re
 and blog-posts, take online-courses, etc. Going beyond this point, I'll assume you have that
 knowledge, since I do not have anywhere near the time to explain everything. I will list a few
 resources, however:
-
 * http://neuralnetworksanddeeplearning.com/
     * Great online book. Many people will list this as a resource if you ask around. Well-written
       and very informative.
