@@ -1,5 +1,6 @@
 ## Note: If you're a UC application-reviewer... yes, it's really me—the guy applying for Fall 2018 :)
-### If you don't believe me... the middle of my SSN (which I gave you guys) contains part of my DOB. Only I would know that.
+***
+***
 ***
 ***
 ***
