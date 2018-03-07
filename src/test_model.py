@@ -7,7 +7,7 @@ import shutil
 import numpy as np
 import tensorflow as tf
 
-from test_architecture import build_model
+from test_architecture import model
 from test_preprocessing import ImagePreprocessor
 
 
@@ -23,13 +23,8 @@ def train(steps, resuming):
     labels = tf.placeholder(tf.float32, shape=[1, 2])
     output = model(data)
     objective = tf.losses.absolute_difference(labels, output,
-                                                reduction=tf.losses.Reduction.MEAN)
-    bools = tf.equal(tf.argmax(labels, axis=1), tf.argmax(output, axis=1))
-    accuracy = tf.reduce_mean(tf.cast(bools, tf.float32))
+                                              reduction=tf.losses.Reduction.MEAN)
     optimizer = tf.train.MomentumOptimizer(0.01, 0.9, use_nesterov=True).minimize(objective)
-    tf.summary.scalar('objective', objective)
-    tf.summary.scalar('accuracy', accuracy)
-    summary = tf.summary.merge_all()
     sess = tf.Session()
     with sess:
         saver = tf.train.Saver()
@@ -37,17 +32,12 @@ def train(steps, resuming):
             saver.restore(sess, 'saved_model/saved_model')
         else:
             tf.global_variables_initializer().run()
-        if 'tensorboard' in os.listdir():
-            shutil.rmtree('tensorboard')
-        writer = tf.summary.FileWriter('tensorboard', graph=tf.get_default_graph())
         preprocessor = ImagePreprocessor()
         encoding = {'cats': [1, 0], 'dogs': [0, 1]}
         for step, data_arg, label_arg in preprocessor.preprocess_directory(steps, 'data/train',
                                                                            encoding, (256, 256)):
             print('Step: {}/{}'.format(step, steps))
             optimizer.run(feed_dict={data: data_arg, labels: label_arg})
-            current_summary = summary.eval(feed_dict={data: data_arg, labels: label_arg})
-            writer.add_summary(current_summary, global_step=step)
         saver.save(sess, 'saved_model/saved_model')
 
 

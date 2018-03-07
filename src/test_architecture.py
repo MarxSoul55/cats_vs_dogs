@@ -3,7 +3,7 @@
 import tensorflow as tf
 
 
-def build_model(input_):
+def model(input_):
     """
     Builds the model's architecture on the graph.
 
