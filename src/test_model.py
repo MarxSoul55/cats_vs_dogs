@@ -1,8 +1,6 @@
 """Provides an interface for interacting with the model."""
 
 import argparse
-import os
-import shutil
 
 import numpy as np
 import tensorflow as tf
@@ -19,31 +17,30 @@ def train(steps, resuming):
         steps (int): Amount of images to train on.
         resuming (bool): Whether or not to resume training on a saved model.
     """
-    data = tf.placeholder(tf.float32, shape=[1, 256, 256, 6])  # TODO: TWO EYES BETTER THAN ONE
+    input_ = tf.placeholder(tf.float32, shape=[1, 256, 256, 3], name='input')
     labels = tf.placeholder(tf.float32, shape=[1, 2])
-    output = model(data)
+    output = model(input_)
     objective = tf.losses.absolute_difference(labels, output,
                                               reduction=tf.losses.Reduction.MEAN)
     optimizer = tf.train.MomentumOptimizer(0.01, 0.9, use_nesterov=True).minimize(objective)
-    sess = tf.Session()
-    with sess:
-        saver = tf.train.Saver()
+    saver = tf.train.Saver()
+    with tf.Session() as sess:
         if resuming:
-            saver.restore(sess, 'saved_model/saved_model')
+            saver.restore(sess, 'saved/saved_model')
         else:
-            tf.global_variables_initializer().run()
+            sess.run(tf.global_variables_initializer())
         preprocessor = ImagePreprocessor()
         encoding = {'cats': [1, 0], 'dogs': [0, 1]}
-        for step, data_arg, label_arg in preprocessor.preprocess_directory(steps, 'data/train',
-                                                                           encoding, (256, 256)):
+        for step, input_arg, label_arg in preprocessor.preprocess_directory(steps, 'data/train',
+                                                                            encoding, [256, 256]):
             print('Step: {}/{}'.format(step, steps))
-            optimizer.run(feed_dict={data: data_arg, labels: label_arg})
-        saver.save(sess, 'saved_model/saved_model')
+            optimizer.run(feed_dict={input_: input_arg, labels: label_arg})
+        saver.save(sess, 'saved/saved_model')
 
 
-def test(image):
+def classify(image):
     """
-    Test the model on a single image.
+    Classify a single image.
 
     # Parameters
         image (str): Path to the image in question.
@@ -52,12 +49,10 @@ def test(image):
         In this case, argmax==0 means 'cat' and argmax==1 means 'dog'.
     """
     data = tf.placeholder(tf.float32, shape=[1, 256, 256, 3])
-    with tf.name_scope('output'):
-        output = model(data)
-    sess = tf.Session()
-    with sess:
-        saver = tf.train.Saver()
-        saver.restore(sess, 'saved_model/saved_model')
+    output = model(data)
+    saver = tf.train.Saver()
+    with tf.Session() as sess:
+        saver.restore(sess, 'saved/saved_model')
         preprocessor = ImagePreprocessor()
         data_arg = np.array([preprocessor.preprocess_image(image, (256, 256))])
         result = output.eval(feed_dict={data: data_arg})
@@ -66,14 +61,14 @@ def test(image):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('-tr', '--train', action='store_true')
-    parser.add_argument('-r', '--resuming', action='store_true')
-    parser.add_argument('-s', '--steps', type=int)
-    parser.add_argument('-te', '--test', action='store_true')
-    parser.add_argument('-i', '--image')
+    parser.add_argument('--train', action='store_true')
+    parser.add_argument('--resuming', action='store_true')
+    parser.add_argument('--steps', type=int)
+    parser.add_argument('--classify', action='store_true')
+    parser.add_argument('--path')
     parser.set_defaults(resuming=False)
     args = parser.parse_args()
     if args.train:
         train(args.steps, args.resuming)
-    elif args.test:
-        test(args.image)
+    elif args.classify:
+        classify(args.path)
