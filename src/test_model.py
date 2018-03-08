@@ -50,7 +50,7 @@ def train(steps, resuming):
                                                                                 [256, 256]):
                 print('Step: {}/{}'.format(step, steps))
                 sess.run(optimizer, feed_dict={input_: input_arg, labels: label_arg})
-                tf.train.Saver().save(sess, 'saved/model')
+            tf.train.Saver().save(sess, 'saved/model')
 
 
 def classify(image):
