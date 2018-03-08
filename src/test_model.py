@@ -17,25 +17,40 @@ def train(steps, resuming):
         steps (int): Amount of images to train on.
         resuming (bool): Whether or not to resume training on a saved model.
     """
-    input_ = tf.placeholder(tf.float32, shape=[1, 256, 256, 3], name='input')
-    labels = tf.placeholder(tf.float32, shape=[1, 2])
-    output = model(input_)
-    objective = tf.losses.absolute_difference(labels, output,
-                                              reduction=tf.losses.Reduction.MEAN)
-    optimizer = tf.train.MomentumOptimizer(0.01, 0.9, use_nesterov=True).minimize(objective)
-    saver = tf.train.Saver()
-    with tf.Session() as sess:
-        if resuming:
-            saver.restore(sess, 'saved/saved_model')
-        else:
+    encoding = {'cats': [1, 0], 'dogs': [0, 1]}
+    preprocessor = ImagePreprocessor()
+    if not resuming:
+        input_ = tf.placeholder(tf.float32, shape=[1, 256, 256, 3], name='input')
+        labels = tf.placeholder(tf.float32, shape=[1, 2], name='labels')
+        output = model(input_)
+        objective = tf.losses.absolute_difference(labels, output,
+                                                  reduction=tf.losses.Reduction.MEAN)
+        optimizer = tf.train.MomentumOptimizer(0.01, 0.9, use_nesterov=True,
+                                               name='optimizer').minimize(objective)
+        with tf.Session() as sess:
             sess.run(tf.global_variables_initializer())
-        preprocessor = ImagePreprocessor()
-        encoding = {'cats': [1, 0], 'dogs': [0, 1]}
-        for step, input_arg, label_arg in preprocessor.preprocess_directory(steps, 'data/train',
-                                                                            encoding, [256, 256]):
-            print('Step: {}/{}'.format(step, steps))
-            optimizer.run(feed_dict={input_: input_arg, labels: label_arg})
-        saver.save(sess, 'saved/saved_model')
+            for step, input_arg, label_arg in preprocessor.preprocess_directory(steps,
+                                                                                'data/train',
+                                                                                encoding,
+                                                                                [256, 256]):
+                print('Step: {}/{}'.format(step, steps))
+                sess.run(optimizer, feed_dict={input_: input_arg, labels: label_arg})
+            tf.train.Saver().save(sess, 'saved/model')
+    else:
+        with tf.Session() as sess:
+            loader = tf.train.import_meta_graph('saved/model.meta')
+            loader.restore(sess, 'saved/model')
+            graph = tf.get_default_graph()
+            input_ = graph.get_tensor_by_name('input:0')
+            labels = graph.get_tensor_by_name('labels:0')
+            optimizer = graph.get_operation_by_name('optimizer')
+            for step, input_arg, label_arg in preprocessor.preprocess_directory(steps,
+                                                                                'data/train',
+                                                                                encoding,
+                                                                                [256, 256]):
+                print('Step: {}/{}'.format(step, steps))
+                sess.run(optimizer, feed_dict={input_: input_arg, labels: label_arg})
+                tf.train.Saver().save(sess, 'saved/model')
 
 
 def classify(image):
@@ -52,7 +67,7 @@ def classify(image):
     output = model(data)
     saver = tf.train.Saver()
     with tf.Session() as sess:
-        saver.restore(sess, 'saved/saved_model')
+        saver.restore(sess, 'saved/model')
         preprocessor = ImagePreprocessor()
         data_arg = np.array([preprocessor.preprocess_image(image, (256, 256))])
         result = output.eval(feed_dict={data: data_arg})
