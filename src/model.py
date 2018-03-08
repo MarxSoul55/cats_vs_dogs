@@ -38,10 +38,12 @@ def train(steps, resuming):
             tf.train.Saver().save(sess, 'saved/model')
     else:
         with tf.Session() as sess:
-            loader = tf.train.import_meta_graph('saved/model.meta')
-            loader.restore(sess, 'saved/model')
+            # loader = tf.train.import_meta_graph('saved/model.meta')
+            # loader.restore(sess, 'saved/model')
+            tf.saved_model.loader.load(sess, ['tag'], 'saved')
             graph = tf.get_default_graph()
             input_ = graph.get_tensor_by_name('input:0')
+            output = graph.get_operation_by_name('end')
             labels = graph.get_tensor_by_name('labels:0')
             optimizer = graph.get_operation_by_name('optimizer')
             for step, input_arg, label_arg in preprocessor.preprocess_directory(steps,
