@@ -11,8 +11,9 @@ __pycache__/
 # Don't store tensorboard stuff...
 tensorboard/
 
-# Don't store the saved model...
+# Don't store the saved model... or any saved stuff...
 saved_model/
+saved/
 
 # Keras? No .h5 files either.
 *.h5
