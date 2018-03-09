@@ -10,3 +10,7 @@ CHAN = 3
 ENCODING = {'cats': [1, 0], 'dogs': [0, 1]}
 # Provides `train_dir` argument for `preprocessing.ImagePreprocessor.preprocess_directory`.
 TRAIN_DIR = 'data/train'
+# This directory will hold saved data about the model.
+SAVEMODEL_DIR = 'saved/model'
+# This directory will hold tensorboard files.
+TENSORBOARD_DIR = 'tensorboard'
