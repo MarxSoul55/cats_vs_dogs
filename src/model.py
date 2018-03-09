@@ -1,10 +1,13 @@
 """Provides an interface for interacting with the model."""
 
 import argparse
+import os
+import shutil
 
 import numpy as np
 import tensorflow as tf
 
+import constants as c
 from architecture import model
 from preprocessing import ImagePreprocessor
 
@@ -17,24 +20,27 @@ def train(steps, resuming):
         steps (int): Amount of images to train on.
         resuming (bool): Whether or not to resume training on a saved model.
     """
-    encoding = {'cats': [1, 0], 'dogs': [0, 1]}
-    preprocessor = ImagePreprocessor()
+    if 'tensorboard' in os.listdir():
+        shutil.rmtree('tensorboard')
     if not resuming:
-        input_ = tf.placeholder(tf.float32, shape=[1, 256, 256, 3], name='input')
+        input_ = tf.placeholder(tf.float32, shape=[c.BATCH, c.ROWS, c.COLS, c.CHAN], name='input')
         output = model(input_)
         label = tf.placeholder(tf.float32, shape=[1, 2], name='label')
-        objective = tf.losses.absolute_difference(label, output,
-                                                  reduction=tf.losses.Reduction.MEAN)
+        objective = tf.identity(tf.losses.absolute_difference(label, output), name='objective')
         optimizer = tf.train.MomentumOptimizer(0.01, 0.9, use_nesterov=True,
                                                name='optimizer').minimize(objective)
         with tf.Session() as sess:
             sess.run(tf.global_variables_initializer())
-            for step, input_arg, label_arg in preprocessor.preprocess_directory(steps,
-                                                                                'data/train',
-                                                                                encoding,
-                                                                                [256, 256]):
+
+            tf.summary.scalar('objective', objective)
+            summary = tf.summary.merge_all()
+            writer = tf.summary.FileWriter('tensorboard', graph=tf.get_default_graph())
+            for step, input_arg, label_arg in ImagePreprocessor().preprocess_directory(
+                    steps, c.TRAIN_DIR, c.ENCODING, [c.COLS, c.ROWS]):
                 print('Step: {}/{}'.format(step, steps))
                 sess.run(optimizer, feed_dict={input_: input_arg, label: label_arg})
+                step_summary = sess.run(summary, feed_dict={input_: input_arg, label: label_arg})
+                writer.add_summary(step_summary, global_step=step)
             tf.train.Saver().save(sess, 'saved/model')
     else:
         with tf.Session() as sess:
@@ -43,14 +49,18 @@ def train(steps, resuming):
             graph = tf.get_default_graph()
             input_ = graph.get_tensor_by_name('input:0')
             label = graph.get_tensor_by_name('label:0')
-            # objective = graph.get_tensor_by_name('objective:0')
+            objective = graph.get_tensor_by_name('objective:0')
             optimizer = graph.get_operation_by_name('optimizer')
-            for step, input_arg, label_arg in preprocessor.preprocess_directory(steps,
-                                                                                'data/train',
-                                                                                encoding,
-                                                                                [256, 256]):
+
+            tf.summary.scalar('objective', objective)
+            summary = tf.summary.merge_all()
+            writer = tf.summary.FileWriter('tensorboard', graph=tf.get_default_graph())
+            for step, input_arg, label_arg in ImagePreprocessor().preprocess_directory(
+                    steps, c.TRAIN_DIR, c.ENCODING, [c.COLS, c.ROWS]):
                 print('Step: {}/{}'.format(step, steps))
                 sess.run(optimizer, feed_dict={input_: input_arg, label: label_arg})
+                step_summary = sess.run(summary, feed_dict={input_: input_arg, label: label_arg})
+                writer.add_summary(step_summary, global_step=step)
             tf.train.Saver().save(sess, 'saved/model')
 
 
@@ -72,7 +82,10 @@ def classify(image):
         output = graph.get_tensor_by_name('output:0')
         input_arg = np.array([ImagePreprocessor().preprocess_image(image, [256, 256])])
         result = sess.run(output, feed_dict={input_: input_arg})
-        print(result)
+        if np.argmax(result) == 0:
+            print('cat')
+        else:
+            print('dog')
 
 
 if __name__ == '__main__':
