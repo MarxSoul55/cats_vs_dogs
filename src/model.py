@@ -77,8 +77,8 @@ def classify(image):
         In this case, argmax==0 means 'cat' and argmax==1 means 'dog'.
     """
     with tf.Session() as sess:
-        loader = tf.train.import_meta_graph('saved/model.meta')
-        loader.restore(sess, 'saved/model')
+        loader = tf.train.import_meta_graph(c.SAVEMODEL_DIR + '.meta')
+        loader.restore(sess, c.SAVEMODEL_DIR)
         graph = tf.get_default_graph()
         input_ = graph.get_tensor_by_name('input:0')
         output = graph.get_tensor_by_name('output:0')
