@@ -54,5 +54,6 @@ def model(input_):
     op25 = tf.layers.average_pooling2d(op24, 2, 2)
     op26 = tf.layers.average_pooling2d(op25, op25.shape.as_list()[1], 1)
     op27 = tf.reshape(op26, [1, op26.shape.as_list()[3]])
-    op28 = tf.layers.dense(op27, 2, kernel_initializer=tf.initializers.orthogonal(), name='end')
-    return op28
+    op28 = tf.layers.dense(op27, 2, kernel_initializer=tf.initializers.orthogonal())
+    output = tf.identity(op28, name='output')
+    return output
