@@ -8,12 +8,12 @@ import numpy as np
 
 class ImagePreprocessor:
 
-    """Helps preprocess images for a classifier."""
+    """Preprocesses images for a classifier."""
 
     def preprocess_image(self, image, rescale):
         """
         Preprocesses an image for the model.
-        Converts image to a 256x256x3, 8-bit LAB representation.
+        Converts image to a rescaled CIELAB (D65) representation in 'float32' in range [-1, 1].
 
         # Parameters
             image (str): Path to the image.
@@ -22,13 +22,15 @@ class ImagePreprocessor:
             A preprocessed image as a numpy-array.
         """
         image = cv2.imread(image)
-        image = cv2.resize(image, tuple(rescale), interpolation=cv2.INTER_LINEAR)
+        image = cv2.resize(image, tuple(rescale), interpolation=cv2.INTER_NEAREST)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2LAB)
         if image.dtype != 'uint8':
             raise TypeError('When preprocessing `{}`, expected `uint8`, but got `{}`.'
                             .format(image, image.dtype))
         image = image.astype('float32')
         image /= 255
+        image *= 2
+        image -= 1
         return image
 
     def preprocess_directory(self, steps, train_dir, encoding, rescale):
