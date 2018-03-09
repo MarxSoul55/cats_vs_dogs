@@ -20,8 +20,8 @@ def train(steps, resuming):
         steps (int): Amount of images to train on.
         resuming (bool): Whether or not to resume training on a saved model.
     """
-    if 'tensorboard' in os.listdir():
-        shutil.rmtree('tensorboard')
+    if c.TENSORBOARD_DIR in os.listdir():
+        shutil.rmtree(c.TENSORBOARD_DIR)
     if not resuming:
         input_ = tf.placeholder(tf.float32, shape=[c.BATCH, c.ROWS, c.COLS, c.CHAN], name='input')
         output = model(input_)
@@ -34,18 +34,19 @@ def train(steps, resuming):
 
             tf.summary.scalar('objective', objective)
             summary = tf.summary.merge_all()
-            writer = tf.summary.FileWriter('tensorboard', graph=tf.get_default_graph())
+            writer = tf.summary.FileWriter(c.TENSORBOARD_DIR, graph=tf.get_default_graph())
             for step, input_arg, label_arg in ImagePreprocessor().preprocess_directory(
                     steps, c.TRAIN_DIR, c.ENCODING, [c.COLS, c.ROWS]):
                 print('Step: {}/{}'.format(step, steps))
                 sess.run(optimizer, feed_dict={input_: input_arg, label: label_arg})
+
                 step_summary = sess.run(summary, feed_dict={input_: input_arg, label: label_arg})
                 writer.add_summary(step_summary, global_step=step)
-            tf.train.Saver().save(sess, 'saved/model')
+            tf.train.Saver().save(sess, c.SAVEMODEL_DIR)
     else:
         with tf.Session() as sess:
-            loader = tf.train.import_meta_graph('saved/model.meta')
-            loader.restore(sess, 'saved/model')
+            loader = tf.train.import_meta_graph(c.SAVEMODEL_DIR + '.meta')
+            loader.restore(sess, c.SAVEMODEL_DIR)
             graph = tf.get_default_graph()
             input_ = graph.get_tensor_by_name('input:0')
             label = graph.get_tensor_by_name('label:0')
@@ -54,14 +55,15 @@ def train(steps, resuming):
 
             tf.summary.scalar('objective', objective)
             summary = tf.summary.merge_all()
-            writer = tf.summary.FileWriter('tensorboard', graph=tf.get_default_graph())
+            writer = tf.summary.FileWriter(c.TENSORBOARD_DIR, graph=tf.get_default_graph())
             for step, input_arg, label_arg in ImagePreprocessor().preprocess_directory(
                     steps, c.TRAIN_DIR, c.ENCODING, [c.COLS, c.ROWS]):
                 print('Step: {}/{}'.format(step, steps))
                 sess.run(optimizer, feed_dict={input_: input_arg, label: label_arg})
+
                 step_summary = sess.run(summary, feed_dict={input_: input_arg, label: label_arg})
                 writer.add_summary(step_summary, global_step=step)
-            tf.train.Saver().save(sess, 'saved/model')
+            tf.train.Saver().save(sess, c.SAVEMODEL_DIR)
 
 
 def classify(image):
