@@ -17,7 +17,7 @@ class ImagePreprocessor:
 
         # Parameters
             image (str): Path to the image.
-            rescale (list, int): (width, height) of the resulting image.
+            rescale (list, int): Desired [columns, rows] of the resulting image.
         # Returns
             A preprocessed image as a numpy-array.
         """
