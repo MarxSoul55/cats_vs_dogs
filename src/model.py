@@ -18,14 +18,14 @@ def train(steps, resuming):
 
     # Parameters
         steps (int): Amount of images to train on.
-        resuming (bool): Whether or not to resume training on a saved model.
+        resuming (bool): Whether to train from scratch or resume training from a saved model.
     """
     if c.TENSORBOARD_DIR in os.listdir():
         shutil.rmtree(c.TENSORBOARD_DIR)
     if not resuming:
         input_ = tf.placeholder(tf.float32, shape=[c.BATCH, c.ROWS, c.COLS, c.CHAN], name='input')
         output = model(input_)
-        label = tf.placeholder(tf.float32, shape=[1, 2], name='label')
+        label = tf.placeholder(tf.float32, shape=c.LABEL_SHAPE, name='label')
         objective = tf.identity(tf.losses.absolute_difference(label, output), name='objective')
         optimizer = tf.train.MomentumOptimizer(0.01, 0.9, use_nesterov=True,
                                                name='optimizer').minimize(objective)
