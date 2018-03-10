@@ -27,7 +27,7 @@ def train(steps, resuming):
         output = model(input_)
         label = tf.placeholder(tf.float32, shape=c.LABEL_SHAPE, name='label')
         objective = tf.identity(tf.losses.absolute_difference(label, output), name='objective')
-        optimizer = tf.train.MomentumOptimizer(0.01, 0.9, use_nesterov=True,
+        optimizer = tf.train.MomentumOptimizer(0.001, 0.9, use_nesterov=True,
                                                name='optimizer').minimize(objective)
         with tf.Session() as sess:
             sess.run(tf.global_variables_initializer())
