@@ -3,8 +3,8 @@
 # Size of the minibatch when training.
 BATCH = 1
 # The rows, columns, and channels of the input-image.
-ROWS = 512
-COLS = 512
+ROWS = 256
+COLS = 256
 CHAN = 3
 # Provides `encoding` argument for `preprocessing.ImagePreprocessor.preprocess_directory`.
 # WARNING DANGER HAZARD: ANY CHANGE TO THE LABELS MUST BE ACCOUNTED FOR IN `LABEL_SHAPE` BELOW!
