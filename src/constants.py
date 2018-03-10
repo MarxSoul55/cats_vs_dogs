@@ -7,7 +7,10 @@ ROWS = 256
 COLS = 256
 CHAN = 3
 # Provides `encoding` argument for `preprocessing.ImagePreprocessor.preprocess_directory`.
+# WARNING DANGER HAZARD: ANY CHANGE TO THE LABELS MUST BE ACCOUNTED FOR IN `LABEL_SHAPE` BELOW!
 ENCODING = {'cats': [1, 0], 'dogs': [0, 1]}
+# Shape of a label as shown above in `encoding`.
+LABEL_SHAPE = [1, 2]
 # Provides `train_dir` argument for `preprocessing.ImagePreprocessor.preprocess_directory`.
 TRAIN_DIR = 'data/train'
 # This directory will hold saved data about the model.
