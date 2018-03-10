@@ -32,7 +32,7 @@ def train(steps, resuming):
         with tf.Session() as sess:
             sess.run(tf.global_variables_initializer())
 
-            tf.summary.scalar('objective', objective)
+            tf.summary.scalar('objective_summary', objective)
             summary = tf.summary.merge_all()
             writer = tf.summary.FileWriter(c.TENSORBOARD_DIR, graph=tf.get_default_graph())
             for step, input_arg, label_arg in ImagePreprocessor().preprocess_directory(
@@ -50,10 +50,9 @@ def train(steps, resuming):
             graph = tf.get_default_graph()
             input_ = graph.get_tensor_by_name('input:0')
             label = graph.get_tensor_by_name('label:0')
-            objective = graph.get_tensor_by_name('objective:0')
             optimizer = graph.get_operation_by_name('optimizer')
 
-            tf.summary.scalar('objective', objective)
+            graph.get_operation_by_name('objective_summary')
             summary = tf.summary.merge_all()
             writer = tf.summary.FileWriter(c.TENSORBOARD_DIR, graph=tf.get_default_graph())
             for step, input_arg, label_arg in ImagePreprocessor().preprocess_directory(
