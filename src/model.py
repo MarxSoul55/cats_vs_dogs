@@ -26,7 +26,7 @@ def train(steps, resuming):
         input_ = tf.placeholder(tf.float32, shape=[c.BATCH, c.ROWS, c.COLS, c.CHAN], name='input')
         output = model(input_)
         label = tf.placeholder(tf.float32, shape=c.LABEL_SHAPE, name='label')
-        objective = tf.identity(tf.losses.absolute_difference(label, output), name='objective')
+        objective = tf.sqrt(tf.losses.mean_squared_error(label, output), name='objective')
         optimizer = tf.train.MomentumOptimizer(0.001, 0.9, use_nesterov=True,
                                                name='optimizer').minimize(objective)
         with tf.Session() as sess:
