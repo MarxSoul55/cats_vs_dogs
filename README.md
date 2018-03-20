@@ -45,11 +45,13 @@ these that I won't even bother to list any, as a google-search will yield everyt
 ### If you do have an idea of what you're doing...
 *...follow these steps:*
 1. Download [Kaggle's dataset of cats and dogs](https://www.kaggle.com/c/dogs-vs-cats-redux-kernels-edition/data).
-2. Download the release: [v0.1](https://github.com/MarxSoul55/cats_vs_dogs/releases/tag/v0.1)
-    * **Note that these directions are all based off of v0.1**
+2. Download the release: [v0.2](https://github.com/MarxSoul55/cats_vs_dogs/releases/tag/v0.2)
+    * **Note that these directions are all based off of v0.2**
 3. Set up your directory in the following way:
-    * model.py (the file in `src`)
-    * layers (custom convenience code for TensorFlow, also in `src`)
+    * model.py (acts as the entry-point/interface for the training and testing capabilities)
+    * architecture.py (contains the architecture of the neural network)
+    * constants.py (contains important constants like the training-directory, etc.)
+    * preprocessing.py (preprocesses the data by converting it into an appropriate tensor)
     * data
         * train
             * cats (will contain the images of cats from Kaggle)
@@ -57,29 +59,38 @@ these that I won't even bother to list any, as a google-search will yield everyt
         * test (will contain test-images from Kaggle)
 4. Now you need to learn how to use `model.py`, which acts as the interface by which you'll train
 and test the model. There are three main commands you'll need to know.
-    * `python model.py -tr -s 25000`
-        * The `-tr` tells the program to train the model, and the `-s` tells the program how many
+    * `python model.py --train --steps 25000`
+        * The `--train` tells the program to train the model, and the `--steps` tells the program how many
           "steps" it should take. By steps, I mean parameter-updates, which are performed
           image-after-image. In more technical terms, I'm doing stochastic gradient-descent with
           `batch_size=1`. Why did I not implement minibatch gradient-descent? Lack of computing
           resources. I don't personally have a lot of RAM on my machine, so I didn't bother.
         * In this example, I train on all 25000 images from Kaggle's training-set. You can tell
-          because of the `-s 25000`. But what if I used something like `-s 26000`? The Kaggle
+          because of the `--steps 25000`. But what if I used something like `--steps 26000`? The Kaggle
           dataset only contains 25000 images total! Simple, my preprocessing-function that I wrote
-          in `layers/preprocessing` will simply start over at the beginning of the directory. It's
+          in `preprocessing.py` will simply start over at the beginning of the directory. It's
           seamless, so don't worry about it.
+        * During training, the preprocessor will preprocess an image for the model to train on from
+          the first class (in this case either `cats` or `dogs`) and will then preprocess and image
+          from the second class. After it does so, it will loop back around to the first class and
+          pick some image that it hasn't trained on yet (order of picking is arbitrary, since we
+          want to train on everything). Then it'll do the same for the second class, and continue
+          looping over and over until it reaches the amount of steps that was specified by the
+          user.
         * After the training is complete, the program generate (or overwrite if exists) two
           directories:
             * saved_model (self-explanatory)
             * tensorboard
                 * See https://www.tensorflow.org/get_started/summaries_and_tensorboard for details.
-    * `python model.py -tr -r -s 25000`
-        * Almost identical to the first command. Only thing different is the `-r` flag.
-        * `-r` tells the program that it's *resuming* training.
-        * With this flag, the training will start where it left off from your `saved_model`
-          directory. It will overwrite `saved_model` and `tensorboard`.
-    * `python model.py -te -i data/test/1.jpg`
-        * The `-te` tells the program to test the model on an image, whose path is given by the
-          portion after the `-i` flag: `data/test/1.jpg`.
+    * `python model.py --train --resuming --steps 25000`
+        * Almost identical to the first command. Only thing different is the `--resuming` flag.
+        * `--resuming` tells the program that it's *resuming* training (obviously).
+        * With this flag, the training will start where the model's paramters' values last were.
+          Those values are stored in the files in `saved` directory. It will overwrite `saved` and
+          `tensorboard`.
+    * `python model.py --classify --image data/test/1.jpg`
+        * The `--classify` tells the program to test the model on an image, whose path is given by
+          the portion after the `--image` flag: `data/test/1.jpg`. The program will print a string:
+          either "cat" or "dog".
 5. That's all there is to it! I highly encourage you to tinker around with my code and change it as
 it suits your purposes—it currently suits mine very well, but for you, it may not!
