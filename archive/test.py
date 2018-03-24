@@ -2,11 +2,19 @@
 
 import time
 
+import numpy as np
+
 
 def timeit(function):
-    def wrapper():
+    """
+    Times a function.
+
+    # Decorations
+        Prints out the seconds it took for the given function to run.
+    """
+    def wrapper(x):
         t0 = time.time()
-        function()
+        function(x)
         t1 = time.time()
         duration = t1 - t0
         print('The function took {} seconds to run.'.format(duration))
@@ -14,9 +22,10 @@ def timeit(function):
 
 
 @timeit
-def sqrt(x):
-    return x ** 0.5
+def f(x):
+    for i in range(1000000):
+        np.exp(x)
 
 
 if __name__ == '__main__':
-    sqrt(2)
+    f(2)
