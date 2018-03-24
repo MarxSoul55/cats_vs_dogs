@@ -94,24 +94,23 @@ def classify(generic_path):
                 result = sess.run(output, feed_dict={input_: input_arg})
                 if np.argmax(result) == 0:
                     return 'cat'
+                return 'dog'  # argmax == 1 means it's a dog.
+            # Else, since `path` isn't a file, it must be a directory!
+            results = {}
+            for objectname in os.listdir(path):
+                if objectname[-4:] not in c.SUPPORTED_FORMATS:
+                    continue
+                image_path = os.path.join(path, objectname)
+                input_arg = np.array([preprocessor.preprocess_image(image_path,
+                                                                    [c.ROWS, c.COLS])])
+                result = sess.run(output, feed_dict={input_: input_arg})
+                if np.argmax(result) == 0:
+                    results[objectname] = 'cat'
                 else:
-                    return 'dog'  # argmax == 1 means it's a dog.
-            else:  # Since `path` isn't a file, it must be a directory!
-                results = {}
-                for filename in os.listdir(path):
-                    try:
-                        filepath = os.path.join(path, filename)
-                        input_arg = np.array([preprocessor.preprocess_image(filepath,
-                                                                            [c.ROWS, c.COLS])])
-                    except ValueError:  # `filename` is a directory or is an unsupported format.
-                        continue
-                    result = sess.run(output, feed_dict={input_: input_arg})
-                    if np.argmax(result) == 0:
-                        results[filename] = 'cat'
-                    else:
-                        results[filename] = 'dog'
-                return results
-        # else:  # It must be a URL.
+                    results[objectname] = 'dog'
+            return results
+        # TODO: Implement URL functionality.
+        # Else, if `path` leads to nowhere on disk, it must be a URL!
         #     url = generic_path
         #     response = requests.get(url)
         #     image = np.
