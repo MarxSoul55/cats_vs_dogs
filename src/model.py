@@ -3,9 +3,12 @@
 import argparse
 import os
 import shutil
+from io import BytesIO
 
 import numpy as np
+import requests
 import tensorflow as tf
+from PIL import Image
 
 import constants as c
 from architecture import model
@@ -91,22 +94,27 @@ def classify(generic_path):
                 result = sess.run(output, feed_dict={input_: input_arg})
                 if np.argmax(result) == 0:
                     return 'cat'
-                return 'dog'  # argmax == 1 means it's a dog.
-            # Else, since `path` isn't a file, it must be a directory!
-            results = {}
-            for filename in os.listdir(path):
-                try:
-                    filepath = os.path.join(path, filename)
-                    input_arg = np.array([preprocessor.preprocess_image(filepath,
-                                                                        [c.ROWS, c.COLS])])
-                except ValueError:  # `filename` is a directory or is an unsupported format.
-                    continue
-                result = sess.run(output, feed_dict={input_: input_arg})
-                if np.argmax(result) == 0:
-                    results[filename] = 'cat'
                 else:
-                    results[filename] = 'dog'
-            return results
+                    return 'dog'  # argmax == 1 means it's a dog.
+            else:  # Since `path` isn't a file, it must be a directory!
+                results = {}
+                for filename in os.listdir(path):
+                    try:
+                        filepath = os.path.join(path, filename)
+                        input_arg = np.array([preprocessor.preprocess_image(filepath,
+                                                                            [c.ROWS, c.COLS])])
+                    except ValueError:  # `filename` is a directory or is an unsupported format.
+                        continue
+                    result = sess.run(output, feed_dict={input_: input_arg})
+                    if np.argmax(result) == 0:
+                        results[filename] = 'cat'
+                    else:
+                        results[filename] = 'dog'
+                return results
+        # else:  # It must be a URL.
+        #     url = generic_path
+        #     response = requests.get(url)
+        #     image = np.
 
 
 if __name__ == '__main__':
@@ -115,10 +123,10 @@ if __name__ == '__main__':
     parser.add_argument('--resuming', action='store_true')
     parser.add_argument('--steps', type=int)
     parser.add_argument('--classify', action='store_true')
-    parser.add_argument('--image')
+    parser.add_argument('--source')
     parser.set_defaults(resuming=False)
     args = parser.parse_args()
     if args.train:
         train(args.steps, args.resuming)
     elif args.classify:
-        print(classify(args.image))
+        print(classify(args.source))
