@@ -18,3 +18,19 @@ TRAIN_DIR = 'data/train'
 SAVEMODEL_DIR = 'saved/model'
 # This directory will hold tensorboard files.
 TENSORBOARD_DIR = 'tensorboard'
+# List of image-formats supported by OpenCV.
+SUPPORTED_FORMATS = [
+    '.bmp',
+    '.pbm',
+    '.pgm',
+    '.ppm',
+    '.sr',
+    '.ras',
+    '.jpeg',
+    '.jpg',
+    '.jpe',
+    '.jp2',
+    '.tiff',
+    '.tif',
+    '.png'
+]
