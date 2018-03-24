@@ -1,6 +1,7 @@
 """Provides interface for preprocessing image-related data."""
 
 import os
+import random
 
 import cv2
 import numpy as np
@@ -37,40 +38,37 @@ class ImagePreprocessor:
 
     def preprocess_classes(self, steps, train_dir, encoding, rescale):
         """
-        Given a directory of subdirectories of images, where each subdirectory is a "class"...
-        preprocesses one image from each subdirectory and moves onto the next...
-        when reaching the last subdirectory, loops back to the first.
-        Uses the `preprocess_image` method.
-        The label is converted from a list (`encoding[subdirectory]`) to a numpy-array.
+        Given a directory of subdirectories of images, preprocesses an image from the 1st subdir,
+        then the 2nd, then the Nth, and then loops back towards the 1st and gets another image,
+        etc. The order of the images in each subdir is randomized. After all images have been
+        preprocessed (given that `steps` is big enough), the subdirs are shuffled again and the
+        preprocessing continues.
 
         # Parameters
-            steps (int): Amount of data-label pairs to generate.
-            train_dir (str): Path to the directory of classes.
-            encoding (dict, str -> list): Maps the name of the subdirectory (class) to a label.
-            rescale (tuple): (width, height) that each image will be resized to.
+            steps (int): Amount of step-input-label triplets to generate (aka amount of images that
+                         will be preprocessed).
+            train_dir (str): Path to the directory of classes. May be relative or absolute.
+            encoding (dict): Maps the name of the subdirectory (class) to a vector.
+                             ex: {'cats': [1, 0], 'dogs': [0, 1]}
+            rescale (list): Width and height that each image will be resized to.
+                            ex: [1920, 1080]
         # Yields
-            `(step, data_array, label_array)` starting from step 1.
+            A tuple (step, preprocessed_image_array, label_array) starting from step 1.
         """
-        classes = os.listdir(train_dir)
-        cursors = {}
-        images = {}
-        for class_ in classes:
-            cursors[class_] = 0
-            images[class_] = sorted(os.listdir(train_dir + '/' + class_))
-        step = 0
-        while True:
-            for class_ in classes:
-                if step < steps:
-                    step += 1
-                else:
-                    return
-                absolute_path = os.path.abspath(train_dir + '/' + class_ + '/' +
-                                                images[class_][cursors[class_]])
-                preprocessed = self.preprocess_image(absolute_path, rescale)
-                data = np.array([preprocessed])
-                label = np.array([encoding[class_]]).astype('float32')
-                if cursors[class_] == (len(images[class_]) - 1):
-                    cursors[class_] = 0
-                else:
-                    cursors[class_] += 1
-                yield step, data, label
+        train_dir = os.path.abspath(train_dir)
+        class_names = os.listdir(train_dir)
+        class_paths = [os.path.join(train_dir, name) for name in class_names]
+        image_paths = {}
+        for step in range(1, steps + 1):
+            for class_name, class_path in zip(class_names, class_paths):
+                if len(image_paths[class_name]) == 0:
+                    image_names = os.listdir(class_path)
+                    random.shuffle(image_names)
+                    image_paths[class_name] = [os.path.join(class_path, image_name)
+                                               for image_name in image_names]
+                    continue
+                input_ = image_paths[class_name].pop()
+                input_ = self.preprocess_image(input_, rescale)
+                input_ = np.array([input_])
+                label = np.array([encoding[class_name]]).astype('float32')
+                yield step, input_, label
