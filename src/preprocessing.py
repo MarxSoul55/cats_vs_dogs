@@ -12,28 +12,18 @@ class ImagePreprocessor:
 
     def preprocess_image(self, path, rescale):
         """
-        Preprocesses an image for the model.
-        Converts image to a rescaled CIELAB (D65) representation in 'float32' in range [-1, 1].
+        Preprocesses an image into a tensor representation.
 
         # Parameters
             path (str): Path to the image.
             rescale (list, int): Desired [columns, rows] of the resulting image.
         # Returns
-            A preprocessed image as a numpy-array.
+            A preprocessed image as a numpy-array whose shape is determined by `rescale`.
+            Specifically, a CIELAB (D65) representation in 'float32' in range [-1, 1].
         # Raises
-            FileNotFoundError: if the given path is nonexistent.
-            ValueError: if the path is a directory or an unsupported format.
-            TODO TypeError
+            TypeError: if the image's bit depth isn't 24.
         """
-        path = os.path.abspath(path)
-        if not os.path.exists(path):
-            raise FileNotFoundError('`{}` is nonexistent.'.format(path))
         image = cv2.imread(path)
-        if image is None:
-            if os.path.isdir(path):
-                raise ValueError('`{}` is a directory, not a file'.format(path))
-            elif os.path.isfile(path):
-                raise ValueError('`{}` is of an unsupported format.'.format(path))
         image = cv2.resize(image, tuple(rescale), interpolation=cv2.INTER_NEAREST)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2LAB)
         if image.dtype != 'uint8':
