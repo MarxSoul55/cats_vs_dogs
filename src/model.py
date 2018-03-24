@@ -23,30 +23,11 @@ def train(steps, resuming):
         steps (int): Amount of images to train on.
         resuming (bool): Whether to train from scratch or resume training from a saved model.
     """
+    # TensorBoard refuses to simply overwrite old data, so this is necessary.
     if c.TENSORBOARD_DIR in os.listdir():
         shutil.rmtree(c.TENSORBOARD_DIR)
-    if not resuming:
-        input_ = tf.placeholder(tf.float32, shape=[c.BATCH, c.ROWS, c.COLS, c.CHAN], name='input')
-        output = model(input_)
-        label = tf.placeholder(tf.float32, shape=c.LABEL_SHAPE, name='label')
-        objective = tf.sqrt(tf.losses.mean_squared_error(label, output), name='objective')
-        optimizer = tf.train.MomentumOptimizer(0.001, 0.9, use_nesterov=True,
-                                               name='optimizer').minimize(objective)
-        with tf.Session() as sess:
-            sess.run(tf.global_variables_initializer())
-            tf.summary.scalar('objective_summary', objective)
-            summary = tf.summary.merge_all()
-            writer = tf.summary.FileWriter(c.TENSORBOARD_DIR, graph=tf.get_default_graph())
-            for step, input_arg, label_arg in ImagePreprocessor().preprocess_classes(
-                    steps, c.TRAIN_DIR, c.ENCODING, [c.COLS, c.ROWS]):
-                print('Step: {}/{}'.format(step, steps))
-                sess.run(optimizer, feed_dict={input_: input_arg, label: label_arg})
-
-                step_summary = sess.run(summary, feed_dict={input_: input_arg, label: label_arg})
-                writer.add_summary(step_summary, global_step=step)
-            tf.train.Saver().save(sess, c.SAVEMODEL_DIR)
-    else:
-        with tf.Session() as sess:
+    with tf.Session() as sess:
+        if resuming:
             loader = tf.train.import_meta_graph(c.SAVEMODEL_DIR + '.meta')
             loader.restore(sess, c.SAVEMODEL_DIR)
             graph = tf.get_default_graph()
@@ -54,16 +35,26 @@ def train(steps, resuming):
             label = graph.get_tensor_by_name('label:0')
             optimizer = graph.get_operation_by_name('optimizer')
             graph.get_operation_by_name('objective_summary')
-            summary = tf.summary.merge_all()
-            writer = tf.summary.FileWriter(c.TENSORBOARD_DIR, graph=tf.get_default_graph())
-            for step, input_arg, label_arg in ImagePreprocessor().preprocess_classes(
-                    steps, c.TRAIN_DIR, c.ENCODING, [c.COLS, c.ROWS]):
-                print('Step: {}/{}'.format(step, steps))
-                sess.run(optimizer, feed_dict={input_: input_arg, label: label_arg})
+        else:  # Else, we need to build the graph from scratch!
+            input_ = tf.placeholder(tf.float32, shape=[c.BATCH, c.ROWS, c.COLS, c.CHAN],
+                                    name='input')
+            output = model(input_)
+            label = tf.placeholder(tf.float32, shape=c.LABEL_SHAPE, name='label')
+            objective = tf.sqrt(tf.losses.mean_squared_error(label, output), name='objective')
+            optimizer = tf.train.MomentumOptimizer(0.001, 0.9, use_nesterov=True,
+                                                   name='optimizer').minimize(objective)
+            tf.summary.scalar('objective_summary', objective)
+            sess.run(tf.global_variables_initializer())
+        summary = tf.summary.merge_all()
+        writer = tf.summary.FileWriter(c.TENSORBOARD_DIR, graph=tf.get_default_graph())
+        for step, input_arg, label_arg in ImagePreprocessor().preprocess_classes(
+                steps, c.TRAIN_DIR, c.ENCODING, [c.COLS, c.ROWS]):
+            print('Step: {}/{}'.format(step, steps))
+            sess.run(optimizer, feed_dict={input_: input_arg, label: label_arg})
 
-                step_summary = sess.run(summary, feed_dict={input_: input_arg, label: label_arg})
-                writer.add_summary(step_summary, global_step=step)
-            tf.train.Saver().save(sess, c.SAVEMODEL_DIR)
+            step_summary = sess.run(summary, feed_dict={input_: input_arg, label: label_arg})
+            writer.add_summary(step_summary, global_step=step)
+        tf.train.Saver().save(sess, c.SAVEMODEL_DIR)
 
 
 def classify(generic_path):
@@ -92,17 +83,16 @@ def classify(generic_path):
             if os.path.isfile(path):
                 input_arg = np.array([preprocessor.preprocess_image(path, [c.ROWS, c.COLS])])
                 result = sess.run(output, feed_dict={input_: input_arg})
-                if np.argmax(result) == 0:
+                if np.argmax(result) == np.argmax(c.ENCODING['cats']):
                     return 'cat'
-                return 'dog'  # argmax == 1 means it's a dog.
+                return 'dog'
             # Else, since `path` isn't a file, it must be a directory!
             results = {}
             for objectname in os.listdir(path):
                 if objectname[-4:] not in c.SUPPORTED_FORMATS:
                     continue
                 image_path = os.path.join(path, objectname)
-                input_arg = np.array([preprocessor.preprocess_image(image_path,
-                                                                    [c.ROWS, c.COLS])])
+                input_arg = np.array([preprocessor.preprocess_image(image_path, [c.ROWS, c.COLS])])
                 result = sess.run(output, feed_dict={input_: input_arg})
                 if np.argmax(result) == 0:
                     results[objectname] = 'cat'
