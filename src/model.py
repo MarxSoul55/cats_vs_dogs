@@ -31,11 +31,10 @@ def train(steps, resuming):
                                                name='optimizer').minimize(objective)
         with tf.Session() as sess:
             sess.run(tf.global_variables_initializer())
-
             tf.summary.scalar('objective_summary', objective)
             summary = tf.summary.merge_all()
             writer = tf.summary.FileWriter(c.TENSORBOARD_DIR, graph=tf.get_default_graph())
-            for step, input_arg, label_arg in ImagePreprocessor().preprocess_directory(
+            for step, input_arg, label_arg in ImagePreprocessor().preprocess_classes(
                     steps, c.TRAIN_DIR, c.ENCODING, [c.COLS, c.ROWS]):
                 print('Step: {}/{}'.format(step, steps))
                 sess.run(optimizer, feed_dict={input_: input_arg, label: label_arg})
@@ -51,11 +50,10 @@ def train(steps, resuming):
             input_ = graph.get_tensor_by_name('input:0')
             label = graph.get_tensor_by_name('label:0')
             optimizer = graph.get_operation_by_name('optimizer')
-
             graph.get_operation_by_name('objective_summary')
             summary = tf.summary.merge_all()
             writer = tf.summary.FileWriter(c.TENSORBOARD_DIR, graph=tf.get_default_graph())
-            for step, input_arg, label_arg in ImagePreprocessor().preprocess_directory(
+            for step, input_arg, label_arg in ImagePreprocessor().preprocess_classes(
                     steps, c.TRAIN_DIR, c.ENCODING, [c.COLS, c.ROWS]):
                 print('Step: {}/{}'.format(step, steps))
                 sess.run(optimizer, feed_dict={input_: input_arg, label: label_arg})
@@ -65,28 +63,50 @@ def train(steps, resuming):
             tf.train.Saver().save(sess, c.SAVEMODEL_DIR)
 
 
-def classify(image):
+def classify(generic_path):
     """
-    Classify a single image.
+    Does one of 3 things:
+    1. Given a path to an image file on disk (WITH A FILE-EXTENSION), classifies it.
+    2. Given a path to a directory on disk, classifies all images found in it (excluding
+       subdirectories and files with unsupported formats).
+    3. Given a URL to an image, classifies it.
 
     # Parameters
-        image (str): Path to the image in question.
-    # Prints
-        The resulting tensor of predictions.
-        In this case, argmax==0 means 'cat' and argmax==1 means 'dog'.
+        generic_path (str): Can be a normal path to a disk location or a URL.
+    # Returns
+        If `1` or `3`, returns a string—either 'cat' or 'dog'.
+        If `2`, returns a dictionary of format {'filename': 'either 'cat' or 'dog''}
     """
+    preprocessor = ImagePreprocessor()
     with tf.Session() as sess:
         loader = tf.train.import_meta_graph(c.SAVEMODEL_DIR + '.meta')
         loader.restore(sess, c.SAVEMODEL_DIR)
         graph = tf.get_default_graph()
         input_ = graph.get_tensor_by_name('input:0')
         output = graph.get_tensor_by_name('output:0')
-        input_arg = np.array([ImagePreprocessor().preprocess_image(image, [256, 256])])
-        result = sess.run(output, feed_dict={input_: input_arg})
-        if np.argmax(result) == 0:
-            print('cat')
-        else:
-            print('dog')
+        if os.path.exists(generic_path):
+            path = os.path.abspath(generic_path)
+            if os.path.isfile(path):
+                input_arg = np.array([preprocessor.preprocess_image(path, [c.ROWS, c.COLS])])
+                result = sess.run(output, feed_dict={input_: input_arg})
+                if np.argmax(result) == 0:
+                    return 'cat'
+                return 'dog'  # argmax == 1 means it's a dog.
+            # Else, since `path` isn't a file, it must be a directory!
+            results = {}
+            for filename in os.listdir(path):
+                try:
+                    filepath = os.path.join(path, filename)
+                    input_arg = np.array([preprocessor.preprocess_image(filepath,
+                                                                        [c.ROWS, c.COLS])])
+                except ValueError:  # `filename` is a directory or is an unsupported format.
+                    continue
+                result = sess.run(output, feed_dict={input_: input_arg})
+                if np.argmax(result) == 0:
+                    results[filename] = 'cat'
+                else:
+                    results[filename] = 'dog'
+            return results
 
 
 if __name__ == '__main__':
@@ -101,4 +121,4 @@ if __name__ == '__main__':
     if args.train:
         train(args.steps, args.resuming)
     elif args.classify:
-        classify(args.image)
+        print(classify(args.image))
