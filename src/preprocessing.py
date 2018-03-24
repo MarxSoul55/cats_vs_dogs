@@ -23,6 +23,7 @@ class ImagePreprocessor:
         # Raises
             FileNotFoundError: if the given path is nonexistent.
             ValueError: if the path is a directory or an unsupported format.
+            TODO TypeError
         """
         path = os.path.abspath(path)
         if not os.path.exists(path):
