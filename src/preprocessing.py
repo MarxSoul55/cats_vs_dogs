@@ -10,18 +10,29 @@ class ImagePreprocessor:
 
     """Preprocesses images for a classifier."""
 
-    def preprocess_image(self, image, rescale):
+    def preprocess_image(self, path, rescale):
         """
         Preprocesses an image for the model.
         Converts image to a rescaled CIELAB (D65) representation in 'float32' in range [-1, 1].
 
         # Parameters
-            image (str): Path to the image.
+            path (str): Path to the image.
             rescale (list, int): Desired [columns, rows] of the resulting image.
         # Returns
             A preprocessed image as a numpy-array.
+        # Raises
+            FileNotFoundError: if the given path is nonexistent.
+            ValueError: if the path is a directory or an unsupported format.
         """
-        image = cv2.imread(image)
+        path = os.path.abspath(path)
+        if not os.path.exists(path):
+            raise FileNotFoundError('`{}` is nonexistent.'.format(path))
+        image = cv2.imread(path)
+        if image is None:
+            if os.path.isdir(path):
+                raise ValueError('`{}` is a directory, not a file'.format(path))
+            elif os.path.isfile(path):
+                raise ValueError('`{}` is of an unsupported format.'.format(path))
         image = cv2.resize(image, tuple(rescale), interpolation=cv2.INTER_NEAREST)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2LAB)
         if image.dtype != 'uint8':
@@ -33,7 +44,7 @@ class ImagePreprocessor:
         image -= 1
         return image
 
-    def preprocess_directory(self, steps, train_dir, encoding, rescale):
+    def preprocess_classes(self, steps, train_dir, encoding, rescale):
         """
         Given a directory of subdirectories of images, where each subdirectory is a "class"...
         preprocesses one image from each subdirectory and moves onto the next...
