@@ -55,10 +55,13 @@ class ImagePreprocessor:
         # Yields
             A tuple (step, preprocessed_image_array, label_array) starting from step 1.
         """
+        # TWO BIG PROBLEMS WITH THIS CODE
+        # 1. Steps are duplicated since the same step goes for multiple classes
+        # 2. Some steps are useless because they're spend refreshing `image_paths`
         train_dir = os.path.abspath(train_dir)
         class_names = os.listdir(train_dir)
         class_paths = [os.path.join(train_dir, name) for name in class_names]
-        image_paths = {}
+        image_paths = {class_name: [] for class_name in class_names}
         for step in range(1, steps + 1):
             for class_name, class_path in zip(class_names, class_paths):
                 if len(image_paths[class_name]) == 0:
@@ -67,6 +70,7 @@ class ImagePreprocessor:
                     image_paths[class_name] = [os.path.join(class_path, image_name)
                                                for image_name in image_names]
                     continue
+                # Else, since we still have images left, proceed as normal!
                 input_ = image_paths[class_name].pop()
                 input_ = self.preprocess_image(input_, rescale)
                 input_ = np.array([input_])
