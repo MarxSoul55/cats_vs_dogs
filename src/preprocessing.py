@@ -40,39 +40,43 @@ class ImagePreprocessor:
         """
         Given a directory of subdirectories of images, preprocesses an image from the 1st subdir,
         then the 2nd, then the Nth, and then loops back towards the 1st and gets another image,
-        etc. The order of the images in each subdir is randomized. After all images have been
-        preprocessed (given that `steps` is big enough), the subdirs are shuffled again and the
-        preprocessing continues.
+        etc. The order of the images in each subdir is randomized. After all images in a directory
+        have been preprocessed (given that `steps` is big enough), preprocessing will start over at
+        the beginning of the directory in question. The order of images won't be randomized again.
 
         # Parameters
             steps (int): Amount of step-input-label triplets to generate (aka amount of images that
                          will be preprocessed).
             train_dir (str): Path to the directory of classes. May be relative or absolute.
-            encoding (dict): Maps the name of the subdirectory (class) to a vector.
+            encoding (dict): Maps the name of the subdirectory (class) to a label.
                              ex: {'cats': [1, 0], 'dogs': [0, 1]}
             rescale (list): Width and height that each image will be resized to.
                             ex: [1920, 1080]
         # Yields
             A tuple (step, preprocessed_image_array, label_array) starting from step 1.
         """
-        # TWO BIG PROBLEMS WITH THIS CODE
-        # 1. Steps are duplicated since the same step goes for multiple classes
-        # 2. Some steps are useless because they're spend refreshing `image_paths`
         train_dir = os.path.abspath(train_dir)
         class_names = os.listdir(train_dir)
-        class_paths = [os.path.join(train_dir, name) for name in class_names]
-        image_paths = {class_name: [] for class_name in class_names}
-        for step in range(1, steps + 1):
+        class_paths = [os.path.join(train_dir, class_name) for class_name in class_names]
+        cursors = {}
+        images = {}
+        for class_name, class_path in zip(class_names, class_paths):
+            cursors[class_name] = 0
+            images[class_name] = os.listdir(class_path)
+            random.shuffle(images[class_name])
+        step = 0
+        while True:
             for class_name, class_path in zip(class_names, class_paths):
-                if len(image_paths[class_name]) == 0:
-                    image_names = os.listdir(class_path)
-                    random.shuffle(image_names)
-                    image_paths[class_name] = [os.path.join(class_path, image_name)
-                                               for image_name in image_names]
-                    continue
-                # Else, since we still have images left, proceed as normal!
-                input_ = image_paths[class_name].pop()
-                input_ = self.preprocess_image(input_, rescale)
-                input_ = np.array([input_])
+                if step < steps:
+                    step += 1
+                else:
+                    return
+                image_path = os.path.join(class_path, images[class_name][cursors[class_name]])
+                preprocessed_image = self.preprocess_image(image_path, rescale)
+                preprocessed_image = np.array([preprocessed_image])
                 label = np.array([encoding[class_name]]).astype('float32')
-                yield step, input_, label
+                if cursors[class_name] == (len(images[class_name]) - 1):
+                    cursors[class_name] = 0
+                else:
+                    cursors[class_name] += 1
+                yield step, preprocessed_image, label
