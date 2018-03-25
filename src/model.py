@@ -86,6 +86,7 @@ def classify(generic_path):
             # Else, since `path` isn't a file, it must be a directory!
             results = {}
             for objectname in os.listdir(path):
+                # TODO: File extensions are not necessarily .XXX; amount of X's is variable!!!
                 if objectname[-4:].lower() not in c.SUPPORTED_FORMATS:
                     continue
                 image_path = os.path.join(path, objectname)
