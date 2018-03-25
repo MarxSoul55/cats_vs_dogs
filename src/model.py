@@ -3,12 +3,9 @@
 import argparse
 import os
 import shutil
-from io import BytesIO
 
 import numpy as np
-import requests
 import tensorflow as tf
-from PIL import Image
 
 import constants as c
 from architecture import model
@@ -89,7 +86,7 @@ def classify(generic_path):
             # Else, since `path` isn't a file, it must be a directory!
             results = {}
             for objectname in os.listdir(path):
-                if objectname[-4:] not in c.SUPPORTED_FORMATS:
+                if objectname[-4:].lower() not in c.SUPPORTED_FORMATS:
                     continue
                 image_path = os.path.join(path, objectname)
                 input_arg = np.array([preprocessor.preprocess_image(image_path, [c.ROWS, c.COLS])])
