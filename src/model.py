@@ -44,8 +44,10 @@ def train(steps, resuming):
             sess.run(tf.global_variables_initializer())
         summary = tf.summary.merge_all()
         writer = tf.summary.FileWriter(c.TENSORBOARD_DIR, graph=tf.get_default_graph())
-        for step, input_arg, label_arg in ImagePreprocessor().preprocess_classes(
-                steps, c.TRAIN_DIR, c.ENCODING, [c.COLS, c.ROWS]):
+        for step, input_arg, label_arg in ImagePreprocessor().preprocess_classes(steps,
+                                                                                 c.TRAIN_DIR,
+                                                                                 c.ENCODING,
+                                                                                 [c.COLS, c.ROWS]):
             print('Step: {}/{}'.format(step, steps))
             sess.run(optimizer, feed_dict={input_: input_arg, label: label_arg})
 
@@ -54,7 +56,7 @@ def train(steps, resuming):
         tf.train.Saver().save(sess, c.SAVEMODEL_DIR)
 
 
-def classify(generic_path):
+def classify(path):
     """
     Does one of 3 things:
     1. Given a path to an image file on disk (WITH A FILE-EXTENSION), classifies it.
@@ -63,7 +65,7 @@ def classify(generic_path):
     3. Given a URL to an image, classifies it.
 
     # Parameters
-        generic_path (str): Can be a normal path to a disk location or a URL.
+        path (str): Can be a normal path to a disk location or a URL.
     # Returns
         If `1` or `3`, returns a string—either 'cat' or 'dog'.
         If `2`, returns a dictionary of format {'filename': 'either 'cat' or 'dog''}
@@ -75,8 +77,8 @@ def classify(generic_path):
         graph = tf.get_default_graph()
         input_ = graph.get_tensor_by_name('input:0')
         output = graph.get_tensor_by_name('output:0')
-        if os.path.exists(generic_path):
-            path = os.path.abspath(generic_path)
+        if os.path.exists(path):
+            path = os.path.abspath(path)
             if os.path.isfile(path):
                 input_arg = np.array([preprocessor.preprocess_image(path, [c.ROWS, c.COLS])])
                 result = sess.run(output, feed_dict={input_: input_arg})
@@ -87,7 +89,8 @@ def classify(generic_path):
             results = {}
             for objectname in os.listdir(path):
                 # TODO: File extensions are not necessarily .XXX; amount of X's is variable!!!
-                if objectname[-4:].lower() not in c.SUPPORTED_FORMATS:
+                if (os.path.splitext(os.path.join(path, objectname))[1].lower() not in
+                        c.SUPPORTED_FORMATS):
                     continue
                 image_path = os.path.join(path, objectname)
                 input_arg = np.array([preprocessor.preprocess_image(image_path, [c.ROWS, c.COLS])])
