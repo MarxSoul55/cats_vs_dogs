@@ -45,7 +45,7 @@ these that I won't even bother to list any, as a google-search will yield everyt
 ### If you do have an idea of what you're doing...
 *...follow these steps:*
 1. Download [Kaggle's dataset of cats and dogs](https://www.kaggle.com/c/dogs-vs-cats-redux-kernels-edition/data).
-2. Download the release: [v0.3](https://github.com/MarxSoul55/cats_vs_dogs/releases/tag/0.3)
+2. Download the release: [v0.3](https://github.com/MarxSoul55/cats_vs_dogs/releases/tag/v0.3)
     * **Note that these directions are all based off of v0.3**
 3. Set up your directory in the following way:
     * model.py (acts as the entry-point/interface for the training and testing capabilities)
