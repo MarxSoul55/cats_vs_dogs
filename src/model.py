@@ -89,23 +89,21 @@ def classify(path):
                 return 'dog'
             # Else, since `path` isn't a file, it must be a directory!
             results = {}
-            for objectname in os.listdir(path):
-                if (os.path.splitext(os.path.join(path, objectname))[1].lower() not in
-                        c.SUPPORTED_FORMATS):
-                    continue
-                image_path = os.path.join(path, objectname)
-                input_arg = np.array([preprocessor.preprocess_image(image_path, [c.COLS, c.ROWS])])
+            for image_name, preprocessed_image in preprocessor.preprocess_directory(
+                    path, [c.COLS, c.ROWS]):
+                input_arg = np.array([preprocessed_image])
                 result = sess.run(output, feed_dict={input_: input_arg})
                 if np.argmax(result) == 0:
-                    results[objectname] = 'cat'
+                    results[image_name] = 'cat'
                 else:
-                    results[objectname] = 'dog'
+                    results[image_name] = 'dog'
             return results
-        # TODO: Implement URL functionality.
         # Else, if `path` leads to nowhere on disk, it must be a URL!
-        #     url = generic_path
-        #     response = requests.get(url)
-        #     image = np.
+        input_arg = np.array([preprocessor.preprocess_image(path, [c.COLS, c.ROWS])])
+        result = sess.run(output, feed_dict={input_: input_arg})
+        if np.argmax(result) == np.argmax(c.ENCODING['cats']):
+            return 'cat'
+        return 'dog'
 
 
 if __name__ == '__main__':
