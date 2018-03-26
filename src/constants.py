@@ -1,7 +1,5 @@
 """Provides interface for constant values."""
 
-# Size of the minibatch when training.
-BATCH = 1
 # The rows, columns, and channels of the input-image.
 ROWS = 256
 COLS = 256

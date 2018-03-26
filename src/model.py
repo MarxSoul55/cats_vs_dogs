@@ -35,7 +35,7 @@ def train(steps, resuming):
             optimizer = graph.get_operation_by_name('optimizer')
             graph.get_operation_by_name('objective_summary')
         else:  # Else, we need to build the graph from scratch!
-            input_ = tf.placeholder(tf.float32, shape=[c.BATCH, c.ROWS, c.COLS, c.CHAN],
+            input_ = tf.placeholder(tf.float32, shape=[1, c.ROWS, c.COLS, c.CHAN],
                                     name='input')
             output = model(input_)
             label = tf.placeholder(tf.float32, shape=c.LABEL_SHAPE, name='label')
