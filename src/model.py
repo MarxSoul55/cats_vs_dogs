@@ -1,8 +1,10 @@
 """Provides an interface for interacting with the model."""
 
 import argparse
+import msvcrt
 import os
 import shutil
+import sys
 
 import numpy as np
 import tensorflow as tf
@@ -117,6 +119,10 @@ if __name__ == '__main__':
     parser.set_defaults(resuming=False)
     args = parser.parse_args()
     if args.train:
-        train(args.steps, args.resuming)
+        print('WARNING: Training will overwrite old model. EXECUTE Y/N?')
+        if msvcrt.getch().decode() == 'y':
+            train(args.steps, args.resuming)
+        else:
+            sys.exit('Program closed.')
     elif args.classify:
         print(classify(args.source))
