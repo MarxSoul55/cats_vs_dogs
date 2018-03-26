@@ -45,8 +45,8 @@ these that I won't even bother to list any, as a google-search will yield everyt
 ### If you do have an idea of what you're doing...
 *...follow these steps:*
 1. Download [Kaggle's dataset of cats and dogs](https://www.kaggle.com/c/dogs-vs-cats-redux-kernels-edition/data).
-2. Download the release: [v0.2](https://github.com/MarxSoul55/cats_vs_dogs/releases/tag/0.2)
-    * **Note that these directions are all based off of v0.2**
+2. Download the release: [v0.3](https://github.com/MarxSoul55/cats_vs_dogs/releases/tag/0.3)
+    * **Note that these directions are all based off of v0.3**
 3. Set up your directory in the following way:
     * model.py (acts as the entry-point/interface for the training and testing capabilities)
     * architecture.py (contains the architecture of the neural network)
@@ -88,9 +88,25 @@ and test the model. There are three main commands you'll need to know.
         * With this flag, the training will start where the model's paramters' values last were.
           Those values are stored in the files in `saved` directory. It will overwrite `saved` and
           `tensorboard`.
-    * `python model.py --classify --image data/test/1.jpg`
+    * `python model.py --classify --source data/test/1.jpg`
         * The `--classify` tells the program to test the model on an image, whose path is given by
-          the portion after the `--image` flag: `data/test/1.jpg`. The program will print a string:
+          the portion after the `--source` flag: `data/test/1.jpg`. The program will print a string:
           either "cat" or "dog".
+    * `python model.py --classify --source data/test`
+        * Similar to the previous command, except this time you're going through every image in the
+          `test` directory! This will print out a long dictionary of format {filename: prediction}.
+        * Note that this command ignores subdirectories and files [whose formats aren't supported by
+          OpenCV](http://amin-ahmadi.com/2016/09/24/list-of-image-formats-supported-by-opencv/).
+        * Note that the way the dictionary is printed out is quite messy, and so it'll be hard to
+          read for a big directory like `test` (which holds thousands of images from Kaggle).
+          That's because this command is only here for testing purposes, so I didn't bother making
+          it look nicer. If you want to print out the dictionary in a nicer way, you are welcome to
+          change the code!
+    * `python model.py --classify --source https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg`
+        * This time, the source is a URL! Notice the `.jpg` at the end, which indicates that this
+          URL points to a picture! The program will grab the image and then print either "cat" or
+          "dog", just like when you make `--source` point to a file on disk!
 5. That's all there is to it! I highly encourage you to tinker around with my code and change it as
-it suits your purposes—it currently suits mine very well, but for you, it may not!
+it suits your purposes—it currently suits mine very well, but for you, it may not! In previous
+versions, I believe modifications were difficult, but as of **v0.3**, I think the code has become
+much more beautiful, readable, and thus modifiable. Happy classifying!
