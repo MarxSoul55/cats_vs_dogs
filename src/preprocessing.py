@@ -2,9 +2,12 @@
 
 import os
 import random
+from io import BytesIO
 
 import cv2
 import numpy as np
+import requests
+from PIL import Image
 
 
 class ImagePreprocessor:
@@ -13,18 +16,25 @@ class ImagePreprocessor:
 
     def preprocess_image(self, path, rescale):
         """
-        Preprocesses an image into a tensor representation.
+        Given an image, grabs its pixels' RGB values as a tensor.
+        Makes several modifications to that tensor and returns the result.
 
         # Parameters
-            path (str): Path to the image.
+            path (str): Path to the image. May be a URL.
             rescale (list, int): Desired [columns, rows] of the resulting image.
         # Returns
-            A preprocessed image as a numpy-array whose shape is determined by `rescale`.
-            Specifically, a CIELAB (D65) representation in 'float32' in range [-1, 1].
+            A numpy array with shape `rescale[0] X rescale[1] X 3` (width X height X channels).
+            The 3 channels are that of CIELAB, which are L -> A -> B in that order of indices.
+            They are 'float32' values in range [-1, 1] for all 3 channels.
         # Raises
             TypeError: if the image's bit depth isn't 24.
         """
-        image = cv2.imread(path)
+        if os.path.exists(path):
+            image = cv2.imread(path)
+        else:  # If the path doesn't exist on disk, it must be a URL.
+            response = requests.get(path)
+            pil_object = Image.open(BytesIO(response.content))
+            image = np.array(pil_object)
         image = cv2.resize(image, tuple(rescale), interpolation=cv2.INTER_NEAREST)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2LAB)
         if image.dtype != 'uint8':
@@ -53,7 +63,7 @@ class ImagePreprocessor:
             rescale (list): Width and height that each image will be resized to.
                             ex: [1920, 1080]
         # Yields
-            A tuple (step, preprocessed_image_array, label_array) starting from step 1.
+            A tuple `(step, preprocessed_image_array, label_array)` starting from step 1.
         """
         train_dir = os.path.abspath(train_dir)
         class_names = os.listdir(train_dir)
