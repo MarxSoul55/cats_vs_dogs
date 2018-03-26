@@ -79,15 +79,7 @@ def classify(path):
         graph = tf.get_default_graph()
         input_ = graph.get_tensor_by_name('input:0')
         output = graph.get_tensor_by_name('output:0')
-        if os.path.exists(path):
-            path = os.path.abspath(path)
-            if os.path.isfile(path):
-                input_arg = np.array([preprocessor.preprocess_image(path, [c.COLS, c.ROWS])])
-                result = sess.run(output, feed_dict={input_: input_arg})
-                if np.argmax(result) == np.argmax(c.ENCODING['cats']):
-                    return 'cat'
-                return 'dog'
-            # Else, since `path` isn't a file, it must be a directory!
+        if os.path.isdir(path):
             results = {}
             for image_name, preprocessed_image in preprocessor.preprocess_directory(
                     path, [c.COLS, c.ROWS]):
@@ -98,7 +90,7 @@ def classify(path):
                 else:
                     results[image_name] = 'dog'
             return results
-        # Else, if `path` leads to nowhere on disk, it must be a URL!
+        # Else, `path` is either a file on disk or a URL.
         input_arg = np.array([preprocessor.preprocess_image(path, [c.COLS, c.ROWS])])
         result = sess.run(output, feed_dict={input_: input_arg})
         if np.argmax(result) == np.argmax(c.ENCODING['cats']):
