@@ -101,7 +101,8 @@ and test the model. There are three main commands you'll need to know.
           read for a big directory like `test` (which holds thousands of images from Kaggle).
           That's because this command is only here for testing purposes, so I didn't bother making
           it look nicer. If you want to print out the dictionary in a nicer way, you are welcome to
-          change the code!
+          change the code! If you want the actual dictionary (as a Python object), you should get
+          it through `model.classify`.
     * `python model.py --classify --source https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg`
         * This time, the source is a URL! Notice the `.jpg` at the end, which indicates that this
           URL points to a picture! The program will grab the image and then print either "cat" or
