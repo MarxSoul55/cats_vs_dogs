@@ -4,15 +4,15 @@
 ***
 ***
 ***
-# Hello World!
+# Hello World!  :blush:
 This repository contains the code for a computer-vision program. Using a convolutional
 neural-network (made with [TensorFlow](https://www.tensorflow.org/)), this program can tell
 whether a cat or dog is in a given picture to any arbitrary precision, depending on how you choose
 to structure the model's architecture and how long you choose to train it.
 
 The data used to train the model was [Kaggle's dataset.](https://www.kaggle.com/c/dogs-vs-cats-redux-kernels-edition/data)
-# Want to use and modify this program?
-### If you have no idea what you're doing here...
+# Want to use and modify this program?  :heart_eyes:
+### If you have no idea what you're doing here...  :anguished:
 If you want to use and modify this program to your fullest potential, you'll need to have *a lot*
 of background knowledge about artificial neural-networks and machine-learning in general. There's
 no way around these requirements, unfortunately. You have to put in the time, read lots of books
@@ -42,7 +42,7 @@ resources, however:
 Even having a solid background in machine-learning, you still need to (obviously) know how to
 program in Python and how to use the TensorFlow framework. There are so many tutorials for both of
 these that I won't even bother to list any, as a google-search will yield everything you seek.
-### If you do have an idea of what you're doing...
+### If you do have an idea of what you're doing...  :sunglasses:
 *...follow these steps:*
 1. Download [Kaggle's dataset of cats and dogs](https://www.kaggle.com/c/dogs-vs-cats-redux-kernels-edition/data).
 2. Download the release: [v0.3](https://github.com/MarxSoul55/cats_vs_dogs/releases/tag/v0.3)
@@ -110,4 +110,4 @@ and test the model. There are three main commands you'll need to know.
 5. That's all there is to it! I highly encourage you to tinker around with my code and change it as
 it suits your purposes—it currently suits mine very well, but for you, it may not! In previous
 versions, I believe modifications were difficult, but as of **v0.3**, I think the code has become
-much more beautiful, readable, and thus modifiable. Happy classifying!
+much more beautiful, readable, and thus modifiable. Happy classifying!  :heart:
