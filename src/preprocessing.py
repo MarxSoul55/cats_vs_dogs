@@ -14,6 +14,22 @@ class ImagePreprocessor:
 
     """Preprocesses images for a classifier."""
 
+    SUPPORTED_FORMATS = [
+        '.bmp',
+        '.pbm',
+        '.pgm',
+        '.ppm',
+        '.sr',
+        '.ras',
+        '.jpeg',
+        '.jpg',
+        '.jpe',
+        '.jp2',
+        '.tiff',
+        '.tif',
+        '.png'
+    ]
+
     def preprocess_image(self, path, rescale):
         """
         Given an image, grabs its pixels' RGB values as a tensor.
@@ -21,7 +37,7 @@ class ImagePreprocessor:
 
         # Parameters
             path (str): Path to the image. May be a URL.
-            rescale (list, int): Width and height (columns and rows) of the resulting image.
+            rescale (list, int): Width and height (columns and rows) of the resulting tensor.
         # Returns
             A numpy array with shape `rescale[0] X rescale[1] X 3` (width X height X channels).
             The 3 channels are that of CIELAB, which are L -> A -> B in that order of indices.
@@ -35,16 +51,40 @@ class ImagePreprocessor:
             response = requests.get(path)
             pil_object = Image.open(BytesIO(response.content))
             image = np.array(pil_object)
-        image = cv2.resize(image, tuple(rescale), interpolation=cv2.INTER_NEAREST)
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2LAB)
         if image.dtype != 'uint8':
             raise TypeError('When preprocessing `{}`, expected `uint8`, but got `{}`.'
                             .format(image, image.dtype))
-        image = image.astype('float32')
-        image /= 255
-        image *= 2
-        image -= 1
-        return image
+        preprocessed_image = cv2.resize(image, tuple(rescale),
+                                        interpolation=cv2.INTER_NEAREST)
+        preprocessed_image = cv2.cvtColor(preprocessed_image, cv2.COLOR_BGR2LAB)
+        preprocessed_image = preprocessed_image.astype('float32')
+        preprocessed_image /= 255
+        preprocessed_image *= 2
+        preprocessed_image -= 1
+        return preprocessed_image
+
+    def preprocess_directory(self, path, rescale):
+        """
+        Given a directory, preprocesses images in it with `ImagePreprocessor.preprocess_image`.
+        Subdirectories and files of unsupported formats are ignored.
+
+        # Parameters
+            path (str): Path to the directory.
+            rescale (list, int): Width and height (columns and rows) of each resulting tensor.
+        # Yields
+            A list `[filename, preprocessed_image_array]`.
+            See `ImagePreprocessor.preprocess_image` for details on the latter.
+        # Raises
+            TypeError: if an image's bit depth isn't 24.
+        """
+        path = os.path.abspath(path)
+        for objectname in os.listdir(path):
+            extension = os.path.splitext(os.path.join(path, objectname))[1].lower()
+            if extension not in self.SUPPORTED_FORMATS:
+                continue
+            image_path = os.path.join(path, objectname)
+            preprocessed_image = self.preprocess_image(image_path, rescale)
+            yield objectname, preprocessed_image
 
     def preprocess_classes(self, steps, train_dir, encoding, rescale):
         """
