@@ -82,7 +82,7 @@ def classify(path):
         if os.path.exists(path):
             path = os.path.abspath(path)
             if os.path.isfile(path):
-                input_arg = np.array([preprocessor.preprocess_image(path, [c.ROWS, c.COLS])])
+                input_arg = np.array([preprocessor.preprocess_image(path, [c.COLS, c.ROWS])])
                 result = sess.run(output, feed_dict={input_: input_arg})
                 if np.argmax(result) == np.argmax(c.ENCODING['cats']):
                     return 'cat'
@@ -95,7 +95,7 @@ def classify(path):
                         c.SUPPORTED_FORMATS):
                     continue
                 image_path = os.path.join(path, objectname)
-                input_arg = np.array([preprocessor.preprocess_image(image_path, [c.ROWS, c.COLS])])
+                input_arg = np.array([preprocessor.preprocess_image(image_path, [c.COLS, c.ROWS])])
                 result = sess.run(output, feed_dict={input_: input_arg})
                 if np.argmax(result) == 0:
                     results[objectname] = 'cat'

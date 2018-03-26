@@ -21,7 +21,7 @@ class ImagePreprocessor:
 
         # Parameters
             path (str): Path to the image. May be a URL.
-            rescale (list, int): Desired [columns, rows] of the resulting image.
+            rescale (list, int): Width and height (columns and rows) of the resulting image.
         # Returns
             A numpy array with shape `rescale[0] X rescale[1] X 3` (width X height X channels).
             The 3 channels are that of CIELAB, which are L -> A -> B in that order of indices.
@@ -60,7 +60,7 @@ class ImagePreprocessor:
             train_dir (str): Path to the directory of classes. May be relative or absolute.
             encoding (dict): Maps the name of the subdirectory (class) to a label.
                              ex: {'cats': [1, 0], 'dogs': [0, 1]}
-            rescale (list): Width and height that each image will be resized to.
+            rescale (list): Width and height (columns and rows) that each image will be resized to.
                             ex: [1920, 1080]
         # Yields
             A tuple `(step, preprocessed_image_array, label_array)` starting from step 1.
