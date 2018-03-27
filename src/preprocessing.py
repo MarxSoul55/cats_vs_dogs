@@ -37,7 +37,8 @@ class ImagePreprocessor:
 
         # Parameters
             path (str): Path to the image. May be a URL.
-            rescale (list, int): Width and height (columns and rows) of the resulting tensor.
+            rescale (list): Width and height (columns and rows) of the resulting tensor.
+                            ex: [1920, 1080]
         # Returns
             A numpy array with shape `rescale[0] X rescale[1] X 3` (width X height X channels).
             The 3 channels are that of CIELAB, which are L -> A -> B in that order of indices.
@@ -70,7 +71,8 @@ class ImagePreprocessor:
 
         # Parameters
             path (str): Path to the directory.
-            rescale (list, int): Width and height (columns and rows) of each resulting tensor.
+            rescale (list): Width and height (columns and rows) of each resulting tensor.
+                            ex: [1920, 1080]
         # Yields
             A list `[filename, preprocessed_image_array]`.
             See `ImagePreprocessor.preprocess_image` for details on the latter.
