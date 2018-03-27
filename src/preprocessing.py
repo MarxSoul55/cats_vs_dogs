@@ -59,9 +59,7 @@ class ImagePreprocessor:
                                         interpolation=cv2.INTER_NEAREST)
         preprocessed_image = cv2.cvtColor(preprocessed_image, cv2.COLOR_BGR2LAB)
         preprocessed_image = preprocessed_image.astype('float32')
-        preprocessed_image /= 255
-        preprocessed_image *= 2
-        preprocessed_image -= 1
+        preprocessed_image = ((preprocessed_image / 255) * 2) - 1
         return preprocessed_image
 
     def preprocess_directory(self, path, rescale):
