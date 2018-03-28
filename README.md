@@ -54,9 +54,9 @@ these that I won't even bother to list any, as a google-search will yield everyt
     * preprocessing.py (preprocesses the data by converting it into an appropriate tensor)
     * data  :minidisc:
         * train  :steam_locomotive:
-            * cats (will contain the images of cats from Kaggle)  :cat:
-            * dogs (will contain the images of dogs from Kaggle)  :dog:
-        * test (will contain test-images from Kaggle)  :pencil:
+            * cats :cat: (will contain the images of cats from Kaggle)
+            * dogs :dog: (will contain the images of dogs from Kaggle)
+        * test :pencil: (will contain test-images from Kaggle)
 4. Now you need to learn how to use `model.py`, which acts as the interface by which you'll train
 and test the model. There are five commands you should know:
     * `python model.py --train --steps 25000`
