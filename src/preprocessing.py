@@ -30,7 +30,7 @@ class ImagePreprocessor:
         '.png'
     ]
 
-    def preprocess_image(self, path, rescale, savefile=None):
+    def preprocess_image(self, path, rescale):
         """
         Given an image, grabs its pixels' RGB values as a tensor.
         Makes several modifications to that tensor and returns the result.
@@ -39,7 +39,6 @@ class ImagePreprocessor:
             path (str): Path to the image. May be a URL.
             rescale (list): Width and height (columns and rows) of the resulting tensor.
                             ex: [1920, 1080]
-            savefile (str): Where to save the resulting numpy array; if `None`, doesn't save.
         # Returns
             A numpy array with shape `rescale[0] X rescale[1] X 3` (width X height X channels).
             The 3 channels are that of CIELAB, which are L -> A -> B in that order of indices.
@@ -61,11 +60,9 @@ class ImagePreprocessor:
         preprocessed_image = cv2.cvtColor(preprocessed_image, cv2.COLOR_BGR2LAB)
         preprocessed_image = preprocessed_image.astype('float32')
         preprocessed_image = ((preprocessed_image / 255) * 2) - 1
-        if savefile is not None:
-            np.save(savefile, preprocessed_image)
         return preprocessed_image
 
-    def preprocess_directory(self, path, rescale, savedir=None):
+    def preprocess_directory(self, path, rescale):
         """
         An extension of `ImagePreprocessor.preprocess_image` for directories.
         Given a directory, preprocesses images in it with `ImagePreprocessor.preprocess_image`.
@@ -75,11 +72,6 @@ class ImagePreprocessor:
             path (str): Path to the directory.
             rescale (list): Width and height (columns and rows) of each resulting tensor.
                             ex: [1920, 1080]
-            savedir (str): Where to save the resulting numpy arrays; if `None`, doesn't save.
-                           The filenames of the original images will be joined to it.
-                           ex: savedir='hello/world' -> 'hello/world/picture.npy' where the ndarray
-                               'picture.npy' was originally an image 'picture.jpg' inside of the
-                               directory given by `path`.
         # Yields
             A list `[filename, preprocessed_image_array]`.
             See `ImagePreprocessor.preprocess_image` for details on the latter.
@@ -93,8 +85,6 @@ class ImagePreprocessor:
                 continue
             image_path = os.path.join(path, objectname)
             preprocessed_image = self.preprocess_image(image_path, rescale)
-            if savedir is not None:
-                np.save(os.path.join(path, objectname), preprocessed_image)
             yield objectname, preprocessed_image
 
     def preprocess_classes(self, steps, train_dir, encoding, rescale):
