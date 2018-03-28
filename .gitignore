@@ -20,3 +20,6 @@ saved/
 
 # Ahh, legacy. To store or not to store? NOT!
 legacy/
+
+# Archived files are necessary for me, but not for the repository.
+archive/
