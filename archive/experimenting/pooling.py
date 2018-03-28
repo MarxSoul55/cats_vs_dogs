@@ -4,7 +4,7 @@ import tensorflow as tf
 import numpy as np
 import cv2
 
-image = cv2.imread('s:/mystuff/library/gallery/trump_and_may.jpg')
+image = cv2.imread('s:/mystuff/library/gallery/meme.jpg')
 image = cv2.resize(image, (1024, 1024), interpolation=cv2.INTER_NEAREST)
 image = image.astype('float32')
 data = np.array([image])
@@ -17,3 +17,4 @@ result = result[0]
 print(result.shape)
 cv2.imshow('cv2', result)
 cv2.waitKey(0)
+cv2.destroyAllWindows()
