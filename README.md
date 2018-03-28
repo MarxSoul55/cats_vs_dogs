@@ -1,4 +1,4 @@
-## Note: If you're a UC application-reviewer... yes, it's really me—the guy applying for Fall 2018 :)
+## Note: If you're a UC application-reviewer... yes, it's really me—the guy applying for Fall 2018  :kissing_heart:
 ***
 ***
 ***
@@ -47,18 +47,18 @@ these that I won't even bother to list any, as a google-search will yield everyt
 1. Download [Kaggle's dataset of cats and dogs](https://www.kaggle.com/c/dogs-vs-cats-redux-kernels-edition/data).
 2. Download the release: [v0.3](https://github.com/MarxSoul55/cats_vs_dogs/releases/tag/v0.3)
     * **Note that these directions are all based off of v0.3**
-3. Set up your directory in the following way:
+3. Set up your directory :open_file_folder: in the following way:
     * model.py (acts as the entry-point/interface for the training and testing capabilities)
     * architecture.py (contains the architecture of the neural network)
     * constants.py (contains important constants like the training-directory, etc.)
     * preprocessing.py (preprocesses the data by converting it into an appropriate tensor)
-    * data
-        * train
-            * cats (will contain the images of cats from Kaggle)
-            * dogs (will contain the images of dogs from Kaggle)
-        * test (will contain test-images from Kaggle)
+    * data  :minidisc:
+        * train  :steam_locomotive:
+            * cats (will contain the images of cats from Kaggle)  :cat:
+            * dogs (will contain the images of dogs from Kaggle)  :dog:
+        * test (will contain test-images from Kaggle)  :pencil:
 4. Now you need to learn how to use `model.py`, which acts as the interface by which you'll train
-and test the model. There are three main commands you'll need to know.
+and test the model. There are five commands you should know:
     * `python model.py --train --steps 25000`
         * The `--train` tells the program to train the model, and the `--steps` tells the program how many
           "steps" it should take. By steps, I mean parameter-updates, which are performed
@@ -79,8 +79,8 @@ and test the model. There are three main commands you'll need to know.
           user.
         * After the training is complete, the program generate (or overwrite if exists) two
           directories:
-            * saved_model (self-explanatory)
-            * tensorboard
+            * saved_model :floppy_disk: (self-explanatory)
+            * tensorboard :chart_with_downwards_trend: (VERY IMPORTANT—this is how you monitor your error/loss/objective function)
                 * See https://www.tensorflow.org/get_started/summaries_and_tensorboard for details.
     * `python model.py --train --resuming --steps 25000`
         * Almost identical to the first command. Only thing different is the `--resuming` flag.
