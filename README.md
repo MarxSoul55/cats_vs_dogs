@@ -12,7 +12,7 @@ to structure the model's architecture and how long you choose to train it.
 
 The data used to train the model was [Kaggle's dataset.](https://www.kaggle.com/c/dogs-vs-cats-redux-kernels-edition/data)
 # Want to use and modify this program?  :heart_eyes:
-### If you have no idea what you're doing here...  :anguished:
+### If you have no idea what you're doing here...  :grimacing:
 If you want to use and modify this program to your fullest potential, you'll need to have *a lot*
 of background knowledge about artificial neural-networks and machine-learning in general. There's
 no way around these requirements, unfortunately. You have to put in the time, read lots of books
