@@ -80,11 +80,11 @@ and test the model. There are five commands you should know:
         * After the training is complete, the program generate (or overwrite if exists) two
           directories:
             * saved_model :floppy_disk: (self-explanatory)
-            * tensorboard :chart_with_downwards_trend: (VERY IMPORTANT—this is how you monitor your error/loss/objective function)
+            * tensorboard (VERY IMPORTANT—this is how you monitor your error/loss/objective function)
                 * After a session of training for the model, navigate to the directory containing
                   the `tensorboard` subdirectory and run `tensorboard --logdir=tensorboard`. After
                   a minute or two, the terminal will spit out a URL which you can follow to see the
-                  error function plotted over time.
+                  error function :chart_with_downwards_trend: plotted over time.
                 * See https://www.tensorflow.org/get_started/summaries_and_tensorboard for details.
     * `python model.py --train --resuming --steps 25000`
         * Almost identical to the first command. Only thing different is the `--resuming` flag.
