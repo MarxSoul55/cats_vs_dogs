@@ -1,5 +1,9 @@
 """Provides interface for constant values."""
 
+# Learning rate for the optimizer.
+LR = 0.001
+# Damping coefficient for momentum.
+DC = 0.9
 # The rows, columns, and channels of the input-image.
 ROWS = 256
 COLS = 256

@@ -40,7 +40,7 @@ def train(steps, resuming):
             output = model(input_)
             label = tf.placeholder(tf.float32, shape=c.LABEL_SHAPE, name='label')
             objective = tf.sqrt(tf.losses.mean_squared_error(label, output), name='objective')
-            optimizer = tf.train.MomentumOptimizer(0.001, 0.9, use_nesterov=True,
+            optimizer = tf.train.MomentumOptimizer(c.LR, c.DC, use_nesterov=True,
                                                    name='optimizer').minimize(objective)
             tf.summary.scalar('objective_summary', objective)
             sess.run(tf.global_variables_initializer())
