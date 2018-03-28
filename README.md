@@ -111,7 +111,14 @@ and test the model. There are five commands you should know:
         * This time, the source is a URL! Notice the `.jpg` at the end, which indicates that this
           URL points to a picture! The program will grab the image and then print either "cat" or
           "dog", just like when you make `--source` point to a file on disk!
-5. That's all there is to it! I highly encourage you to tinker around with my code and change it as
+5. **Note that everything above will use the "default settings" which I've specified for my own
+endeavors.** This means the architecture of the neural-network, its optimizer, its objective
+function, etc. are all based off of my personal choices for my own experimentation. **The point is
+that you are welcome AND encouraged to change the code for yourself.** In step 3 above, I've
+provided some short descriptions of each file, but I believe that the code is fairly readable, and
+I've provided lots of docstrings and some comments that can help you make sense of the code so that
+you may modify it easily.
+6. That's all there is to it! I highly encourage you to tinker around with my code and change it as
 it suits your purposes—it currently suits mine very well, but for you, it may not! In previous
 versions, I believe modifications were difficult, but as of **v0.3**, I think the code has become
 much more beautiful, readable, and thus modifiable. Happy classifying!  :heart:
