@@ -64,6 +64,7 @@ class ImagePreprocessor:
 
     def preprocess_directory(self, path, rescale):
         """
+        An extension of `ImagePreprocessor.preprocess_image` for directories.
         Given a directory, preprocesses images in it with `ImagePreprocessor.preprocess_image`.
         Subdirectories and files of unsupported formats are ignored.
 
@@ -92,7 +93,7 @@ class ImagePreprocessor:
         then the 2nd, then the Nth, and then loops back towards the 1st and gets another image,
         etc. The order of the images in each subdir is randomized. After all images in a directory
         have been preprocessed (given that `steps` is big enough), preprocessing will start over at
-        the beginning of the directory in question. The order of images won't be randomized again.
+        the beginning of the directory in question. The order of images won't be rerandomized.
 
         # Parameters
             steps (int): Amount of step-input-label triplets to generate (aka amount of images that
