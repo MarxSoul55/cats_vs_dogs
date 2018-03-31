@@ -124,8 +124,8 @@ class ImagePreprocessor:
                     return
                 image_path = os.path.join(class_path, images[class_name][cursors[class_name]])
                 preprocessed_image = self.preprocess_image(image_path, rescale)
-                preprocessed_image = np.array([preprocessed_image])
-                label = np.array([encoding[class_name]]).astype('float32')
+                preprocessed_image = np.expand_dims(preprocessed_image, axis=0)
+                label = np.expand_dims(encoding[class_name], axis=0).astype('float32')
                 if cursors[class_name] == (len(images[class_name]) - 1):
                     cursors[class_name] = 0
                 else:

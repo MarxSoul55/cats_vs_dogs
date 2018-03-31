@@ -83,7 +83,7 @@ def classify(path):
             results = {}
             for image_name, preprocessed_image in preprocessor.preprocess_directory(
                     path, [c.COLS, c.ROWS]):
-                input_arg = np.array([preprocessed_image])
+                input_arg = np.expand_dims(preprocessed_image, axis=0)
                 result = sess.run(output, feed_dict={input_: input_arg})
                 if np.argmax(result) == 0:
                     results[image_name] = 'cat'
@@ -91,7 +91,7 @@ def classify(path):
                     results[image_name] = 'dog'
             return results
         # Else, `path` is either a file on disk or a URL.
-        input_arg = np.array([preprocessor.preprocess_image(path, [c.COLS, c.ROWS])])
+        input_arg = np.expand_dims(preprocessor.preprocess_image(path, [c.COLS, c.ROWS]), axis=0)
         result = sess.run(output, feed_dict={input_: input_arg})
         if np.argmax(result) == np.argmax(c.ENCODING['cats']):
             return 'cat'
