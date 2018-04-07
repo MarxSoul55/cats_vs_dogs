@@ -8,6 +8,8 @@ DC = 0.9
 ROWS = 256
 COLS = 256
 CHAN = 3
+# Color space that the input-image will be converted to.
+COLOR_SPACE = 'CIELAB'
 # Provides `encoding` argument for `preprocessing.ImagePreprocessor.preprocess_directory`.
 # WARNING DANGER HAZARD: ANY CHANGE TO THE LABELS MUST BE ACCOUNTED FOR IN `LABEL_SHAPE` BELOW!
 ENCODING = {'cats': [1, 0], 'dogs': [0, 1]}
