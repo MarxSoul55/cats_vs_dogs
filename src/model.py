@@ -109,7 +109,7 @@ if __name__ == '__main__':
     parser.set_defaults(resuming=False)
     args = parser.parse_args()
     if args.train:
-        print('WARNING: Training will overwrite old model. EXECUTE Y/N?')
+        print('WARNING: Training will overwrite the saved model (if it exists). EXECUTE Y/N?')
         if msvcrt.getch().decode().lower() == 'y':
             train(args.steps, args.resuming)
         else:
