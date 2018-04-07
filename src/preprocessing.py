@@ -164,6 +164,9 @@ class ImagePreprocessor:
                 else:
                     return
                 image_path = os.path.join(class_path, images[class_name][cursors[class_name]])
+                extension = os.path.splitext(image_path)[1].lower()
+                if extension not in self.SUPPORTED_FORMATS:
+                    continue
                 preprocessed_image = self.preprocess_image(image_path)
                 preprocessed_image = np.expand_dims(preprocessed_image, axis=0)
                 label = np.expand_dims(encoding[class_name], axis=0).astype('float32')
