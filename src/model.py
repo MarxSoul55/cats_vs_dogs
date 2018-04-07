@@ -46,10 +46,9 @@ def train(steps, resuming):
             sess.run(tf.global_variables_initializer())
         summary = tf.summary.merge_all()
         writer = tf.summary.FileWriter(c.TENSORBOARD_DIR, graph=tf.get_default_graph())
-        for step, input_arg, label_arg in ImagePreprocessor().preprocess_classes(steps,
-                                                                                 c.TRAIN_DIR,
-                                                                                 c.ENCODING,
-                                                                                 [c.COLS, c.ROWS]):
+        preprocessor = ImagePreprocessor([c.COLS, c.ROWS], c.COLOR_SPACE)
+        for step, input_arg, label_arg in preprocessor.preprocess_classes(steps, c.TRAIN_DIR,
+                                                                          c.ENCODING):
             print('Step: {}/{}'.format(step, steps))
             sess.run(optimizer, feed_dict={input_: input_arg, label: label_arg})
 
@@ -67,12 +66,15 @@ def classify(path):
     3. Given a URL to an image, classifies it.
 
     # Parameters
-        path (str): Can be a normal path to a disk location or a URL.
+        path (str):
+            - Can be a normal path to an image on disk.
+            - Can also be a URL that returns an image.
     # Returns
-        If `1` or `3`, returns a string—either 'cat' or 'dog'.
-        If `2`, returns a dictionary of format {'filename': 'either 'cat' or 'dog''}
+        - If given path to an image file on disk, or a URL to an image, returns a string that is
+          either 'cat' or 'dog'.
+        - If given path to a directory, returns a dictionary {'filename': 'guessed animal'}
     """
-    preprocessor = ImagePreprocessor()
+    preprocessor = ImagePreprocessor([c.COLS, c.ROWS], c.COLOR_SPACE)
     with tf.Session() as sess:
         loader = tf.train.import_meta_graph(c.SAVEMODEL_DIR + '.meta')
         loader.restore(sess, c.SAVEMODEL_DIR)
@@ -81,8 +83,7 @@ def classify(path):
         output = graph.get_tensor_by_name('output:0')
         if os.path.isdir(path):
             results = {}
-            for image_name, preprocessed_image in preprocessor.preprocess_directory(
-                    path, [c.COLS, c.ROWS]):
+            for image_name, preprocessed_image in preprocessor.preprocess_directory(path):
                 input_arg = np.expand_dims(preprocessed_image, axis=0)
                 result = sess.run(output, feed_dict={input_: input_arg})
                 if np.argmax(result) == 0:
@@ -91,7 +92,7 @@ def classify(path):
                     results[image_name] = 'dog'
             return results
         # Else, `path` is either a file on disk or a URL.
-        input_arg = np.expand_dims(preprocessor.preprocess_image(path, [c.COLS, c.ROWS]), axis=0)
+        input_arg = np.expand_dims(preprocessor.preprocess_image(path), axis=0)
         result = sess.run(output, feed_dict={input_: input_arg})
         if np.argmax(result) == np.argmax(c.ENCODING['cats']):
             return 'cat'
