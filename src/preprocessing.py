@@ -12,8 +12,9 @@ from PIL import Image
 
 class ImagePreprocessor:
 
-    """Preprocesses images for a classifier."""
+    """A preprocessor that handles visual data encoded in various image formats."""
 
+    # All the supported image formats by OpenCV.
     SUPPORTED_FORMATS = [
         '.bmp',
         '.pbm',
@@ -30,21 +31,48 @@ class ImagePreprocessor:
         '.png'
     ]
 
-    def preprocess_image(self, path, rescale):
+    def __init__(self, rescale, color_space):
         """
-        Given an image, grabs its pixels' RGB values as a tensor.
-        Makes several modifications to that tensor and returns the result.
+        # Instance Attributes
+            self.rescale (list of two integers):
+                - Desired [width, height] of the resulting tensor.
+                - The interpolation algorithm used is bilinear interpolation.
+            self.color_space (str):
+                - Color space, or "representation", of the resulting tensor.
+                - Options are: {'RGB', 'GRAYSCALE', 'RGB+GRAYSCALE', 'CIELAB', 'HSV'}
+                - 'RGB' is simply the raw RGB values as given from the input tensor.
+                  Output tensors will be HxWx3 in range [0, 1].
+                - 'GRAYSCALE' is computed via OpenCV's implementation. See here:
+                  https://bit.ly/2pUL2hR
+                  Output tensors will be HxWx1 in range [0, 1].
+                - 'RGB+GRAYSCALE' is simply RGB with a fourth channel—grayscale—as shown above.
+                  Output tensors will be HxWx4 in range [0, 1].
+                - 'CIELAB' is computed via OpenCV's implementation. See here:
+                  https://bit.ly/2pUL2hR
+                  'L' is bounded in [0, 1]; 'A' and 'B' are in [-1, 1].
+                  The white reference point is from the D65 illuminant; shape is HxWx3.
+                - 'HSV' is computed via OpenCV's implementation. See here:
+                  https://bit.ly/2pUL2hR
+                  Output tensors will be HxWx3 in range [0, 1].
+        """
+        self.rescale = rescale
+        self.color_space = color_space
+
+    def preprocess_image(self, path):
+        """
+        Given an image, grabs its pixels' RGB values as a tensor and converts it into a
+        representation fitting the instance's attributes.
 
         # Parameters
-            path (str): Path to the image. May be a URL.
-            rescale (list): Width and height (columns and rows) of the resulting tensor.
-                            ex: [1920, 1080]
+            path (str):
+                - Path to the image.
+                - Can be a path to a local image on disk.
+                - May also be a URL that returns the image by itself.
         # Returns
-            A numpy array with shape `rescale[0] X rescale[1] X 3` (width X height X channels).
-            The 3 channels are that of CIELAB, which are L -> A -> B in that order of indices.
-            They are 'float32' values in range [-1, 1] for all 3 channels.
+            - A numpy array, customized according to the instance's attributes.
+            - Type will be 'float32'.
         # Raises
-            TypeError: if the image's bit depth isn't 24.
+            - TypeError: if the image's bit depth isn't 24 bits per pixel.
         """
         if os.path.exists(path):
             image = cv2.imread(path)
@@ -55,23 +83,42 @@ class ImagePreprocessor:
         if image.dtype != 'uint8':
             raise TypeError('When preprocessing `{}`, expected `uint8`, but got `{}`.'
                             .format(image, image.dtype))
-        preprocessed_image = cv2.resize(image, tuple(rescale),
-                                        interpolation=cv2.INTER_NEAREST)
-        preprocessed_image = cv2.cvtColor(preprocessed_image, cv2.COLOR_BGR2LAB)
-        preprocessed_image = preprocessed_image.astype('float32')
-        preprocessed_image = ((preprocessed_image / 255) * 2) - 1
-        return preprocessed_image
+        image = cv2.resize(image, tuple(self.rescale), interpolation=cv2.INTER_LINEAR)
+        if self.color_space == 'RGB':
+            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB).astype('float32')
+            image /= 255
+            return image
+        elif self.color_space == 'GRAYSCALE':
+            image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY).astype('float32')
+            image /= 255
+            image = np.expand_dims(image, axis=2)
+            return image
+        elif self.color_space == 'RGB+GRAYSCALE':
+            rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB).astype('float32')
+            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY).astype('float32')
+            image = np.dstack((rgb, gray))
+            image /= 255
+            return image
+        elif self.color_space == 'CIELAB':
+            image = cv2.cvtColor(image, cv2.COLOR_BGR2LAB).astype('float32')
+            image[:, :, 0] /= 255
+            image[:, :, 1] = ((image[:, :, 1] / 255) * 2) - 1
+            image[:, :, 2] = ((image[:, :, 2] / 255) * 2) - 1
+            return image
+        else:  # self.color_space == 'HSV'
+            image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV).astype('float32')
+            image /= 255
+            return image
 
-    def preprocess_directory(self, path, rescale):
+    def preprocess_directory(self, path):
         """
         An extension of `ImagePreprocessor.preprocess_image` for directories.
         Given a directory, preprocesses images in it with `ImagePreprocessor.preprocess_image`.
         Subdirectories and files of unsupported formats are ignored.
 
         # Parameters
-            path (str): Path to the directory.
-            rescale (list): Width and height (columns and rows) of each resulting tensor.
-                            ex: [1920, 1080]
+            path (str):
+                - Path to the directory.
         # Yields
             A list `[filename, preprocessed_image_array]`.
             See `ImagePreprocessor.preprocess_image` for details on the latter.
@@ -84,10 +131,10 @@ class ImagePreprocessor:
             if extension not in self.SUPPORTED_FORMATS:
                 continue
             image_path = os.path.join(path, objectname)
-            preprocessed_image = self.preprocess_image(image_path, rescale)
+            preprocessed_image = self.preprocess_image(image_path)
             yield objectname, preprocessed_image
 
-    def preprocess_classes(self, steps, train_dir, encoding, rescale):
+    def preprocess_classes(self, steps, train_dir, encoding):
         """
         Given a directory of subdirectories of images, preprocesses an image from the 1st subdir,
         then the 2nd, then the Nth, and then loops back towards the 1st and gets another image,
@@ -96,13 +143,14 @@ class ImagePreprocessor:
         the beginning of the directory in question. The order of images won't be rerandomized.
 
         # Parameters
-            steps (int): Amount of step-input-label triplets to generate (aka amount of images that
-                         will be preprocessed).
-            train_dir (str): Path to the directory of classes. May be relative or absolute.
-            encoding (dict): Maps the name of the subdirectory (class) to a label.
-                             ex: {'cats': [1, 0], 'dogs': [0, 1]}
-            rescale (list): Width and height (columns and rows) that each image will be resized to.
-                            ex: [1920, 1080]
+            steps (int):
+                - Amount of step-input-label triplets to generate.
+            train_dir (str):
+                - Path to the directory of classes.
+                - May be relative or absolute.
+            encoding (dict):
+                - Maps the name of the subdirectory (class) to a label.
+                - ex: {'cats': [1, 0], 'dogs': [0, 1]}
         # Yields
             A tuple `(step, preprocessed_image_array, label_array)` starting from step 1.
         """
@@ -123,7 +171,7 @@ class ImagePreprocessor:
                 else:
                     return
                 image_path = os.path.join(class_path, images[class_name][cursors[class_name]])
-                preprocessed_image = self.preprocess_image(image_path, rescale)
+                preprocessed_image = self.preprocess_image(image_path)
                 preprocessed_image = np.expand_dims(preprocessed_image, axis=0)
                 label = np.expand_dims(encoding[class_name], axis=0).astype('float32')
                 if cursors[class_name] == (len(images[class_name]) - 1):
