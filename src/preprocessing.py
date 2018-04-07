@@ -71,8 +71,6 @@ class ImagePreprocessor:
         # Returns
             - A numpy array, customized according to the instance's attributes.
             - Type will be 'float32'.
-        # Raises
-            - TypeError: if the image's bit depth isn't 24 bits per pixel.
         """
         if os.path.exists(path):
             image = cv2.imread(path)
@@ -80,9 +78,6 @@ class ImagePreprocessor:
             response = requests.get(path)
             pil_object = Image.open(BytesIO(response.content))
             image = np.array(pil_object)
-        if image.dtype != 'uint8':
-            raise TypeError('When preprocessing `{}`, expected `uint8`, but got `{}`.'
-                            .format(image, image.dtype))
         image = cv2.resize(image, tuple(self.rescale), interpolation=cv2.INTER_LINEAR)
         if self.color_space == 'RGB':
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB).astype('float32')
@@ -122,8 +117,6 @@ class ImagePreprocessor:
         # Yields
             A list `[filename, preprocessed_image_array]`.
             See `ImagePreprocessor.preprocess_image` for details on the latter.
-        # Raises
-            TypeError: if an image's bit depth isn't 24.
         """
         path = os.path.abspath(path)
         for objectname in os.listdir(path):
