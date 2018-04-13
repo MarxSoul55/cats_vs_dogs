@@ -1,4 +1,4 @@
-"""Defines (and provides a builder-function for) the architecture of the model."""
+"""Provides interface for the definition of the model's architecture."""
 
 import tensorflow as tf
 
