@@ -9,8 +9,8 @@ import sys
 import numpy as np
 import tensorflow as tf
 
+import architecture
 import constants as c
-from architecture import model
 from preprocessing import ImagePreprocessor
 
 
@@ -19,8 +19,10 @@ def train(steps, resuming):
     Trains the model and saves the result.
 
     # Parameters
-        steps (int): Amount of images to train on.
-        resuming (bool): Whether to train from scratch or resume training from a saved model.
+        steps (int):
+            - Amount of images to train on.
+        resuming (bool):
+            - Whether to train from scratch or resume training from a saved model.
     """
     # TensorBoard refuses to simply overwrite old data, so this is necessary.
     if c.TENSORBOARD_DIR in os.listdir():
@@ -37,9 +39,9 @@ def train(steps, resuming):
         else:  # Else, we need to build the graph from scratch!
             input_ = tf.placeholder(tf.float32, shape=[1, c.ROWS, c.COLS, c.CHAN],
                                     name='input')
-            output = model(input_)
+            output = architecture.model(input_, name='output')
             label = tf.placeholder(tf.float32, shape=c.LABEL_SHAPE, name='label')
-            objective = tf.sqrt(tf.losses.mean_squared_error(label, output), name='objective')
+            objective = tf.identity(tf.losses.mean_squared_error(label, output), name='objective')
             optimizer = tf.train.MomentumOptimizer(c.LR, c.DC, use_nesterov=True,
                                                    name='optimizer').minimize(objective)
             tf.summary.scalar('objective_summary', objective)
