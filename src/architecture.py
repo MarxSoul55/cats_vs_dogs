@@ -3,14 +3,18 @@
 import tensorflow as tf
 
 
-def model(input_):
+def model(input_, name=None):
     """
     Builds the model's architecture on the graph.
 
     # Parameters
-        input_ (tf.placeholder): Placeholder for the input data.
+        input_ (tf.placeholder):
+            - Placeholder for the input data.
+        name (str):
+            - The name of the the model.
+            - In other words: the name of the last node of the model.
     # Returns
-        The output of the model.
+        - The output of the model.
     """
     op1 = tf.layers.conv2d(input_, 8, 3, padding='same', activation=tf.nn.elu,
                            kernel_initializer=tf.initializers.orthogonal())
@@ -61,7 +65,7 @@ def model(input_):
     op29 = op26 + op28
     op30 = tf.layers.average_pooling2d(op29, 2, 2)
     op31 = tf.layers.average_pooling2d(op30, op30.shape.as_list()[1], 1)
-    op32 = tf.reshape(op31, [1, op31.shape.as_list()[3]], name='refined')
+    op32 = tf.reshape(op31, [1, op31.shape.as_list()[3]])
     op33 = tf.layers.dense(op32, 2, kernel_initializer=tf.initializers.orthogonal())
-    output = tf.identity(op33, name='output')
+    output = tf.identity(op33, name=name)
     return output
