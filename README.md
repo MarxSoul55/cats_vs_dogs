@@ -46,6 +46,7 @@ program in Python and how to use the TensorFlow framework. There are so many tut
 these that I won't even bother to list any, as a google-search will yield everything you seek.
 ### If you do have an idea of what you're doing...  :sunglasses:
 *...follow these steps:*
+### *Setting Up*
 1. Download [Kaggle's dataset of cats and dogs](https://www.kaggle.com/c/dogs-vs-cats-redux-kernels-edition/data).
 2. Download the release: [v0.5](https://github.com/MarxSoul55/cats_vs_dogs/releases/tag/v0.5)
     * **Note that these directions are all based off of v0.5**
@@ -59,6 +60,7 @@ these that I won't even bother to list any, as a google-search will yield everyt
             * cats :cat: (will contain the images of cats from Kaggle)
             * dogs :dog: (will contain the images of dogs from Kaggle)
         * test :pencil: (will contain test-images from Kaggle)
+### *Using the CLI*
 4. Now you need to learn how to use `model.py`, which acts as the interface by which you'll train
 and test the model. There are five commands you should know:
     * `python model.py --train --steps 25000`
@@ -113,6 +115,7 @@ and test the model. There are five commands you should know:
         * This time, the source is a URL! Notice the `.jpg` at the end, which indicates that this
           URL points to a picture! The program will grab the image and then print either "cat" or
           "dog", just like when you make `--source` point to a file on disk!
+### *Some Final Words*
 5. **Note that everything above will use the "default settings" which I've specified for my own
 endeavors.** This means the architecture of the neural-network, its optimizer, its objective
 function, etc. are all based off of my personal choices for my own experimentation. **The point is
