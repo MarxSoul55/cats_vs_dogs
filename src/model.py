@@ -102,7 +102,8 @@ def classify(path):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        description='Need help? See: https://github.com/MarxSoul55/cats_vs_dogs#using-the-cli')
     parser.add_argument('--train', action='store_true')
     parser.add_argument('--resuming', action='store_true')
     parser.add_argument('--steps', type=int)
