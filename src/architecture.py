@@ -11,61 +11,61 @@ def model(input_, name=None):
         input_ (tf.placeholder):
             - Placeholder for the input data.
         name (str):
-            - The name of the the model.
-            - In other words: the name of the last node of the model.
+            - The name of the scope of the model's operations.
     # Returns
         - The output of the model.
     """
-    op1 = tf.layers.conv2d(input_, 8, 3, padding='same', activation=tf.nn.elu,
-                           kernel_initializer=tf.initializers.orthogonal())
-    op2 = tf.layers.conv2d(op1, 8, 3, padding='same', activation=tf.nn.elu,
-                           kernel_initializer=tf.initializers.orthogonal())
-    op3 = tf.layers.conv2d(op2, 8, 3, padding='same', activation=tf.nn.elu,
-                           kernel_initializer=tf.initializers.orthogonal())
-    op4 = op1 + op3
-    op5 = tf.layers.average_pooling2d(op4, 2, 2)
-    op6 = tf.layers.conv2d(op5, 16, 3, padding='same', activation=tf.nn.elu,
-                           kernel_initializer=tf.initializers.orthogonal())
-    op7 = tf.layers.conv2d(op6, 16, 3, padding='same', activation=tf.nn.elu,
-                           kernel_initializer=tf.initializers.orthogonal())
-    op8 = tf.layers.conv2d(op7, 16, 3, padding='same', activation=tf.nn.elu,
-                           kernel_initializer=tf.initializers.orthogonal())
-    op9 = op6 + op8
-    op10 = tf.layers.average_pooling2d(op9, 2, 2)
-    op11 = tf.layers.conv2d(op10, 32, 3, padding='same', activation=tf.nn.elu,
-                            kernel_initializer=tf.initializers.orthogonal())
-    op12 = tf.layers.conv2d(op11, 32, 3, padding='same', activation=tf.nn.elu,
-                            kernel_initializer=tf.initializers.orthogonal())
-    op13 = tf.layers.conv2d(op12, 32, 3, padding='same', activation=tf.nn.elu,
-                            kernel_initializer=tf.initializers.orthogonal())
-    op14 = op11 + op13
-    op15 = tf.layers.average_pooling2d(op14, 2, 2)
-    op16 = tf.layers.conv2d(op15, 64, 3, padding='same', activation=tf.nn.elu,
-                            kernel_initializer=tf.initializers.orthogonal())
-    op17 = tf.layers.conv2d(op16, 64, 3, padding='same', activation=tf.nn.elu,
-                            kernel_initializer=tf.initializers.orthogonal())
-    op18 = tf.layers.conv2d(op17, 64, 3, padding='same', activation=tf.nn.elu,
-                            kernel_initializer=tf.initializers.orthogonal())
-    op19 = op16 + op18
-    op20 = tf.layers.average_pooling2d(op19, 2, 2)
-    op21 = tf.layers.conv2d(op20, 128, 3, padding='same', activation=tf.nn.elu,
-                            kernel_initializer=tf.initializers.orthogonal())
-    op22 = tf.layers.conv2d(op21, 128, 3, padding='same', activation=tf.nn.elu,
-                            kernel_initializer=tf.initializers.orthogonal())
-    op23 = tf.layers.conv2d(op22, 128, 3, padding='same', activation=tf.nn.elu,
-                            kernel_initializer=tf.initializers.orthogonal())
-    op24 = op21 + op23
-    op25 = tf.layers.average_pooling2d(op24, 2, 2)
-    op26 = tf.layers.conv2d(op25, 256, 3, padding='same', activation=tf.nn.elu,
-                            kernel_initializer=tf.initializers.orthogonal())
-    op27 = tf.layers.conv2d(op26, 256, 3, padding='same', activation=tf.nn.elu,
-                            kernel_initializer=tf.initializers.orthogonal())
-    op28 = tf.layers.conv2d(op27, 256, 3, padding='same', activation=tf.nn.elu,
-                            kernel_initializer=tf.initializers.orthogonal())
-    op29 = op26 + op28
-    op30 = tf.layers.average_pooling2d(op29, 2, 2)
-    op31 = tf.layers.average_pooling2d(op30, op30.shape.as_list()[1], 1)
-    op32 = tf.reshape(op31, [1, op31.shape.as_list()[3]])
-    op33 = tf.layers.dense(op32, 2, kernel_initializer=tf.initializers.orthogonal())
-    output = tf.identity(op33, name=name)
-    return output
+    with tf.name_scope(name):
+        skip1 = tf.layers.conv2d(input_, 8, 3, padding='same', activation=tf.nn.elu,
+                                 kernel_initializer=tf.initializers.orthogonal())
+        x = tf.layers.conv2d(skip1, 8, 3, padding='same', activation=tf.nn.elu,
+                             kernel_initializer=tf.initializers.orthogonal())
+        x = tf.layers.conv2d(x, 8, 3, padding='same', activation=tf.nn.elu,
+                             kernel_initializer=tf.initializers.orthogonal())
+        x = x + skip1
+        x = tf.layers.average_pooling2d(x, 2, 2)
+        skip2 = tf.layers.conv2d(x, 16, 3, padding='same', activation=tf.nn.elu,
+                                 kernel_initializer=tf.initializers.orthogonal())
+        x = tf.layers.conv2d(skip2, 16, 3, padding='same', activation=tf.nn.elu,
+                             kernel_initializer=tf.initializers.orthogonal())
+        x = tf.layers.conv2d(x, 16, 3, padding='same', activation=tf.nn.elu,
+                             kernel_initializer=tf.initializers.orthogonal())
+        x = x + skip2
+        x = tf.layers.average_pooling2d(x, 2, 2)
+        skip3 = tf.layers.conv2d(x, 32, 3, padding='same', activation=tf.nn.elu,
+                                 kernel_initializer=tf.initializers.orthogonal())
+        x = tf.layers.conv2d(skip3, 32, 3, padding='same', activation=tf.nn.elu,
+                             kernel_initializer=tf.initializers.orthogonal())
+        x = tf.layers.conv2d(x, 32, 3, padding='same', activation=tf.nn.elu,
+                             kernel_initializer=tf.initializers.orthogonal())
+        x = x + skip3
+        x = tf.layers.average_pooling2d(x, 2, 2)
+        skip4 = tf.layers.conv2d(x, 64, 3, padding='same', activation=tf.nn.elu,
+                                 kernel_initializer=tf.initializers.orthogonal())
+        x = tf.layers.conv2d(skip4, 64, 3, padding='same', activation=tf.nn.elu,
+                             kernel_initializer=tf.initializers.orthogonal())
+        x = tf.layers.conv2d(x, 64, 3, padding='same', activation=tf.nn.elu,
+                             kernel_initializer=tf.initializers.orthogonal())
+        x = x + skip4
+        x = tf.layers.average_pooling2d(x, 2, 2)
+        skip5 = tf.layers.conv2d(x, 128, 3, padding='same', activation=tf.nn.elu,
+                                 kernel_initializer=tf.initializers.orthogonal())
+        x = tf.layers.conv2d(skip5, 128, 3, padding='same', activation=tf.nn.elu,
+                             kernel_initializer=tf.initializers.orthogonal())
+        x = tf.layers.conv2d(x, 128, 3, padding='same', activation=tf.nn.elu,
+                             kernel_initializer=tf.initializers.orthogonal())
+        x = x + skip5
+        x = tf.layers.average_pooling2d(x, 2, 2)
+        skip6 = tf.layers.conv2d(x, 256, 3, padding='same', activation=tf.nn.elu,
+                                 kernel_initializer=tf.initializers.orthogonal())
+        x = tf.layers.conv2d(skip6, 256, 3, padding='same', activation=tf.nn.elu,
+                             kernel_initializer=tf.initializers.orthogonal())
+        x = tf.layers.conv2d(x, 256, 3, padding='same', activation=tf.nn.elu,
+                             kernel_initializer=tf.initializers.orthogonal())
+        x = x + skip6
+        x = tf.layers.average_pooling2d(x, 2, 2)
+        x = tf.layers.average_pooling2d(x, x.shape.as_list()[1], 1)
+        x = tf.reshape(x, [1, x.shape.as_list()[3]], name='distilled')
+        x = tf.layers.dense(x, 2, kernel_initializer=tf.initializers.orthogonal())
+        x = tf.identity(x, name='output')
+        return x

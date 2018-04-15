@@ -39,9 +39,9 @@ def train(steps, resuming):
         else:  # Else, we need to build the graph from scratch!
             input_ = tf.placeholder(tf.float32, shape=[1, c.ROWS, c.COLS, c.CHAN],
                                     name='input')
-            output = architecture.model(input_, name='output')
+            model = architecture.model(input_, name='model')
             label = tf.placeholder(tf.float32, shape=c.LABEL_SHAPE, name='label')
-            objective = tf.identity(tf.losses.mean_squared_error(label, output), name='objective')
+            objective = tf.identity(tf.losses.mean_squared_error(label, model), name='objective')
             optimizer = tf.train.MomentumOptimizer(c.LR, c.DC, use_nesterov=True,
                                                    name='optimizer').minimize(objective)
             tf.summary.scalar('objective_summary', objective)
@@ -82,12 +82,12 @@ def classify(path):
         loader.restore(sess, c.SAVEMODEL_DIR)
         graph = tf.get_default_graph()
         input_ = graph.get_tensor_by_name('input:0')
-        output = graph.get_tensor_by_name('output:0')
+        model_output = graph.get_tensor_by_name('model/output:0')
         if os.path.isdir(path):
             results = {}
             for image_name, preprocessed_image in preprocessor.preprocess_directory(path):
                 input_arg = np.expand_dims(preprocessed_image, axis=0)
-                result = sess.run(output, feed_dict={input_: input_arg})
+                result = sess.run(model_output, feed_dict={input_: input_arg})
                 if np.argmax(result) == 0:
                     results[image_name] = 'cat'
                 else:
@@ -95,7 +95,7 @@ def classify(path):
             return results
         # Else, `path` is either a file on disk or a URL.
         input_arg = np.expand_dims(preprocessor.preprocess_image(path), axis=0)
-        result = sess.run(output, feed_dict={input_: input_arg})
+        result = sess.run(model_output, feed_dict={input_: input_arg})
         if np.argmax(result) == np.argmax(c.ENCODING['cats']):
             return 'cat'
         return 'dog'
