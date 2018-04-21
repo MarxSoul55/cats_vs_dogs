@@ -37,11 +37,10 @@ def train(steps, resuming):
             optimizer = graph.get_operation_by_name('optimizer')
             graph.get_operation_by_name('objective_summary')
         else:  # Else, we need to build the graph from scratch!
-            input_ = tf.placeholder(tf.float32, shape=[1, c.ROWS, c.COLS, c.CHAN],
-                                    name='input')
+            input_ = tf.placeholder(tf.float32, shape=[1, c.ROWS, c.COLS, c.CHAN], name='input')
             model = architecture.model(input_, name='model')
             label = tf.placeholder(tf.float32, shape=c.LABEL_SHAPE, name='label')
-            objective = tf.identity(tf.losses.mean_squared_error(label, model), name='objective')
+            objective = tf.sqrt(tf.losses.mean_squared_error(label, model), name='objective')
             optimizer = tf.train.MomentumOptimizer(c.LR, c.DC, use_nesterov=True,
                                                    name='optimizer').minimize(objective)
             tf.summary.scalar('objective_summary', objective)
