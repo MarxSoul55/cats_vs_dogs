@@ -41,8 +41,8 @@ def train(steps, resuming):
             model = architecture.model(input_, name='model')
             label = tf.placeholder(tf.float32, shape=c.LABEL_SHAPE, name='label')
             objective = tf.sqrt(tf.losses.mean_squared_error(label, model), name='objective')
-            optimizer = tf.train.MomentumOptimizer(c.LR, c.DC, use_nesterov=True,
-                                                   name='optimizer').minimize(objective)
+            optimizer = tf.train.RMSPropOptimizer(c.LR, decay=c.DC, epsilon=c.EPS,
+                                                  name='optimizer').minimize(objective)
             tf.summary.scalar('objective_summary', objective)
             sess.run(tf.global_variables_initializer())
         summary = tf.summary.merge_all()
