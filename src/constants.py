@@ -1,14 +1,14 @@
 """Provides interface for useful constant values."""
 
 # Learning rate for the optimizer.
-LR = 0.001
+LR = 0.0001
 # Damping coefficient for momentum, or decay rate for rmsprop.
 DC = 0.9
-# A small number used to avoid division by zero.
-EPS = 1E-10
+# A small number used to avoid division by zero, but not so small so as to cause divergence.
+EPS = 1E-6
 # The rows, columns, and channels of the input-image.
-ROWS = 256
-COLS = 256
+ROWS = 128
+COLS = 128
 CHAN = 3
 # Color space that the input-image will be converted to.
 COLOR_SPACE = 'CIELAB'
