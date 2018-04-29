@@ -1,11 +1,5 @@
 """Provides interface for useful constant values."""
 
-# Learning rate for the optimizer.
-LR = 0.0001
-# Damping coefficient for momentum, or decay rate for rmsprop.
-DC = 0.9
-# A small number used to avoid division by zero, but not so small so as to cause divergence.
-EPS = 1E-6
 # The rows, columns, and channels of the input-image.
 ROWS = 128
 COLS = 128
