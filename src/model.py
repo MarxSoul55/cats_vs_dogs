@@ -40,9 +40,10 @@ def train(steps, resuming):
             input_ = tf.placeholder(tf.float32, shape=[1, c.ROWS, c.COLS, c.CHAN], name='input')
             model = architecture.model(input_, name='model')
             label = tf.placeholder(tf.float32, shape=c.LABEL_SHAPE, name='label')
-            objective = tf.reduce_mean(tf.squared_difference(label, model), name='objective')
-            optimizer = tf.train.AdamOptimizer(learning_rate=0.001, beta1=0.9, beta2=0.999,
-                                               epsilon=1.0, name='optimizer').minimize(objective)
+            objective = tf.sqrt(tf.reduce_mean(tf.squared_difference(label, model)),
+                                name='objective')
+            optimizer = tf.train.MomentumOptimizer(0.001, 0.9, use_nesterov=True,
+                                                   name='optimizer').minimize(objective)
             tf.summary.scalar('objective_summary', objective)
             sess.run(tf.global_variables_initializer())
         summary = tf.summary.merge_all()
@@ -51,8 +52,8 @@ def train(steps, resuming):
         for step, input_arg, label_arg in preprocessor.preprocess_classes(steps, c.TRAIN_DIR,
                                                                           c.ENCODING):
             print('Step: {}/{}'.format(step, steps))
-            sess.run(optimizer, feed_dict={input_: input_arg, label: label_arg})
-            step_summary = sess.run(summary, feed_dict={input_: input_arg, label: label_arg})
+            _, step_summary = sess.run([optimizer, summary],
+                                       feed_dict={input_: input_arg, label: label_arg})
             writer.add_summary(step_summary, global_step=step)
         tf.train.Saver().save(sess, c.SAVEMODEL_DIR)
         # A sound to signal the end of training.
