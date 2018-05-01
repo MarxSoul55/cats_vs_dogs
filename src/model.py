@@ -29,8 +29,8 @@ def train(steps, resuming):
         shutil.rmtree(c.TENSORBOARD_DIR)
     with tf.Session() as sess:
         if resuming:
-            loader = tf.train.import_meta_graph(c.SAVEMODEL_DIR + '.meta')
-            loader.restore(sess, c.SAVEMODEL_DIR)
+            saver = tf.train.import_meta_graph(c.SAVEMODEL_DIR + '.meta')
+            saver.restore(sess, c.SAVEMODEL_DIR)
             graph = tf.get_default_graph()
             input_ = graph.get_tensor_by_name('input:0')
             label = graph.get_tensor_by_name('label:0')
@@ -40,21 +40,23 @@ def train(steps, resuming):
             input_ = tf.placeholder(tf.float32, shape=[1, c.ROWS, c.COLS, c.CHAN], name='input')
             model = architecture.model(input_, name='model')
             label = tf.placeholder(tf.float32, shape=c.LABEL_SHAPE, name='label')
-            objective = tf.reduce_mean(tf.squared_difference(label, model), name='objective')
-            optimizer = tf.train.MomentumOptimizer(0.001, 0.9, use_nesterov=True,
+            objective = tf.sqrt(tf.reduce_mean(tf.squared_difference(label, model)),
+                                name='objective')
+            optimizer = tf.train.AdadeltaOptimizer(learning_rate=1.0, rho=0.95, epsilon=1E-6,
                                                    name='optimizer').minimize(objective)
             tf.summary.scalar('objective_summary', objective)
             sess.run(tf.global_variables_initializer())
         summary = tf.summary.merge_all()
         writer = tf.summary.FileWriter(c.TENSORBOARD_DIR, graph=tf.get_default_graph())
         preprocessor = ImagePreprocessor([c.COLS, c.ROWS], c.COLOR_SPACE)
+        saver = tf.train.Saver()
         for step, input_arg, label_arg in preprocessor.preprocess_classes(steps, c.TRAIN_DIR,
                                                                           c.ENCODING):
             print('Step: {}/{}'.format(step, steps))
             _, step_summary = sess.run([optimizer, summary],
                                        feed_dict={input_: input_arg, label: label_arg})
             writer.add_summary(step_summary, global_step=step)
-        tf.train.Saver().save(sess, c.SAVEMODEL_DIR)
+        saver.save(sess, c.SAVEMODEL_DIR)
         # A sound to signal the end of training.
         print('\a')
 
