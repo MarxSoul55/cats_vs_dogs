@@ -8,10 +8,10 @@
 
 *Thanks to [nunojesus](https://github.com/nunojesus) for designing this logo!*
 # Hello World!  :earth_americas:
-This repository contains the code for a computer-vision program. Using a convolutional
-neural-network (made with [TensorFlow](https://www.tensorflow.org/)), this program can tell
-whether a cat or dog is in a given picture to any arbitrary precision, depending on how you choose
-to structure the model's architecture and how long you choose to train it.
+This repository contains the code for a computer-vision program. Using a [machine learning](https://en.wikipedia.org/wiki/Machine_learning)
+algorithm called a "convolutional neural network" (made with [TensorFlow](https://www.tensorflow.org/)),
+this program can tell whether a cat or dog is in a given picture to any arbitrary precision,
+depending on how you choose to structure the network's architecture and how long you choose to train it.
 
 The data used to train the model was [Kaggle's dataset.](https://www.kaggle.com/c/dogs-vs-cats-redux-kernels-edition/data)
 ### Want to contribute?  :blush:
@@ -39,6 +39,10 @@ resources, however:
     * This video was created by 3Blue1Brown as part of a series, which is actually being created as
       I speak (October 15th, 2017). 3Blue1Brown has a reputation of teaching things in an intuitive
       manner with lots of nice visualizations.
+* https://adeshpande3.github.io/A-Beginner%27s-Guide-To-Understanding-Convolutional-Neural-Networks/
+    * A short introduction on the inner-workings of convolutional neural networks, a very popular
+      machine learning algorithm (as of 2018) and the algorithm that this program uses for image
+      recognition!
 * https://www.youtube.com/watch?v=bxe2T-V8XRs&list=PLiaHhY2iBX9hdHaRr6b7XevZtgZRa1PoU
     * This video is part of a short series on artificial neural-networks. It's just a small
       overview of some of the general concepts. It does throw in a few implementation-level
