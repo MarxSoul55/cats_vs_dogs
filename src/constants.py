@@ -1,4 +1,4 @@
-"""Provides interface for useful constant values."""
+"""Provides interface for frequently used or very important constant values."""
 
 # The rows, columns, and channels of the input-image.
 ROWS = 128
