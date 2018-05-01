@@ -40,8 +40,7 @@ def train(steps, resuming):
             input_ = tf.placeholder(tf.float32, shape=[1, c.ROWS, c.COLS, c.CHAN], name='input')
             model = architecture.model(input_, name='model')
             label = tf.placeholder(tf.float32, shape=c.LABEL_SHAPE, name='label')
-            objective = tf.sqrt(tf.reduce_mean(tf.squared_difference(label, model)),
-                                name='objective')
+            objective = tf.reduce_mean(tf.squared_difference(label, model), name='objective')
             optimizer = tf.train.MomentumOptimizer(0.001, 0.9, use_nesterov=True,
                                                    name='optimizer').minimize(objective)
             tf.summary.scalar('objective_summary', objective)
