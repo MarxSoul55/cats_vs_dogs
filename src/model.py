@@ -42,7 +42,7 @@ def train(steps, resuming):
             label = tf.placeholder(tf.float32, shape=c.LABEL_SHAPE, name='label')
             objective = tf.sqrt(tf.reduce_mean(tf.squared_difference(label, model)),
                                 name='objective')
-            optimizer = tf.train.AdadeltaOptimizer(learning_rate=1.0, rho=0.95, epsilon=1E-6,
+            optimizer = tf.train.MomentumOptimizer(0.001, 0.9, use_nesterov=True,
                                                    name='optimizer').minimize(objective)
             tf.summary.scalar('objective_summary', objective)
             sess.run(tf.global_variables_initializer())
