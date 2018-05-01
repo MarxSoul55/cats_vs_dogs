@@ -105,6 +105,34 @@ def dense(input_, output_col, dtype=tf.float32, name=None):
         return output
 
 
+def maxpooling_2d(input_, filter_size=2, strides=2, padding='VALID', name=None):
+    """
+    Pools `input_` by its rows and columns over each channel.
+    Replaces its window with the maximum value in the window.
+
+    # Parameters
+        input_ (tensor):
+            - The input tensor.
+            - Must have shape [samples, rows, columns, channels].
+        filter_size (int):
+            - Width and height of each filter.
+            - e.g. 2 specifies a 2x2 filter through with the window is pooled.
+        strides (int):
+            - Amount of steps to jump for each pass of the filter.
+        padding (str):
+            - Either 'SAME' or 'VALID'.
+            - Controls whether or not to use zero-padding to preserve the dimensions.
+        name (str):
+            - Name scope for this TF operation.
+    # Returns
+        A tensor.
+    """
+    with tf.name_scope(name):
+        output = tf.nn.max_pool(input_, [1, filter_size, filter_size, 1], [1, strides, strides, 1],
+                                padding, name='output')
+        return output
+
+
 def model(input_, name=None):
     """
     Builds the model's architecture on the graph.
@@ -122,27 +150,27 @@ def model(input_, name=None):
         x = convolution_2d(skip, 16, activation=tf.nn.elu, name='conv2')
         x = convolution_2d(x, 16, activation=tf.nn.elu, name='conv3')
         x = tf.add(x, skip, name='res1')
-        x = averagepooling_2d(x, name='pool1')
+        x = maxpooling_2d(x, name='pool1')
         skip = convolution_2d(x, 32, activation=tf.nn.elu, name='conv4')
         x = convolution_2d(skip, 32, activation=tf.nn.elu, name='conv5')
         x = convolution_2d(x, 32, activation=tf.nn.elu, name='conv6')
         x = tf.add(x, skip, name='res2')
-        x = averagepooling_2d(x, name='pool2')
+        x = maxpooling_2d(x, name='pool2')
         skip = convolution_2d(x, 64, activation=tf.nn.elu, name='conv7')
         x = convolution_2d(skip, 64, activation=tf.nn.elu, name='conv8')
         x = convolution_2d(x, 64, activation=tf.nn.elu, name='conv9')
         x = tf.add(x, skip, name='res3')
-        x = averagepooling_2d(x, name='pool3')
+        x = maxpooling_2d(x, name='pool3')
         skip = convolution_2d(x, 128, activation=tf.nn.elu, name='conv10')
         x = convolution_2d(skip, 128, activation=tf.nn.elu, name='conv11')
         x = convolution_2d(x, 128, activation=tf.nn.elu, name='conv12')
         x = tf.add(x, skip, name='res4')
-        x = averagepooling_2d(x, name='pool4')
+        x = maxpooling_2d(x, name='pool4')
         skip = convolution_2d(x, 256, activation=tf.nn.elu, name='conv13')
         x = convolution_2d(skip, 256, activation=tf.nn.elu, name='conv14')
         x = convolution_2d(x, 256, activation=tf.nn.elu, name='conv15')
         x = tf.add(x, skip, name='res5')
-        x = averagepooling_2d(x, name='pool5')
+        x = maxpooling_2d(x, name='pool5')
         x = averagepooling_2d(x, filter_size=x.shape.as_list()[1], strides=1, name='pool6')
         x = tf.reshape(x, [1, x.shape.as_list()[3]], name='distilled')
         x = dense(x, 2, name='output')
