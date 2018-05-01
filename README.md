@@ -4,6 +4,9 @@
 ***
 ***
 ***
+![Logo](Logo/Logotype CatsvsDogs Horizontal.png)
+
+*Thanks to [nunojesus](https://github.com/nunojesus) for designing this logo!*
 # Hello World!  :earth_americas:
 This repository contains the code for a computer-vision program. Using a convolutional
 neural-network (made with [TensorFlow](https://www.tensorflow.org/)), this program can tell
