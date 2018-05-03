@@ -5,7 +5,6 @@ import msvcrt
 import os
 import shutil
 import sys
-
 import numpy as np
 import tensorflow as tf
 
@@ -24,7 +23,6 @@ def train(steps, resuming):
         resuming (bool):
             - Whether to train from scratch or resume training from a saved model.
     """
-    # TensorBoard refuses to simply overwrite old data, so this is necessary.
     if c.TENSORBOARD_DIR in os.listdir():
         shutil.rmtree(c.TENSORBOARD_DIR)
     with tf.Session() as sess:
@@ -36,7 +34,7 @@ def train(steps, resuming):
             label = graph.get_tensor_by_name('label:0')
             optimizer = graph.get_operation_by_name('optimizer')
             graph.get_operation_by_name('objective_summary')
-        else:  # Else, we need to build the graph from scratch!
+        else:
             input_ = tf.placeholder(tf.float32, shape=[1, c.ROWS, c.COLS, c.CHAN], name='input')
             model = architecture.model(input_, name='model')
             label = tf.placeholder(tf.float32, shape=c.LABEL_SHAPE, name='label')
@@ -49,15 +47,13 @@ def train(steps, resuming):
         summary = tf.summary.merge_all()
         writer = tf.summary.FileWriter(c.TENSORBOARD_DIR, graph=tf.get_default_graph())
         preprocessor = ImagePreprocessor([c.COLS, c.ROWS], c.COLOR_SPACE)
-        saver = tf.train.Saver()
         for step, input_arg, label_arg in preprocessor.preprocess_classes(steps, c.TRAIN_DIR,
                                                                           c.ENCODING):
             print('Step: {}/{}'.format(step, steps))
             _, step_summary = sess.run([optimizer, summary],
                                        feed_dict={input_: input_arg, label: label_arg})
             writer.add_summary(step_summary, global_step=step)
-        saver.save(sess, c.SAVEMODEL_DIR)
-        # A sound to signal the end of training.
+        tf.train.Saver().save(sess, c.SAVEMODEL_DIR)
         print('\a')
 
 
@@ -95,7 +91,6 @@ def classify(path):
                 else:
                     results[image_name] = 'dog'
             return results
-        # Else, `path` is either a file on disk or a URL.
         input_arg = np.expand_dims(preprocessor.preprocess_image(path), axis=0)
         result = sess.run(model_output, feed_dict={input_: input_arg})
         if np.argmax(result) == np.argmax(c.ENCODING['cats']):
