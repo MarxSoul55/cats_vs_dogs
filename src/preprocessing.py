@@ -14,7 +14,6 @@ class ImagePreprocessor:
 
     """A preprocessor that handles visual data encoded in various image formats."""
 
-    # All the supported image formats by OpenCV.
     SUPPORTED_FORMATS = [
         '.bmp',
         '.pbm',
