@@ -74,7 +74,7 @@ class ImagePreprocessor:
         """
         if os.path.exists(path):
             image = cv2.imread(path)
-        else:  # If the path doesn't exist on disk, it must be a URL.
+        else:
             response = requests.get(path)
             pil_object = Image.open(BytesIO(response.content))
             image = np.array(pil_object)
@@ -100,7 +100,7 @@ class ImagePreprocessor:
             image[:, :, 1] = ((image[:, :, 1] / 255) * 2) - 1
             image[:, :, 2] = ((image[:, :, 2] / 255) * 2) - 1
             return image
-        else:  # self.color_space == 'HSV'
+        else:
             image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV).astype('float32')
             image /= 255
             return image
