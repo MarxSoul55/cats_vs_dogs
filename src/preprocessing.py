@@ -141,37 +141,37 @@ class ImagePreprocessor:
             train_dir (str):
                 - Path to the directory of classes.
                 - May be relative or absolute.
+                - e.g. 'data/cats/train' (where 'train' holds the subdirs)
             encoding (dict):
                 - Maps the name of the subdirectory (class) to a label.
                 - ex: {'cats': [1, 0], 'dogs': [0, 1]}
         # Yields
             A tuple `(step, preprocessed_image_array, label_array)` starting from step 1.
         """
-        train_dir = os.path.abspath(train_dir)
-        class_names = os.listdir(train_dir)
-        class_paths = [os.path.join(train_dir, class_name) for class_name in class_names]
+        classes = os.listdir(train_dir)
         cursors = {}
         images = {}
-        for class_name, class_path in zip(class_names, class_paths):
-            cursors[class_name] = 0
-            images[class_name] = os.listdir(class_path)
-            random.shuffle(images[class_name])
+        for class_ in classes:
+            cursors[class_] = 0
+            images[class_] = os.listdir(os.path.join(train_dir, class_))
+            random.shuffle(images[class_])
+        # I know what you're thinking, but this CANNOT be implemented with a double-for-loop.
         step = 0
         while True:
-            for class_name, class_path in zip(class_names, class_paths):
+            for class_ in classes:
                 if step < steps:
                     step += 1
                 else:
                     return
-                image_path = os.path.join(class_path, images[class_name][cursors[class_name]])
+                image_path = os.path.join(train_dir, class_, images[class_][cursors[class_]])
                 extension = os.path.splitext(image_path)[1].lower()
                 if extension not in self.SUPPORTED_FORMATS:
                     continue
                 preprocessed_image = self.preprocess_image(image_path)
                 preprocessed_image = np.expand_dims(preprocessed_image, axis=0)
-                label = np.expand_dims(encoding[class_name], axis=0).astype('float32')
-                if cursors[class_name] == (len(images[class_name]) - 1):
-                    cursors[class_name] = 0
+                label = np.expand_dims(encoding[class_], axis=0).astype('float32')
+                if cursors[class_] == (len(images[class_]) - 1):
+                    cursors[class_] = 0
                 else:
-                    cursors[class_name] += 1
+                    cursors[class_] += 1
                 yield step, preprocessed_image, label
