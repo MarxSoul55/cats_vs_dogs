@@ -40,12 +40,12 @@ def train(steps, resuming):
             label = tf.placeholder(tf.float32, shape=c.LABEL_SHAPE, name='label')
             objective = tf.sqrt(tf.reduce_mean(tf.squared_difference(label, model)),
                                 name='objective')
-            optimizer = tf.train.MomentumOptimizer(0.001, 0.9, use_nesterov=True,
-                                                   name='optimizer').minimize(objective)
+            optimizer = tf.train.AdamOptimizer(learning_rate=0.0001, beta1=0.9, beta2=0.999,
+                                               epsilon=1E-8, name='optimizer').minimize(objective)
             tf.summary.scalar('objective_summary', objective)
             sess.run(tf.global_variables_initializer())
         summary = tf.summary.merge_all()
-        writer = tf.summary.FileWriter(c.TENSORBOARD_DIR, graph=tf.get_default_graph())
+        writer = tf.summary.FileWriter(c.TENSORBOARD_DIR, graph=sess.graph)
         preprocessor = ImagePreprocessor([c.COLS, c.ROWS], c.COLOR_SPACE)
         for step, input_arg, label_arg in preprocessor.preprocess_classes(steps, c.TRAIN_DIR,
                                                                           c.ENCODING):
@@ -80,7 +80,7 @@ def classify(path):
         loader.restore(sess, c.SAVEMODEL_DIR)
         graph = tf.get_default_graph()
         input_ = graph.get_tensor_by_name('input:0')
-        model_output = graph.get_tensor_by_name('model/output:0')
+        model_output = graph.get_tensor_by_name('model/output/output:0')
         if os.path.isdir(path):
             results = {}
             for image_name, preprocessed_image in preprocessor.preprocess_directory(path):
