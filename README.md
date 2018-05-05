@@ -29,6 +29,8 @@ resources, however:
       and very informative.
 * http://cs231n.github.io/
     * Lecture-notes and other resources from a course at Stanford University.
+    * Also see: https://www.youtube.com/watch?v=NfnWJUyUJYU&list=PLkt2uSq6rBVctENoVBg1TpCC7OQi31AlC&index=0
+        * These are video-lectures for the notes in question! Very, very helpful!
 * https://www.coursera.org/learn/machine-learning
     * Another well-respected resource like the first one listed. If you want a more traditional
       "lecture and listen" setting, this will suffice.
