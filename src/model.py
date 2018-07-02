@@ -40,8 +40,8 @@ def train(steps, resuming):
             label = tf.placeholder(tf.float32, shape=c.LABEL_SHAPE, name='label')
             objective = tf.sqrt(tf.reduce_mean(tf.squared_difference(label, model)),
                                 name='objective')
-            optimizer = tf.train.AdamOptimizer(learning_rate=0.0001, beta1=0.9, beta2=0.999,
-                                               epsilon=1E-8, name='optimizer').minimize(objective)
+            optimizer = tf.train.AdamOptimizer(learning_rate=0.001, beta1=0.9, beta2=0.999,
+                                               epsilon=1E-8).minimize(objective, name='optimizer')
             tf.summary.scalar('objective_summary', objective)
             sess.run(tf.global_variables_initializer())
         summary = tf.summary.merge_all()
