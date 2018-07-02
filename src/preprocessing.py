@@ -155,6 +155,7 @@ class ImagePreprocessor:
             images[class_] = os.listdir(os.path.join(train_dir, class_))
             random.shuffle(images[class_])
         # I know what you're thinking, but this CANNOT be implemented with a double-for-loop.
+        # At least, not nicely. Do prove me wrong!
         step = 0
         while True:
             for class_ in classes:
