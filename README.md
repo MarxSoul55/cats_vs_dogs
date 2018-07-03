@@ -1,9 +1,3 @@
-## Note: If you're a UC application-reviewer... yes, it's really me—the guy applying for Fall 2018  :kissing_heart:
-***
-***
-***
-***
-***
 ![Logo](https://github.com/MarxSoul55/cats_vs_dogs/blob/master/Logo/Logotype%20CatsvsDogs%20Horizontal.png)
 
 *Thanks to [nunojesus](https://github.com/nunojesus) for designing this logo!*
