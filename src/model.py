@@ -33,7 +33,6 @@ def train(steps, resuming):
             input_ = graph.get_tensor_by_name('input:0')
             label = graph.get_tensor_by_name('label:0')
             optimizer = graph.get_operation_by_name('optimizer')
-            graph.get_operation_by_name('objective_summary')
         else:
             input_ = tf.placeholder(tf.float32, shape=[1, c.ROWS, c.COLS, c.CHAN], name='input')
             model = architecture.model(input_, name='model')
