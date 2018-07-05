@@ -34,25 +34,25 @@ class ImagePreprocessor:
         """
         Instance Attributes:
             - self.rescale (list of two integers)
-                -- Desired [width, height] of the resulting tensor.
-                -- The interpolation algorithm used is bilinear interpolation.
+                - Desired [width, height] of the resulting tensor.
+                - The interpolation algorithm used is bilinear interpolation.
             - self.color_space (str)
-                -- Options are: {'RGB', 'GRAYSCALE', 'RGB+GRAYSCALE', 'CIELAB', 'HSV'}
-                    --- 'RGB' is simply the raw RGB values as given from the input tensor.
-                        ---- Output tensors will be HxWx3 in range [0, 1].
-                    --- 'GRAYSCALE' is computed via OpenCV's implementation.
-                        ---- https://bit.ly/2pUL2hR
-                        ---- Output tensors will be HxWx1 in range [0, 1].
-                    --- 'RGB+GRAYSCALE' is simply RGB with a fourth channel—grayscale.
-                        ---- Output tensors will be HxWx4 in range [0, 1].
-                        ---- Grayscale is computed as per the same link above.
-                    --- 'CIELAB' is computed via OpenCV's implementation.
-                        ---- https://bit.ly/2pUL2hR
-                        ---- 'L' is bounded in [0, 1]; 'A' and 'B' are in [-1, 1].
-                        ---- The white reference point is from the D65 illuminant; shape is HxWx3.
-                    --- 'HSV' is computed via OpenCV's implementation.
-                        ---- https://bit.ly/2pUL2hR
-                        ---- Output tensors will be HxWx3 in range [0, 1].
+                - Options are: {'RGB', 'GRAYSCALE', 'RGB+GRAYSCALE', 'CIELAB', 'HSV'}
+                    - 'RGB' is simply the raw RGB values as given from the input tensor.
+                        - Output tensors will be HxWx3 in range [0, 1].
+                    - 'GRAYSCALE' is computed via OpenCV's implementation.
+                        - https://bit.ly/2pUL2hR
+                        - Output tensors will be HxWx1 in range [0, 1].
+                    - 'RGB+GRAYSCALE' is simply RGB with a fourth channel—grayscale.
+                        - Output tensors will be HxWx4 in range [0, 1].
+                        - Grayscale is computed as per the same link above.
+                    - 'CIELAB' is computed via OpenCV's implementation.
+                        - https://bit.ly/2pUL2hR
+                        - 'L' is bounded in [0, 1]; 'A' and 'B' are in [-1, 1].
+                        - The white reference point is from the D65 illuminant; shape is HxWx3.
+                    - 'HSV' is computed via OpenCV's implementation.
+                        - https://bit.ly/2pUL2hR
+                        - Output tensors will be HxWx3 in range [0, 1].
         """
         self.rescale = rescale
         self.color_space = color_space
@@ -64,9 +64,9 @@ class ImagePreprocessor:
 
         Parameters:
             - path (str)
-                -- Path to the image.
-                -- Can be a path to a local image on disk.
-                -- May also be a URL that returns the image by itself.
+                - Path to the image.
+                - Can be a path to a local image on disk.
+                - May also be a URL that returns the image by itself.
         Returns:
             - A numpy array, customized according to the instance's attributes.
             - Type will be 'float32'.
@@ -112,10 +112,10 @@ class ImagePreprocessor:
 
         Parameters:
             - path (str)
-                -- Path to the directory.
+                - Path to the directory.
         Yields:
             - A list `[filename, preprocessed_image_array]`.
-                -- See `ImagePreprocessor.preprocess_image` for details on the latter.
+                - See `ImagePreprocessor.preprocess_image` for details on the latter.
         """
         path = os.path.abspath(path)
         for objectname in os.listdir(path):
@@ -136,14 +136,14 @@ class ImagePreprocessor:
 
         Parameters:
             - steps (int)
-                -- Amount of step-input-label triplets to generate.
+                - Amount of step-input-label triplets to generate.
             - train_dir (str)
-                -- Path to the directory of classes.
-                -- May be relative or absolute.
-                -- e.g. 'data/cats/train' (where 'train' holds the subdirs)
+                - Path to the directory of classes.
+                - May be relative or absolute.
+                - e.g. 'data/cats/train' (where 'train' holds the subdirs)
             - encoding (dict)
-                -- Maps the name of the subdirectory (class) to a label.
-                -- ex: {'cats': [1, 0], 'dogs': [0, 1]}
+                - Maps the name of the subdirectory (class) to a label.
+                - ex: {'cats': [1, 0], 'dogs': [0, 1]}
         Yields:
             - A tuple `(step, preprocessed_image_array, label_array)` starting from step 1.
         """
