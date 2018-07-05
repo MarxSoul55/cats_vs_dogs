@@ -46,10 +46,10 @@ def train(steps, resuming):
     writer = tf.summary.FileWriter(c.TENSORBOARD_DIR, graph=sess.graph)
     preprocessor = ImagePreprocessor([c.COLS, c.ROWS], c.COLOR_SPACE)
     for step, input_arg, label_arg in preprocessor.preprocess_classes(steps, c.TRAIN_DIR,
-                                                                        c.ENCODING):
+                                                                      c.ENCODING):
         print('Step: {}/{}'.format(step, steps))
         _, step_summary = sess.run([optimizer, summary],
-                                    feed_dict={input_: input_arg, label: label_arg})
+                                   feed_dict={input_: input_arg, label: label_arg})
         writer.add_summary(step_summary, global_step=step)
     tf.train.Saver().save(sess, c.SAVEMODEL_DIR)
     print('\a')
