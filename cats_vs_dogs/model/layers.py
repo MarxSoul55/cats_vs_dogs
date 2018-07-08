@@ -112,6 +112,8 @@ def dense(input_,
             - AKA length of the output vector.
         - dtype (tf-supported dtype)
             - What datatype the parameters of the dense layer will use.
+        - name (str)
+            - Name scope for this TF operation.
     Returns:
         - A resulting tensor with shape [batch_size, output_col].
     """
