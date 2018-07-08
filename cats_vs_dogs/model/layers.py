@@ -54,7 +54,7 @@ def convolution_2d(input_,
     Parameters:
         - input_ (tf.placeholder)
             - The input tensor.
-            - Must have shape [samples, rows, columns, channels].
+            - Must be in NHWC format.
         - output_chan (int)
             - Amount of channels in output.
             - AKA the amount of filters/kernels.
@@ -83,7 +83,8 @@ def convolution_2d(input_,
         weight = tf.Variable(initial_value=weight_init(weight_shape, dtype=dtype), name='weight')
         bias = tf.Variable(initial_value=tf.constant(0, dtype=dtype, shape=[output_chan]),
                            name='bias')
-        conv = tf.add(tf.nn.conv2d(input_, weight, [1, strides, strides, 1], padding), bias)
+        conv = tf.nn.conv2d(input_, weight, [1, strides, strides, 1], padding,
+                            data_format='NHWC') + bias
         if activation is None:
             output = tf.identity(conv, name='output')
         else:
