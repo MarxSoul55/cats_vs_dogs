@@ -42,6 +42,7 @@ def convolution_2d(input_,
                    output_chan,
                    filter_size=3,
                    strides=1,
+                   dilation=1,
                    padding='SAME',
                    activation=None,
                    dtype=tf.float32,
@@ -63,6 +64,8 @@ def convolution_2d(input_,
             - e.g. 3 specifies a 3x3 filter.
         - strides (int)
             - Amount of steps to jump for each pass of the filter.
+        - dilation (int)
+            - Dilation factor for each filter.
         - padding (str)
             - Either 'SAME' or 'VALID'.
             - Controls whether or not to use zero-padding to preserve the dimensions.
@@ -84,7 +87,7 @@ def convolution_2d(input_,
         bias = tf.Variable(initial_value=tf.constant(0, dtype=dtype, shape=[output_chan]),
                            name='bias')
         conv = tf.nn.conv2d(input_, weight, [1, strides, strides, 1], padding,
-                            data_format='NHWC') + bias
+                            data_format='NHWC', dilations=[1, dilation, dilation, 1]) + bias
         if activation is None:
             output = tf.identity(conv, name='output')
         else:
