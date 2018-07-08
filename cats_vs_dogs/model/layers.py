@@ -95,7 +95,10 @@ def convolution_2d(input_,
         return output
 
 
-def dense(input_, output_col, dtype=tf.float32, name=None):
+def dense(input_,
+          output_col,
+          dtype=tf.float32,
+          name=None):
     """
     A fully-connected layer of neurons.
     Weights are initialized orthogonally from [-1, 1].
