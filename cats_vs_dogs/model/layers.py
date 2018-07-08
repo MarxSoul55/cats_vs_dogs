@@ -18,7 +18,7 @@ def averagepooling_2d(input_,
     Parameters:
         - input_ (tensor)
             - The input tensor.
-            - Must have shape [samples, rows, columns, channels].
+            - Must be in NHWC format.
         - filter_size (int)
             - Width and height of each filter.
             - e.g. 2 specifies a 2x2 filter through with the window is pooled.
@@ -34,7 +34,7 @@ def averagepooling_2d(input_,
     """
     with tf.name_scope(name):
         output = tf.nn.avg_pool(input_, [1, filter_size, filter_size, 1], [1, strides, strides, 1],
-                                padding, name='output')
+                                padding, data_format='NHWC', name='output')
         return output
 
 
