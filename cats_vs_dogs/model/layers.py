@@ -97,6 +97,7 @@ def convolution_2d(input_,
 
 def dense(input_,
           output_col,
+          activation=None,
           dtype=tf.float32,
           name=None):
     """
@@ -110,6 +111,10 @@ def dense(input_,
         - output_col (int)
             - Output neurons
             - AKA length of the output vector.
+        - activation (tf.something)
+            - Additional activation that may be applied.
+            - e.g. activation=tf.nn.elu
+            - `None` specifies a linear activation.
         - dtype (tf-supported dtype)
             - What datatype the parameters of the dense layer will use.
         - name (str)
@@ -123,7 +128,11 @@ def dense(input_,
         weight = tf.Variable(initial_value=weight_init(weight_shape, dtype=dtype), name='weight')
         bias = tf.Variable(initial_value=tf.constant(0, dtype=dtype, shape=[output_col]),
                            name='bias')
-        output = tf.add(tf.matmul(input_, weight), bias, name='output')
+        dense = tf.matmul(input_, weight) + bias
+        if activation is None:
+            output = tf.identity(dense, name='output')
+        else:
+            output = activation(dense, name='output')
         return output
 
 
