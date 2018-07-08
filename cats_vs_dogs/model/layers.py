@@ -38,37 +38,43 @@ def averagepooling_2d(input_,
         return output
 
 
-def convolution_2d(input_, output_chan, filter_size=3, strides=1, padding='SAME', activation=None,
-                   dtype=tf.float32, name=None):
+def convolution_2d(input_,
+                   output_chan,
+                   filter_size=3,
+                   strides=1,
+                   padding='SAME',
+                   activation=None,
+                   dtype=tf.float32,
+                   name=None):
     """
     Performs convolution on rows, columns, and channels of `input_`.
     Weights of the filter are initialized orthogonally from [-1, 1].
     Adds a bias-parameter after the merge; initial value is 0.
 
-    # Parameters
-        input_ (tf.placeholder):
+    Parameters:
+        - input_ (tf.placeholder)
             - The input tensor.
             - Must have shape [samples, rows, columns, channels].
-        output_chan (int):
+        - output_chan (int)
             - Amount of channels in output.
             - AKA the amount of filters/kernels.
-        filter_size (int):
+        - filter_size (int)
             - Width and height of each filter.
             - e.g. 3 specifies a 3x3 filter.
-        strides (int):
+        - strides (int)
             - Amount of steps to jump for each pass of the filter.
-        padding (str):
+        - padding (str)
             - Either 'SAME' or 'VALID'.
             - Controls whether or not to use zero-padding to preserve the dimensions.
-        activation (tf.something):
+        - activation (tf.something)
             - Additional activation that may be applied.
             - e.g. activation=tf.nn.elu
             - `None` specifies a linear activation.
-        dtype (tf-supported dtype):
+        - dtype (tf-supported dtype)
             - What datatype the parameters of the convolution will use.
-        name (str):
+        - name (str)
             - Name scope for this TF operation.
-    # Returns
+    Returns:
         - The resulting tensor whose shape depends on the `padding` argument.
     """
     with tf.name_scope(name):
