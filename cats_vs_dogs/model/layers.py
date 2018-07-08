@@ -125,27 +125,31 @@ def dense(input_,
         return output
 
 
-def maxpooling_2d(input_, filter_size=2, strides=2, padding='VALID', name=None):
+def maxpooling_2d(input_,
+                  filter_size=2,
+                  strides=2,
+                  padding='VALID',
+                  name=None):
     """
     Pools `input_` by its rows and columns over each channel.
     Replaces its window with the maximum value in the window.
 
-    # Parameters
-        input_ (tensor):
+    Parameters:
+        - input_ (tensor)
             - The input tensor.
             - Must have shape [samples, rows, columns, channels].
-        filter_size (int):
+        - filter_size (int)
             - Width and height of each filter.
             - e.g. 2 specifies a 2x2 filter through with the window is pooled.
-        strides (int):
+        - strides (int)
             - Amount of steps to jump for each pass of the filter.
-        padding (str):
+        - padding (str)
             - Either 'SAME' or 'VALID'.
             - Controls whether or not to use zero-padding to preserve the dimensions.
-        name (str):
+        - name (str)
             - Name scope for this TF operation.
-    # Returns
-        A tensor.
+    Returns:
+        - The resulting tensor whose shape depends on `padding`.
     """
     with tf.name_scope(name):
         output = tf.nn.max_pool(input_, [1, filter_size, filter_size, 1], [1, strides, strides, 1],
