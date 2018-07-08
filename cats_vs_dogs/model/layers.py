@@ -101,15 +101,15 @@ def dense(input_, output_col, dtype=tf.float32, name=None):
     Weights are initialized orthogonally from [-1, 1].
     Adds biases which are initialized to 0.
 
-    # Parameters
-        input_ (tensor):
+    Parameters:
+        - input_ (tensor)
             - A rank-2 tensor of shape [samples, columns].
-        output_col (int):
+        - output_col (int)
             - Output neurons
             - AKA length of the output vector.
-        dtype (tf-supported dtype):
+        - dtype (tf-supported dtype)
             - What datatype the parameters of the dense layer will use.
-    # Returns
+    Returns:
         - A resulting tensor with shape [batch_size, output_col].
     """
     with tf.name_scope(name):
