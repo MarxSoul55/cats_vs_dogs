@@ -1,9 +1,7 @@
 """Provides interface for frequently used or very important constant values."""
 
-# The rows, columns, and channels of the input-image.
-ROWS = 128
-COLS = 128
-CHAN = 3
+# Shape of the input in NHWC format.
+IN_SHAPE = [1, 128, 128, 3]
 # Color space that the input-image will be converted to.
 COLOR_SPACE = 'CIELAB'
 # Provides `encoding` argument for `preprocessing.ImagePreprocessor.preprocess_directory`.
