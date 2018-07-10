@@ -1,4 +1,4 @@
-![Logo](https://github.com/MarxSoul55/cats_vs_dogs/blob/master/Logo/Logotype%20CatsvsDogs%20Horizontal.png)
+![Logo](https://github.com/MarxSoul55/cats_vs_dogs/blob/master/logo/Logotype%20CatsvsDogs%20Horizontal.png)
 
 *Thanks to [nunojesus](https://github.com/nunojesus) for designing this logo!*
 # Hello World!  :earth_americas:
