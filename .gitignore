@@ -23,3 +23,6 @@ legacy/
 
 # Archived files are necessary for me, but not for the repository.
 archive/
+
+# No storing binary files.
+bin/
