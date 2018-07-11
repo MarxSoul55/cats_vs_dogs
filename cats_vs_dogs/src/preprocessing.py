@@ -85,9 +85,9 @@ class ImagePreprocessor:
 
         Parameters:
             - image (tensor)
-                - An RGB tensor.
+                - Encoded in RGB.
                 - Formatted in HWC.
-                - Numbers must be `uint8`.
+                - Datatype is `uint8`.
             - rescale (list of two ints)
                 - Desired `[height, width]`.
                 - e.g. [1080, 1920]
