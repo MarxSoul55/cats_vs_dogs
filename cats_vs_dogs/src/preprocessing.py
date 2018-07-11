@@ -176,54 +176,6 @@ class ImagePreprocessor:
         image = self.normalize_image(image, current_bounds, desired_bounds, dtype=dtype)
         return image
 
-    def preprocess_image(self,
-                         path):
-        """
-        Given an image, grabs its pixels' RGB values as a tensor and converts it into a
-        representation fitting the instance's attributes.
-
-        Parameters:
-            - path (str)
-                - Path to the image.
-                - Can be a path to a local image on disk.
-                - May also be a URL that returns the image by itself.
-        Returns:
-            - A numpy array, customized according to the instance's attributes.
-            - Type will be 'float32'.
-        """
-        if os.path.exists(path):
-            image = cv2.imread(path)
-        else:
-            response = requests.get(path)
-            pil_object = Image.open(BytesIO(response.content))
-            image = np.array(pil_object)
-        image = cv2.resize(image, tuple(self.rescale), interpolation=cv2.INTER_LINEAR)
-        if self.color_space == 'RGB':
-            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB).astype('float32')
-            image /= 255
-            return image
-        elif self.color_space == 'GRAYSCALE':
-            image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY).astype('float32')
-            image /= 255
-            image = np.expand_dims(image, axis=2)
-            return image
-        elif self.color_space == 'RGB+GRAYSCALE':
-            rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB).astype('float32')
-            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY).astype('float32')
-            image = np.dstack((rgb, gray))
-            image /= 255
-            return image
-        elif self.color_space == 'CIELAB':
-            image = cv2.cvtColor(image, cv2.COLOR_BGR2LAB).astype('float32')
-            image[:, :, 0] /= 255
-            image[:, :, 1] = ((image[:, :, 1] / 255) * 2) - 1
-            image[:, :, 2] = ((image[:, :, 2] / 255) * 2) - 1
-            return image
-        else:
-            image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV).astype('float32')
-            image /= 255
-            return image
-
     def preprocess_directory(self,
                              path):
         """
