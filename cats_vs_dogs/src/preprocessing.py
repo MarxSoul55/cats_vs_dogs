@@ -30,35 +30,6 @@ class ImagePreprocessor:
         '.png'
     ]
 
-    def __init__(self,
-                 rescale,
-                 color_space):
-        """
-        Instance Attributes:
-            - self.rescale (list of two integers)
-                - Desired [width, height] of the resulting tensor.
-                - The interpolation algorithm used is bilinear interpolation.
-            - self.color_space (str)
-                - Options are: {'RGB', 'GRAYSCALE', 'RGB+GRAYSCALE', 'CIELAB', 'HSV'}
-                    - 'RGB' is simply the raw RGB values as given from the input tensor.
-                        - Output tensors will be HxWx3 in range [0, 1].
-                    - 'GRAYSCALE' is computed via OpenCV's implementation.
-                        - https://bit.ly/2pUL2hR
-                        - Output tensors will be HxWx1 in range [0, 1].
-                    - 'RGB+GRAYSCALE' is simply RGB with a fourth channel—grayscale.
-                        - Output tensors will be HxWx4 in range [0, 1].
-                        - Grayscale is computed as per the same link above.
-                    - 'CIELAB' is computed via OpenCV's implementation.
-                        - https://bit.ly/2pUL2hR
-                        - 'L' is bounded in [0, 1]; 'A' and 'B' are in [-1, 1].
-                        - The white reference point is from the D65 illuminant; shape is HxWx3.
-                    - 'HSV' is computed via OpenCV's implementation.
-                        - https://bit.ly/2pUL2hR
-                        - Output tensors will be HxWx3 in range [0, 1].
-        """
-        self.rescale = rescale
-        self.color_space = color_space
-
     def load_image(self,
                    path):
         """
