@@ -148,6 +148,32 @@ class ImagePreprocessor:
         return image
 
     def preprocess_image(self,
+                         path,
+                         rescale,
+                         colorspace,
+                         current_bounds,
+                         desired_bounds,
+                         dtype='float32'):
+        """
+        Pipeline for complete preprocessing of an image.
+        Loads image, rescales it, converts colorspace, normalizes, and converts datatype.
+
+        Parameters:
+            - See the following methods for details for each parameter.
+                - `load_image`
+                - `resize_image`
+                - `convert_colorspace`
+                - `normalize_image`
+        Returns:
+            - The fully preprocessed image.
+        """
+        image = self.load_image(path)
+        image = self.resize_image(image, rescale)
+        image = self.convert_colorspace(image, colorspace)
+        image = self.normalize_image(image, current_bounds, desired_bounds, dtype=dtype)
+        return image
+
+    def preprocess_image(self,
                          path):
         """
         Given an image, grabs its pixels' RGB values as a tensor and converts it into a
