@@ -190,13 +190,13 @@ class ImagePreprocessor:
             - A list `[filename, preprocessed_image_array]`.
                 - See `ImagePreprocessor.preprocess_image` for details on the latter.
         """
-        for objectname in os.listdir(path):
-            extension = os.path.splitext(os.path.join(path, objectname))[1].lower()
+        for filename in os.listdir(path):
+            extension = os.path.splitext(os.path.join(path, filename))[1].lower()
             if extension not in self.SUPPORTED_FORMATS:
                 continue
-            image_path = os.path.join(path, objectname)
+            image_path = os.path.join(path, filename)
             preprocessed_image = self.preprocess_image(image_path)
-            yield objectname, preprocessed_image
+            yield filename, preprocessed_image
 
     def preprocess_classes(self,
                            steps,
