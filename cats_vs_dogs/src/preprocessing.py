@@ -202,9 +202,9 @@ class ImagePreprocessor:
         """
         Given a directory of subdirectories of images, preprocesses an image from the 1st subdir,
         then the 2nd, then the Nth, and then loops back towards the 1st and gets another image,
-        etc. The order of the images in each subdir is randomized. After all images in a directory
+        etc. The order of the images in each subdir is randomized. After all images in a subdir
         have been preprocessed (given that `steps` is big enough), preprocessing will start over at
-        the beginning of the directory in question. The order of images won't be rerandomized.
+        the beginning of the subdir in question. The order of images won't be rerandomized.
 
         Parameters:
             - steps (int)
