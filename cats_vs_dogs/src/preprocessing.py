@@ -96,6 +96,56 @@ class ImagePreprocessor:
         """
         return cv2.resize(image, tuple(reversed(rescale)), interpolation=cv2.INTER_LINEAR)
 
+    def convert_colorspace(self,
+                           image,
+                           colorspace):
+        """
+        Converts an RGB image to a different color space.
+
+        Parameters:
+            - image (tensor)
+                - Encoded in RGB.
+                - Formatted in HWC.
+                - Datatype is `uint8`.
+            - colorspace (str)
+                - Options are: 'GRAYSCALE', 'RGB+GRAYSCALE', 'CIELAB', 'HSV'
+                    - 'GRAYSCALE' is computed via OpenCV's implementation.
+                        - https://bit.ly/2pUL2hR
+                        - Output tensors will be HxWx1 in range [0, 1].
+                    - 'RGB+GRAYSCALE' is simply RGB with a fourth channel—grayscale.
+                        - Output tensors will be HxWx4 in range [0, 1].
+                        - Grayscale is computed as per the same link above.
+                    - 'CIELAB' is computed via OpenCV's implementation.
+                        - https://bit.ly/2pUL2hR
+                        - 'L' is bounded in [0, 1]; 'A' and 'B' are in [-1, 1].
+                        - The white reference point is from the D65 illuminant; shape is HxWx3.
+                    - 'HSV' is computed via OpenCV's implementation.
+                        - https://bit.ly/2pUL2hR
+                        - Output tensors will be HxWx3 in range [0, 1].
+        Returns:
+            - The converted tensor.
+            - Still in `uint8`.
+            - Still formatted in HWC, but may have different number of channels.
+        Raises:
+            - ValueError
+                - ...if an invalid argument is given for `colorspace`.
+        """
+        if colorspace == 'GRAYSCALE':
+            image = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+            return image
+        elif colorspace == 'RGB+GRAYSCALE':
+            gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+            image = np.dstack((image, gray))
+            return image
+        elif colorspace == 'CIELAB':
+            image = cv2.cvtColor(image, cv2.COLOR_RGB2LAB)
+            return image
+        elif colorspace == 'HSV':
+            image = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)
+            return image
+        else:
+            raise ValueError('Invalid argument for parameter `colorspace`.')
+
     def preprocess_image(self,
                          path):
         """
