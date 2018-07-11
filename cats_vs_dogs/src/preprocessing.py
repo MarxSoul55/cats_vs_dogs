@@ -146,6 +146,36 @@ class ImagePreprocessor:
         else:
             raise ValueError('Invalid argument for parameter `colorspace`.')
 
+    def normalize_image(self,
+                        image,
+                        current_bounds,
+                        desired_bounds,
+                        dtype='float32'):
+        """
+        Changes the boundaries of the interval in which the image's numerical values lie.
+        e.g. Converting `uint8` in [0, 255] to `float32` in [0, 1].
+
+        Parameters:
+            - image (tensor)
+                - Datatype is `uint8`.
+            - current_bounds (list of two ints)
+                - Lower, then upper boundary.
+                - e.g. The image might be in `uint8`, so current_bounds=[0, 255].
+            - desired_bounds (list of two ints)
+                - The desired boundaries for the new tensor.
+            - dtype (str)
+                - A numpy-compatible datatype.
+        Returns:
+            - The resulting tensor.
+            - Still formatted in HWC.
+            - Only difference is the datatype and range of allowed numbers.
+        """
+        image = image.astype(dtype)
+        image += -current_bounds[0]
+        image /= (current_bounds[1] / (desired_bounds[1] - desired_bounds[0]))
+        image += desired_bounds[0]
+        return image
+
     def preprocess_image(self,
                          path):
         """
