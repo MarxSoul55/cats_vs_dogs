@@ -190,7 +190,6 @@ class ImagePreprocessor:
             - A list `[filename, preprocessed_image_array]`.
                 - See `ImagePreprocessor.preprocess_image` for details on the latter.
         """
-        path = os.path.abspath(path)
         for objectname in os.listdir(path):
             extension = os.path.splitext(os.path.join(path, objectname))[1].lower()
             if extension not in self.SUPPORTED_FORMATS:
