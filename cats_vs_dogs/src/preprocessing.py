@@ -123,16 +123,16 @@ class ImagePreprocessor:
                         desired_bounds,
                         dtype='float32'):
         """
+        Normalizes an image CHANNELWISE.
         Changes the boundaries of the interval in which the image's numerical values lie.
-        e.g. Converting `uint8` in [0, 255] to `float32` in [0, 1].
 
         Parameters:
             - image (tensor)
+                - Formatted in HWC.
                 - Datatype is `uint8`.
-            - current_bounds (list of two ints)
-                - Lower, then upper boundary.
-                - e.g. The image might be in `uint8`, so current_bounds=[0, 255].
-            - desired_bounds (list of two ints)
+            - current_bounds (list of lists of two ints each)
+                - e.g. For a `uint8` image with 2 channels: [[0, 255], [0, 255]]
+            - desired_bounds (list of lists of two ints each)
                 - The desired boundaries for the new tensor.
             - dtype (str)
                 - A numpy-compatible datatype.
@@ -142,9 +142,12 @@ class ImagePreprocessor:
             - Only difference is the datatype and range of allowed numbers.
         """
         image = image.astype(dtype)
-        image += -current_bounds[0]
-        image /= (current_bounds[1] / (desired_bounds[1] - desired_bounds[0]))
-        image += desired_bounds[0]
+        number_of_channels = image.shape[2]
+        for channel in range(0, number_of_channels):
+            image[:, :, channel] += -current_bounds[channel][0]
+            image[:, :, channel] /= (current_bounds[channel][1] /
+                                     (desired_bounds[channel][1] - desired_bounds[channel][0]))
+            image[:, :, channel] += desired_bounds[channel][0]
         return image
 
     def preprocess_image(self,
