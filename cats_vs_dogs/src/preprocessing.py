@@ -69,11 +69,30 @@ class ImagePreprocessor:
                 - Path to the image.
         Returns:
             - RGB values as a tensor in HWC format.
-            - Numbers will be `uint8` in [0, 255].
+            - Numbers will be `uint8`.
         """
         image = cv2.imread(path)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         return image
+
+    def resize_image(self,
+                     image,
+                     rescale):
+        """
+        Resizes an image with bilinear interpolation.
+
+        Parameters:
+            - image (tensor)
+                - An RGB tensor.
+                - Formatted in HWC.
+                - Numbers must be `uint8`.
+            - rescale (list of two ints)
+                - Desired `[height, width]`.
+                - e.g. [1080, 1920]
+        Returns:
+            - An idential tensor, with a different height/width as per `rescale`.
+        """
+        return cv2.resize(image, tuple(reversed(rescale)), interpolation=cv2.INTER_LINEAR)
 
     def preprocess_image(self,
                          path):
