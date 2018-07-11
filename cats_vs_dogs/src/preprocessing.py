@@ -174,7 +174,12 @@ class ImagePreprocessor:
         return image
 
     def preprocess_directory(self,
-                             path):
+                             path,
+                             rescale,
+                             colorspace,
+                             current_bounds,
+                             desired_bounds,
+                             dtype='float32'):
         """
         An extension of `ImagePreprocessor.preprocess_image` for directories.
         Given a directory, preprocesses images in it with `ImagePreprocessor.preprocess_image`.
@@ -183,6 +188,7 @@ class ImagePreprocessor:
         Parameters:
             - path (str)
                 - Path to the directory.
+            - For other parameters, see the `preprocess_image` method for details.
         Yields:
             - A list `[filename, preprocessed_image_array]`.
                 - See `ImagePreprocessor.preprocess_image` for details on the latter.
@@ -192,7 +198,8 @@ class ImagePreprocessor:
             extension = os.path.splitext(filepath)[1].lower()
             if extension not in self.SUPPORTED_FORMATS:
                 continue
-            preprocessed_image = self.preprocess_image(filepath)
+            preprocessed_image = self.preprocess_image(filepath, rescale, colorspace,
+                                                       current_bounds, desired_bounds, dtype=dtype)
             yield filename, preprocessed_image
 
     def preprocess_classes(self,
