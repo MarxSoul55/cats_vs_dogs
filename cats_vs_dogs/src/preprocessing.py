@@ -59,6 +59,22 @@ class ImagePreprocessor:
         self.rescale = rescale
         self.color_space = color_space
 
+    def load_image(self,
+                   path):
+        """
+        Loads an image's RGB values as a tensor.
+
+        Parameters:
+            - path (str)
+                - Path to the image.
+        Returns:
+            - RGB values as a tensor in HWC format.
+            - Numbers will be `uint8` in [0, 255].
+        """
+        image = cv2.imread(path)
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        return image
+
     def preprocess_image(self,
                          path):
         """
