@@ -30,7 +30,9 @@ class ImagePreprocessor:
         '.png'
     ]
 
-    def __init__(self, rescale, color_space):
+    def __init__(self,
+                 rescale,
+                 color_space):
         """
         Instance Attributes:
             - self.rescale (list of two integers)
@@ -57,7 +59,8 @@ class ImagePreprocessor:
         self.rescale = rescale
         self.color_space = color_space
 
-    def preprocess_image(self, path):
+    def preprocess_image(self,
+                         path):
         """
         Given an image, grabs its pixels' RGB values as a tensor and converts it into a
         representation fitting the instance's attributes.
@@ -104,7 +107,8 @@ class ImagePreprocessor:
             image /= 255
             return image
 
-    def preprocess_directory(self, path):
+    def preprocess_directory(self,
+                             path):
         """
         An extension of `ImagePreprocessor.preprocess_image` for directories.
         Given a directory, preprocesses images in it with `ImagePreprocessor.preprocess_image`.
@@ -126,7 +130,10 @@ class ImagePreprocessor:
             preprocessed_image = self.preprocess_image(image_path)
             yield objectname, preprocessed_image
 
-    def preprocess_classes(self, steps, train_dir, encoding):
+    def preprocess_classes(self,
+                           steps,
+                           train_dir,
+                           encoding):
         """
         Given a directory of subdirectories of images, preprocesses an image from the 1st subdir,
         then the 2nd, then the Nth, and then loops back towards the 1st and gets another image,
