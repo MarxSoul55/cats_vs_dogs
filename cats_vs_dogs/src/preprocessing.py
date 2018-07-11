@@ -68,8 +68,10 @@ class ImagePreprocessor:
             - path (str)
                 - Path to the image.
         Returns:
-            - RGB values as a tensor in HWC format.
-            - Numbers will be `uint8`.
+            - A tensor.
+                - Encoded in RGB.
+                - Formatted in HWC.
+                - Datatype is `uint8`.
         """
         image = cv2.imread(path)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
