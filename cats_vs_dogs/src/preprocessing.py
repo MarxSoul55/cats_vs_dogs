@@ -191,11 +191,11 @@ class ImagePreprocessor:
                 - See `ImagePreprocessor.preprocess_image` for details on the latter.
         """
         for filename in os.listdir(path):
-            extension = os.path.splitext(os.path.join(path, filename))[1].lower()
+            filepath = os.path.join(path, filename)
+            extension = os.path.splitext(filepath)[1].lower()
             if extension not in self.SUPPORTED_FORMATS:
                 continue
-            image_path = os.path.join(path, filename)
-            preprocessed_image = self.preprocess_image(image_path)
+            preprocessed_image = self.preprocess_image(filepath)
             yield filename, preprocessed_image
 
     def preprocess_classes(self,
