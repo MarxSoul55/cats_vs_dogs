@@ -211,7 +211,8 @@ class ImagePreprocessor:
         then the 2nd, then the Nth, and then loops back towards the 1st and gets another image,
         etc. The order of the images in each subdir is randomized. After all images in a subdir
         have been preprocessed (given that `steps` is big enough), preprocessing will start over at
-        the beginning of the subdir in question. The order of images won't be rerandomized.
+        the beginning of the subdir in question. The order of images within each subdir is
+        randomized at the start, but not randomized again afterwards.
 
         Parameters:
             - steps (int)
