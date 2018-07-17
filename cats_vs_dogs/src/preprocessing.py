@@ -6,10 +6,12 @@ import random
 import cv2
 import numpy as np
 
+# TODO: Implement extension checking method, and edit `change_colorspace` method.
+
 
 class ImagePreprocessor:
 
-    """A preprocessor that handles visual data encoded in various image formats."""
+    """Encapsulates methods for loading, editing, and returning images as tensors."""
 
     SUPPORTED_FORMATS = [
         '.bmp',
