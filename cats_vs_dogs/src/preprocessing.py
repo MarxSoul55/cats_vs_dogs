@@ -6,8 +6,6 @@ import random
 import cv2
 import numpy as np
 
-# TODO: Implement extension checking method, and edit `change_colorspace` method.
-
 
 class ImagePreprocessor:
 
@@ -28,6 +26,22 @@ class ImagePreprocessor:
         '.tif',
         '.png'
     ]
+
+    def is_supported_filetype(self,
+                              path):
+        """
+        Checks whether or not a file's extension is supported by OpenCV.
+
+        Parameters:
+            - path (str)
+                - Path to the file.
+        Returns:
+            - A boolean; true if supported, false if not.
+        """
+        extension = os.path.splitext(path)[1].lower()
+        if extension in self.SUPPORTED_FORMATS:
+            return True
+        return False
 
     def load_image(self,
                    path):
