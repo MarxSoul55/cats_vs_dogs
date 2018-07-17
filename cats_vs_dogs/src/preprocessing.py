@@ -27,8 +27,8 @@ class ImagePreprocessor:
         '.png'
     ]
 
-    def validate_file(self,
-                      path):
+    def valid_file(self,
+                   path):
         """
         Ensures path points to a file of a supported filetype.
 
