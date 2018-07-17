@@ -27,8 +27,8 @@ class ImagePreprocessor:
         '.png'
     ]
 
-    def is_supported_filetype(self,
-                              path):
+    def is_unsupported_filetype(self,
+                                path):
         """
         Checks whether or not a file's extension is supported by OpenCV.
 
@@ -36,10 +36,10 @@ class ImagePreprocessor:
             - path (str)
                 - Path to the file.
         Returns:
-            - A boolean; true if supported, false if not.
+            - A boolean; true if unsupported, false if it is.
         """
         extension = os.path.splitext(path)[1].lower()
-        if extension in self.SUPPORTED_FORMATS:
+        if extension not in self.SUPPORTED_FORMATS:
             return True
         return False
 
