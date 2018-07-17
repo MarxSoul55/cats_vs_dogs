@@ -42,7 +42,7 @@ class ImagePreprocessor:
         extension = os.path.splitext(path)[1].lower()
         if os.path.isfile(path) and extension in self.SUPPORTED_FORMATS:
             return
-        raise ValueError('{} is not a valid file supported by OpenCV.'.format(path))
+        raise ValueError('{} is either not a file or not supported by OpenCV.'.format(path))
 
     def load_image(self,
                    path):
