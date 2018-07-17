@@ -27,21 +27,22 @@ class ImagePreprocessor:
         '.png'
     ]
 
-    def valid_file(self,
-                   path):
+    def validate_file(self,
+                      path):
         """
         Ensures path points to a file of a supported filetype.
 
         Parameters:
             - path (str)
                 - Path to the file.
-        Returns:
-            - A boolean; true if a file of a supported filetype; false if not.
+        Raises:
+            - ValueError if the check fails.
+            - Otherwise, nothing happens.
         """
         extension = os.path.splitext(path)[1].lower()
         if os.path.isfile(path) and extension in self.SUPPORTED_FORMATS:
-            return True
-        return False
+            return
+        raise ValueError('{} is not a valid file supported by OpenCV.'.format(path))
 
     def load_image(self,
                    path):
