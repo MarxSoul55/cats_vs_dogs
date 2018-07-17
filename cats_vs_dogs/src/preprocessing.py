@@ -177,6 +177,7 @@ class ImagePreprocessor:
 
         Parameters:
             - See the following methods for details for each parameter in order.
+                - `validate_file`
                 - `load_image`
                 - `resize_image`
                 - `convert_colorspace`
@@ -184,6 +185,7 @@ class ImagePreprocessor:
         Returns:
             - The fully preprocessed image.
         """
+        self.validate_file(path)
         image = self.load_image(path)
         image = self.resize_image(image, rescale)
         image = self.convert_colorspace(image, colorspace)
