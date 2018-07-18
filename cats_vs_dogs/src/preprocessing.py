@@ -182,7 +182,6 @@ class ImagePreprocessor:
         Returns:
             - The fully preprocessed image.
         """
-        self.validate_file(path)
         image = self.load_image(path)
         image = self.resize_image(image, rescale)
         image = self.convert_colorspace(image, colorspace)
