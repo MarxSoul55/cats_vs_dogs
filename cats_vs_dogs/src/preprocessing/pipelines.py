@@ -39,6 +39,7 @@ class ImageDataPipeline:
         """
         Pipeline for complete preprocessing of an image.
         Loads image, rescales it, converts colorspace, normalizes, and converts datatype.
+
         Parameters:
             - For each parameter, see the function(s) listed in the imops module for details.
                 - path
@@ -67,6 +68,7 @@ class ImageDataPipeline:
         An extension of `ImagePreprocessor.preprocess_image` for directories.
         Given a directory, preprocesses images in it with `ImagePreprocessor.preprocess_image`.
         Subdirectories and files of unsupported formats are ignored.
+
         Parameters:
             - path (str)
                 - Path to the directory.
@@ -93,6 +95,7 @@ class ImageDataPipeline:
         have been preprocessed (given that `steps` is big enough), preprocessing will start over at
         the beginning of the subdir in question. The order of images within each subdir is
         randomized at the start, but not randomized again afterwards.
+
         Parameters:
             - steps (int)
                 - Amount of step-input-label triplets to generate.
