@@ -130,7 +130,6 @@ class ImageDataPipeline:
                 if not imops.valid_file(image_path):
                     continue
                 preprocessed_image = self.preprocess_image(image_path)
-                preprocessed_image = np.expand_dims(preprocessed_image, axis=0)
                 label = np.expand_dims(encoding[class_], axis=0).astype('float32')
                 if cursors[class_] == (len(images[class_]) - 1):
                     cursors[class_] = 0
