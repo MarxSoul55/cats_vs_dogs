@@ -8,7 +8,7 @@ import numpy as np
 
 def valid_file(path):
     """
-    Ensures `path` points to a file of a supported filetype by OpenCV.
+    Ensures path points to a file of a supported filetype by OpenCV.
 
     Parameters:
         - path (str)
@@ -48,7 +48,7 @@ def load_image(path):
         - A tensor.
             - Encoded in RGB.
             - Formatted in HWC.
-            - Datatype is `uint8`.
+            - Datatype is uint8.
     """
     image = cv2.imread(path)
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
@@ -64,12 +64,12 @@ def resize_image(image,
         - image (tensor)
             - Encoded in RGB.
             - Formatted in HWC.
-            - Datatype is `uint8`.
+            - Datatype is uint8.
         - rescale (list of two ints)
-            - Desired `[height, width]`.
+            - Desired [height, width].
             - e.g. [1080, 1920]
     Returns:
-        - An idential tensor, with a different height/width as per `rescale`.
+        - An idential tensor, with a different height/width as per rescale arg.
     """
     return cv2.resize(image, tuple(reversed(rescale)), interpolation=cv2.INTER_LINEAR)
 
@@ -83,7 +83,7 @@ def convert_colorspace(image,
         - image (tensor)
             - Encoded in RGB.
             - Formatted in HWC.
-            - Datatype is `uint8`.
+            - Datatype is uint8.
         - colorspace (str)
             - Options are: 'GRAYSCALE', 'RGB+GRAYSCALE', 'CIELAB', 'HSV'
                 - 'GRAYSCALE' is computed via OpenCV's implementation.
@@ -101,7 +101,7 @@ def convert_colorspace(image,
                     - Output tensors will be HxWx3 in range [0, 1].
     Returns:
         - The converted tensor.
-        - Still in `uint8`.
+        - Still in uint8.
         - Still formatted in HWC, but may have different number of channels.
     """
     if colorspace == 'GRAYSCALE':
@@ -130,9 +130,9 @@ def normalize_image(image,
     Parameters:
         - image (tensor)
             - Formatted in HWC.
-            - Datatype is `uint8`.
+            - Datatype is uint8.
         - current_bounds (list of lists of two ints each)
-            - e.g. For a `uint8` image with 2 channels: [[0, 255], [0, 255]]
+            - e.g. For a uint8 image with 2 channels: [[0, 255], [0, 255]]
         - desired_bounds (list of lists of two ints each)
             - The desired boundaries for the new tensor.
         - dtype (str)
