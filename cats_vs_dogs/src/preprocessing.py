@@ -170,15 +170,16 @@ class ImagePreprocessor:
         Loads image, rescales it, converts colorspace, normalizes, and converts datatype.
 
         Parameters:
-            - path (see the following methods)
-                - `valid_file`
-                - `load_image`
-            - rescale (see the following method)
-                - `resize_image`
-            - colorspace (see the following method)
-                - `convert_colorspace`
-            - current_bounds, desired_bounds, dtype (see the following method)
-                - `normalize_image`
+            - For each parameter, see the methods listed for details.
+                - path
+                    - `valid_file`
+                    - `load_image`
+                - rescale
+                    - `resize_image`
+                - colorspace
+                    - `convert_colorspace`
+                - current_bounds, desired_bounds, dtype
+                    - `normalize_image`
         Returns:
             - The fully preprocessed image.
         """
