@@ -27,6 +27,28 @@ class ImagePreprocessor:
         '.png'
     ]
 
+    def __init__(self,
+                 rescale=[256, 256],
+                 colorspace='CIELAB',
+                 current_bounds=[[0, 255], [0, 255], [0, 255]],
+                 desired_bounds=[[0, 1], [-1, 1], [-1, 1]],
+                 dtype='float32'):
+        """
+        Instance Attributes:
+            - See the listed method for details on each attribute.
+                - rescale
+                    - resize_image
+                - colorspace
+                    - convert_colorspace
+                - current_bounds, desired_bounds, dtype
+                    - normalize_image
+        """
+        self.rescale = rescale
+        self.colorspace = colorspace
+        self.current_bounds = current_bounds
+        self.desired_bounds = desired_bounds
+        self.dtype = dtype
+
     def valid_file(self,
                    path):
         """
