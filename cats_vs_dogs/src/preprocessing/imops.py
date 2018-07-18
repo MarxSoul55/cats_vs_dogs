@@ -85,7 +85,7 @@ def convert_colorspace(image,
             - Formatted in HWC.
             - Datatype is uint8.
         - colorspace (str)
-            - Options are: 'GRAYSCALE', 'RGB+GRAYSCALE', 'CIELAB', 'HSV'
+            - Options are: 'RGB' (unchanged), 'GRAYSCALE', 'RGB+GRAYSCALE', 'CIELAB', 'HSV'
                 - 'GRAYSCALE' is computed via OpenCV's implementation.
                     - https://bit.ly/2pUL2hR
                     - Output tensors will be HxWx1 in range [0, 1].
@@ -103,20 +103,23 @@ def convert_colorspace(image,
         - The converted tensor.
         - Still in uint8.
         - Still formatted in HWC, but may have different number of channels.
+    Raises:
+        - ValueError, if the arg for colorspace is invalid.
     """
-    if colorspace == 'GRAYSCALE':
+    if colorspace == 'CIELAB':
+        image = cv2.cvtColor(image, cv2.COLOR_RGB2LAB)
+    elif colorspace == 'GRAYSCALE':
         image = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
-        return image
+    elif colorspace == 'RGB':
+        pass
     elif colorspace == 'RGB+GRAYSCALE':
         gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
         image = np.dstack((image, gray))
-        return image
-    elif colorspace == 'CIELAB':
-        image = cv2.cvtColor(image, cv2.COLOR_RGB2LAB)
-        return image
     elif colorspace == 'HSV':
         image = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)
-        return image
+    else:
+        raise ValueError('{} is not a valid option for param: colorspace'.format(colorspace))
+    return image
 
 
 def normalize_image(image,
