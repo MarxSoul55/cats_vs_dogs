@@ -30,7 +30,7 @@ class ImagePreprocessor:
     def valid_file(self,
                    path):
         """
-        Ensures path points to a file of a supported filetype.
+        Ensures `path` points to a file of a supported filetype.
 
         Parameters:
             - path (str)
@@ -171,7 +171,7 @@ class ImagePreprocessor:
 
         Parameters:
             - path (see the following methods)
-                - `validate_file`
+                - `valid_file`
                 - `load_image`
             - rescale (see the following method)
                 - `resize_image`
