@@ -39,6 +39,7 @@ class ImageDataPipeline:
         """
         Pipeline for complete preprocessing of an image.
         Loads image, rescales it, converts colorspace, normalizes, and converts datatype.
+        Finalizes by converting HWC to NHWC.
 
         Parameters:
             - For each parameter, see the function(s) listed in the imops module for details.
@@ -52,7 +53,7 @@ class ImageDataPipeline:
                 - current_bounds, desired_bounds, dtype
                     - normalize_image
         Returns:
-            - The fully preprocessed image.
+            - The fully preprocessed image in NHWC format.
         """
         image = imops.load_image(path)
         image = imops.resize_image(image, self.rescale)
