@@ -210,8 +210,7 @@ class ImagePreprocessor:
         """
         for filename in os.listdir(path):
             filepath = os.path.join(path, filename)
-            extension = os.path.splitext(filepath)[1].lower()
-            if extension not in self.SUPPORTED_FORMATS:
+            if not self.valid_file(filepath):
                 continue
             preprocessed_image = self.preprocess_image(filepath, rescale, colorspace,
                                                        current_bounds, desired_bounds, dtype=dtype)
