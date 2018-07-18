@@ -9,6 +9,7 @@ import numpy as np
 def valid_file(path):
     """
     Ensures path points to a file of a supported filetype by OpenCV.
+
     Parameters:
         - path (str)
             - Path to the file.
@@ -39,6 +40,7 @@ def valid_file(path):
 def load_image(path):
     """
     Loads an image's RGB values as a tensor.
+
     Parameters:
         - path (str)
             - Path to the image.
@@ -57,6 +59,7 @@ def resize_image(image,
                  rescale):
     """
     Resizes an image with bilinear interpolation.
+
     Parameters:
         - image (tensor)
             - Encoded in RGB.
@@ -75,6 +78,7 @@ def convert_colorspace(image,
                        colorspace):
     """
     Converts an RGB image to a different color space.
+
     Parameters:
         - image (tensor)
             - Encoded in RGB.
@@ -122,6 +126,7 @@ def normalize_image(image,
     """
     Normalizes an image CHANNELWISE.
     Changes the boundaries of the interval in which the image's numerical values lie.
+
     Parameters:
         - image (tensor)
             - Formatted in HWC.
