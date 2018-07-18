@@ -103,22 +103,16 @@ def convert_colorspace(image,
         - The converted tensor.
         - Still in uint8.
         - Still formatted in HWC, but may have different number of channels.
-    Raises:
-        - ValueError, if the arg for colorspace is invalid.
     """
     if colorspace == 'CIELAB':
         image = cv2.cvtColor(image, cv2.COLOR_RGB2LAB)
     elif colorspace == 'GRAYSCALE':
         image = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
-    elif colorspace == 'RGB':
-        pass
     elif colorspace == 'RGB+GRAYSCALE':
         gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
         image = np.dstack((image, gray))
     elif colorspace == 'HSV':
         image = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)
-    else:
-        raise ValueError('{} is not a valid option for param: colorspace'.format(colorspace))
     return image
 
 
