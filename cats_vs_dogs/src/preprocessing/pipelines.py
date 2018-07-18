@@ -54,10 +54,10 @@ def preprocess_directory(path,
     Parameters:
         - path (str)
             - Path to the directory.
-        - For other parameters, see the `preprocess_image` method for details.
+        - For other parameters, see the preprocess_image function in this module for details.
     Yields:
-        - A list `[filename, preprocessed_image_array]`.
-            - See `ImagePreprocessor.preprocess_image` for details on the latter.
+        - A list [filename, preprocessed_image_array].
+            - See the preprocess_image function in this module for details on the latter.
     """
     for filename in os.listdir(path):
         filepath = os.path.join(path, filename)
