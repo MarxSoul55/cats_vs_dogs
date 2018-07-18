@@ -30,7 +30,7 @@ class ImagePreprocessor:
     def valid_file(self,
                    path):
         """
-        Ensures `path` points to a file of a supported filetype.
+        Ensures path points to a file of a supported filetype.
 
         Parameters:
             - path (str)
@@ -55,7 +55,7 @@ class ImagePreprocessor:
             - A tensor.
                 - Encoded in RGB.
                 - Formatted in HWC.
-                - Datatype is `uint8`.
+                - Datatype is uint8.
         """
         image = cv2.imread(path)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
@@ -71,12 +71,12 @@ class ImagePreprocessor:
             - image (tensor)
                 - Encoded in RGB.
                 - Formatted in HWC.
-                - Datatype is `uint8`.
+                - Datatype is uint8.
             - rescale (list of two ints)
-                - Desired `[height, width]`.
+                - Desired [height, width].
                 - e.g. [1080, 1920]
         Returns:
-            - An idential tensor, with a different height/width as per `rescale`.
+            - An idential tensor, with a different height/width.
         """
         return cv2.resize(image, tuple(reversed(rescale)), interpolation=cv2.INTER_LINEAR)
 
@@ -90,7 +90,7 @@ class ImagePreprocessor:
             - image (tensor)
                 - Encoded in RGB.
                 - Formatted in HWC.
-                - Datatype is `uint8`.
+                - Datatype is uint8.
             - colorspace (str)
                 - Options are: 'GRAYSCALE', 'RGB+GRAYSCALE', 'CIELAB', 'HSV'
                     - 'GRAYSCALE' is computed via OpenCV's implementation.
@@ -108,7 +108,7 @@ class ImagePreprocessor:
                         - Output tensors will be HxWx3 in range [0, 1].
         Returns:
             - The converted tensor.
-            - Still in `uint8`.
+            - Still in uint8.
             - Still formatted in HWC, but may have different number of channels.
         """
         if colorspace == 'GRAYSCALE':
@@ -137,9 +137,9 @@ class ImagePreprocessor:
         Parameters:
             - image (tensor)
                 - Formatted in HWC.
-                - Datatype is `uint8`.
+                - Datatype is uint8.
             - current_bounds (list of lists of two ints each)
-                - e.g. For a `uint8` image with 2 channels: [[0, 255], [0, 255]]
+                - e.g. For a uint8 image with 2 channels: [[0, 255], [0, 255]]
             - desired_bounds (list of lists of two ints each)
                 - The desired boundaries for the new tensor.
             - dtype (str)
@@ -172,14 +172,14 @@ class ImagePreprocessor:
         Parameters:
             - For each parameter, see the methods listed for details.
                 - path
-                    - `valid_file`
-                    - `load_image`
+                    - valid_file
+                    - load_image
                 - rescale
-                    - `resize_image`
+                    - resize_image
                 - colorspace
-                    - `convert_colorspace`
+                    - convert_colorspace
                 - current_bounds, desired_bounds, dtype
-                    - `normalize_image`
+                    - normalize_image
         Returns:
             - The fully preprocessed image.
         """
@@ -197,17 +197,17 @@ class ImagePreprocessor:
                              desired_bounds,
                              dtype='float32'):
         """
-        An extension of `ImagePreprocessor.preprocess_image` for directories.
-        Given a directory, preprocesses images in it with `ImagePreprocessor.preprocess_image`.
+        An extension of ImagePreprocessor.preprocess_image for directories.
+        Given a directory, preprocesses images in it with ImagePreprocessor.preprocess_image.
         Subdirectories and files of unsupported formats are ignored.
 
         Parameters:
             - path (str)
                 - Path to the directory.
-            - For other parameters, see the `preprocess_image` method for details.
+            - For other parameters, see the preprocess_image method for details.
         Yields:
-            - A list `[filename, preprocessed_image_array]`.
-                - See `ImagePreprocessor.preprocess_image` for details on the latter.
+            - A list [filename, preprocessed_image_array].
+                - See ImagePreprocessor.preprocess_image for details on the latter.
         """
         for filename in os.listdir(path):
             filepath = os.path.join(path, filename)
@@ -225,7 +225,7 @@ class ImagePreprocessor:
         Given a directory of subdirectories of images, preprocesses an image from the 1st subdir,
         then the 2nd, then the Nth, and then loops back towards the 1st and gets another image,
         etc. The order of the images in each subdir is randomized. After all images in a subdir
-        have been preprocessed (given that `steps` is big enough), preprocessing will start over at
+        have been preprocessed (given steps arg is big enough), preprocessing will start over at
         the beginning of the subdir in question. The order of images within each subdir is
         randomized at the start, but not randomized again afterwards.
 
@@ -240,7 +240,7 @@ class ImagePreprocessor:
                 - Maps the name of the subdirectory (class) to a label.
                 - ex: {'cats': [1, 0], 'dogs': [0, 1]}
         Yields:
-            - A tuple `(step, preprocessed_image_array, label_array)` starting from step 1.
+            - A tuple (step, preprocessed_image_array, label_array) starting from step 1.
         """
         classes = os.listdir(train_dir)
         cursors = {}
