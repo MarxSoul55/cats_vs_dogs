@@ -110,9 +110,6 @@ class ImagePreprocessor:
             - The converted tensor.
             - Still in `uint8`.
             - Still formatted in HWC, but may have different number of channels.
-        Raises:
-            - ValueError
-                - ...if an invalid argument is given for `colorspace`.
         """
         if colorspace == 'GRAYSCALE':
             image = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
@@ -127,8 +124,6 @@ class ImagePreprocessor:
         elif colorspace == 'HSV':
             image = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)
             return image
-        else:
-            raise ValueError('Invalid argument for parameter `colorspace`.')
 
     def normalize_image(self,
                         image,
