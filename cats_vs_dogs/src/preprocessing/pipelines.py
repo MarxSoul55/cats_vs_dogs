@@ -1,4 +1,4 @@
-"""Pipelines which perform complete image preprocessing."""
+"""Provides class which implements a customizable pipeline."""
 
 import os
 import random
@@ -10,7 +10,7 @@ import imops
 
 class ImageDataPipeline:
 
-    """Specifies a pipeline object which performs multiple image preprocessing steps."""
+    """Specifies a custom pipeline object which performs a sequence of image preprocessing ops."""
 
     def __init__(self,
                  rescale,
@@ -42,16 +42,8 @@ class ImageDataPipeline:
         Finalizes by converting HWC to NHWC.
 
         Parameters:
-            - For each parameter, see the function(s) listed in the imops module for details.
-                - path
-                    - valid_file
-                    - load_image
-                - rescale
-                    - resize_image
-                - colorspace
-                    - convert_colorspace
-                - current_bounds, desired_bounds, dtype
-                    - normalize_image
+            - path (str)
+                - Path to the image to preprocess.
         Returns:
             - The fully preprocessed image in NHWC format.
         """
@@ -66,14 +58,13 @@ class ImageDataPipeline:
     def preprocess_directory(self,
                              path):
         """
-        An extension of `ImagePreprocessor.preprocess_image` for directories.
-        Given a directory, preprocesses images in it with `ImagePreprocessor.preprocess_image`.
+        An extension of the preprocess_image method for directories.
+        Given a directory, preprocesses images in it with the preprocess_image method.
         Subdirectories and files of unsupported formats are ignored.
 
         Parameters:
             - path (str)
                 - Path to the directory.
-            - For other parameters, see the preprocess_image function in this module for details.
         Yields:
             - A list [filename, preprocessed_image_array].
                 - See the preprocess_image function in this module for details on the latter.
