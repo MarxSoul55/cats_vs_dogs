@@ -10,12 +10,12 @@ ENCODING = {'cats': [1, 0], 'dogs': [0, 1]}
 # Shape of a label as shown above in `encoding`.
 LABEL_SHAPE = [1, 2]
 # Provides `train_dir` argument for `preprocessing.ImagePreprocessor.preprocess_classes`.
-TRAIN_DIR = 'data/train'
+TRAIN_DIR = '../data/train'
 # X/Y : X is the name of the directory that will hold saved data about the model.
 # Y is the prefix for the .data, .index, and .meta files.
-SAVEMODEL_DIR = 'saved/model'
+SAVEMODEL_DIR = '../bin/saved/model'
 # This directory will hold tensorboard files.
-TENSORBOARD_DIR = 'tensorboard'
+TENSORBOARD_DIR = '../bin/tensorboard'
 # List of image-formats supported by OpenCV.
 SUPPORTED_FORMATS = [
     '.bmp',
