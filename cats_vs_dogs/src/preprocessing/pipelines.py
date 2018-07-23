@@ -95,9 +95,9 @@ class ImageDataPipeline:
                 - Path to the directory of classes.
                 - May be relative or absolute.
                 - e.g. 'data/cats/train' (where 'train' holds the subdirs)
-            - encoding (dict)
+            - encoding (dict, str --> np.ndarray)
                 - Maps the name of the subdirectory (class) to a label.
-                - ex: {'cats': [1, 0], 'dogs': [0, 1]}
+                - ex: {'cats': np.array([[1, 0]]), 'dogs': np.array([[0, 1]])}
         Yields:
             - A tuple (step, preprocessed_image_array, label_array) starting from step 1.
         """
@@ -119,7 +119,7 @@ class ImageDataPipeline:
                 if not imops.valid_file(image_path):
                     continue
                 preprocessed_image = self.preprocess_image(image_path)
-                label = np.expand_dims(encoding[class_], axis=0).astype('float32')
+                label = encoding[class_]
                 if cursors[class_] == (len(images[class_]) - 1):
                     cursors[class_] = 0
                 else:
