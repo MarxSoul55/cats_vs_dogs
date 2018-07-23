@@ -43,7 +43,7 @@ def train(steps,
         optimizer = sess.graph.get_operation_by_name('optimizer')
     else:
         input_ = tf.placeholder(tf.float32, shape=c.IN_SHAPE, name='input')
-        output = architecture.model(input_, name='model')
+        output = architecture.primary(input_, name='model')
         sess.run(tf.global_variables_initializer())
         label = tf.placeholder(tf.float32, shape=list(c.ENCODING.values())[0].shape)
         objective = tf.sqrt(tf.reduce_mean(tf.squared_difference(label, output)), name='objective')
