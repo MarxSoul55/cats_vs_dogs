@@ -1,5 +1,20 @@
 """Provides interface for training the model."""
 
+import os
+import shutil
+
+
+def clear_tensorboard(path):
+    """
+    Clears the directory for tensorboard, if it exists.
+
+    Parameters:
+        - path (str)
+            - Path to the directory.
+    """
+    if os.path.isdir(path):
+        shutil.rmtree(path)
+
 
 def train(steps, resuming):
     """
