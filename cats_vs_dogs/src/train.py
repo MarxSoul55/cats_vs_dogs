@@ -6,6 +6,7 @@ import shutil
 import tensorflow as tf
 
 import constants as c
+from model import architecture
 
 
 def clear_tensorboard(path):
@@ -18,6 +19,26 @@ def clear_tensorboard(path):
     """
     if os.path.isdir(path):
         shutil.rmtree(path)
+
+
+def train_from_scratch(steps):
+    """
+    Builds up a graph of operations from scratch to train a model.
+
+    Parameters:
+        - steps (int)
+            - Number of gradient updates to perform.
+    """
+    clear_tensorboard(c.TENSORBOARD_DIR)
+    sess = tf.Session()
+    input_ = tf.placeholder(tf.float32, shape=c.IN_SHAPE, name='input')
+    output = architecture.model(input_, name='model')
+    label = tf.placeholder(tf.float32, shape=list(c.ENCODING.values())[0].shape)
+    objective = tf.sqrt(tf.reduce_mean(tf.squared_difference(label, output)), name='objective')
+    optimizer = tf.train.MomentumOptimizer(0.0001, 0.9).minimize(objective, name='optimizer')
+    tf.summary.scalar('objective_summary', objective)
+    sess.run(tf.global_variables_initializer())
+    # TODO: Finish.
 
 
 def train(steps, resuming):
