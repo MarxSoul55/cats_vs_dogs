@@ -35,28 +35,50 @@ def classify(path,
         - path (str)
             - Can be a normal path to an image on disk.
             - Can also be a path to a directory.
+        - encoding (dict, str --> np.ndarray)
+            - Maps the name of the subdirectory (class) to a label.
+                - ex: {'cats': np.array([[1, 0]]), 'dogs': np.array([[0, 1]])}
+                - Each label must have the same shape!
+            - The model's prediction is compared to each label.
+                - Whichever label differs the least from the prediction is chosen to return.
     Returns:
         - If given path to an image file on disk, returns a string that is either 'cat' or 'dog'.
         - If given path to a directory, returns a dictionary {'filename': 'guessed animal'}
     """
-    preprocessor = ImageDataPipeline(c.IN_SHAPE[1:3], c.COLORSPACE, [[0, 255], [0, 255], [0, 255]],
-                                     [[0, 1], [-1, 1], [-1, 1]])
+    def predicted_label(prediction_tensor,
+                        encoding):
+        """
+        Generates the predicted label by comparing the tensor prediction to `encoding`.
+
+        Parameters:
+            - prediction (np.ndarray)
+                - The prediction as represented by the model's tensor output.
+            - encoding (dict, str --> np.ndarray)
+                - See the parent function for details.
+        Returns:
+            - A string; the predicted label.
+        """
+        classes = list(encoding.keys())
+        labels = list(encoding.values())
+        differences = []
+        for label in labels:
+            difference = l2_error(label, prediction_tensor)
+            differences.append(difference)
+        index_of_smallest_difference = differences.index(min(differences))
+        return classes[index_of_smallest_difference]
     sess = tf.Session()
     loader = tf.train.import_meta_graph(c.SAVEMODEL_DIR + '.meta')
     loader.restore(sess, c.SAVEMODEL_DIR)
     input_ = sess.graph.get_tensor_by_name('input:0')
-    model_output = sess.graph.get_tensor_by_name('model/output/output:0')
+    model = sess.graph.get_tensor_by_name('model/output/output:0')
+    preprocessor = ImageDataPipeline(c.IN_SHAPE[1:3], c.COLORSPACE, [[0, 255], [0, 255], [0, 255]],
+                                     [[0, 1], [-1, 1], [-1, 1]])
     if os.path.isdir(path):
         results = {}
         for image_name, preprocessed_image in preprocessor.preprocess_directory(path):
-            result = sess.run(model_output, feed_dict={input_: preprocessed_image})
-            if np.argmax(result) == 0:
-                results[image_name] = 'cat'
-            else:
-                results[image_name] = 'dog'
+            prediction_tensor = sess.run(model, feed_dict={input_: preprocessed_image})
+            results[image_name] = predicted_label(prediction_tensor, encoding)
         return results
-    input_arg = np.expand_dims(preprocessor.preprocess_image(path), axis=0)
-    result = sess.run(model_output, feed_dict={input_: input_arg})
-    if np.argmax(result) == np.argmax(c.ENCODING['cats']):
-        return 'cat'
-    return 'dog'
+    preprocessed_image = preprocessor.preprocess_image(path)
+    prediction_tensor = sess.run(model, feed_dict={input_: preprocessed_image})
+    return predicted_label(prediction_tensor, encoding)
