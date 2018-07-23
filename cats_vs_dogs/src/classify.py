@@ -71,7 +71,9 @@ def classify(path,
     loader.restore(sess, c.SAVEMODEL_DIR)
     input_ = sess.graph.get_tensor_by_name('input:0')
     model = sess.graph.get_tensor_by_name('model/output/output:0')
-    preprocessor = ImageDataPipeline(c.IN_SHAPE[1:3], c.COLORSPACE, [[0, 255], [0, 255], [0, 255]],
+    preprocessor = ImageDataPipeline(c.IN_SHAPE[1:3],
+                                     c.COLORSPACE,
+                                     [[0, 255], [0, 255], [0, 255]],
                                      [[0, 1], [-1, 1], [-1, 1]])
     if os.path.isdir(path):
         results = {}

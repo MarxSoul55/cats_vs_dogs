@@ -51,7 +51,9 @@ def train(steps,
         tf.summary.scalar('objective_summary', objective)
     summary = tf.summary.merge_all()
     writer = tf.summary.FileWriter(c.TENSORBOARD_DIR, graph=sess.graph)
-    preprocessor = ImageDataPipeline(c.IN_SHAPE[1:3], c.COLORSPACE, [[0, 255], [0, 255], [0, 255]],
+    preprocessor = ImageDataPipeline(c.IN_SHAPE[1:3],
+                                     c.COLORSPACE,
+                                     [[0, 255], [0, 255], [0, 255]],
                                      [[0, 1], [-1, 1], [-1, 1]])
     for step, input_arg, label_arg in preprocessor.preprocess_classes(steps, c.TRAIN_DIR,
                                                                       c.ENCODING):
