@@ -5,7 +5,7 @@ import numpy as np
 # Shape of the input in NHWC format.
 IN_SHAPE = [1, 128, 128, 3]
 # Color space that the input-image will be converted to.
-COLOR_SPACE = 'CIELAB'
+COLORSPACE = 'CIELAB'
 # Provides `encoding` argument for `preprocessing.ImagePreprocessor.preprocess_classes`.
 # ALL LABELS MUST BE RANK 1 TENSORS!
 ENCODING = {'cats': np.array([[1, 0]]), 'dogs': np.array([[0, 1]])}
