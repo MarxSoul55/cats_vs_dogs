@@ -7,6 +7,7 @@ import tensorflow as tf
 
 import constants as c
 from model import architecture
+from preprocessing.pipelines import ImageDataPipeline
 
 
 def clear_tensorboard(path):
@@ -21,99 +22,37 @@ def clear_tensorboard(path):
         shutil.rmtree(path)
 
 
-def train_from_scratch(steps):
+def train(steps,
+          resuming):
     """
     Builds up a graph of operations from scratch to train a model.
 
     Parameters:
         - steps (int)
             - Number of gradient updates to perform.
-    """
-    clear_tensorboard(c.TENSORBOARD_DIR)
-    sess = tf.Session()
-    input_ = tf.placeholder(tf.float32, shape=c.IN_SHAPE, name='input')
-    output = architecture.model(input_, name='model')
-    label = tf.placeholder(tf.float32, shape=list(c.ENCODING.values())[0].shape)
-    objective = tf.sqrt(tf.reduce_mean(tf.squared_difference(label, output)), name='objective')
-    optimizer = tf.train.MomentumOptimizer(0.0001, 0.9).minimize(objective, name='optimizer')
-    tf.summary.scalar('objective_summary', objective)
-    sess.run(tf.global_variables_initializer())
-    # TODO: Finish.
-
-
-def train(steps, resuming):
-    """
-    Trains the model and saves the result.
-
-    # Parameters
-        steps (int):
-            - Amount of images to train on.
-        resuming (bool):
+        - resuming (bool)
             - Whether to train from scratch or resume training from a saved model.
     """
     clear_tensorboard(c.TENSORBOARD_DIR)
     sess = tf.Session()
     if resuming:
-        saver = tf.train.import_meta_graph(c.SAVEMODEL_DIR + '.meta')
-        saver.restore(sess, c.SAVEMODEL_DIR)
-        graph = tf.get_default_graph()
-        input_ = graph.get_tensor_by_name('input:0')
-        label = graph.get_tensor_by_name('label:0')
-        optimizer = graph.get_operation_by_name('optimizer')
+        loader = tf.train.import_meta_graph(c.SAVEMODEL_DIR + '.meta')
+        loader.restore(sess, c.SAVEMODEL_DIR)
+        input_ = sess.graph.get_tensor_by_name('input:0')
+        label = sess.graph.get_tensor_by_name('label:0')
+        optimizer = sess.graph.get_operation_by_name('optimizer')
     else:
-        input_ = tf.placeholder(tf.float32, shape=[1, c.ROWS, c.COLS, c.CHAN], name='input')
-        model = architecture.model(input_, name='model')
-        label = tf.placeholder(tf.float32, shape=c.LABEL_SHAPE, name='label')
-        objective = tf.sqrt(tf.reduce_mean(tf.squared_difference(label, model)), name='objective')
-        optimizer = tf.train.MomentumOptimizer(
-            0.0001, 0.9, use_nesterov=True).minimize(objective, name='optimizer')
-        tf.summary.scalar('objective_summary', objective)
+        input_ = tf.placeholder(tf.float32, shape=c.IN_SHAPE, name='input')
+        output = architecture.model(input_, name='model')
         sess.run(tf.global_variables_initializer())
+        label = tf.placeholder(tf.float32, shape=list(c.ENCODING.values())[0].shape)
+        objective = tf.sqrt(tf.reduce_mean(tf.squared_difference(label, output)), name='objective')
+        optimizer = tf.train.MomentumOptimizer(0.0001, 0.9).minimize(objective, name='optimizer')
+        tf.summary.scalar('objective_summary', objective)
     summary = tf.summary.merge_all()
     writer = tf.summary.FileWriter(c.TENSORBOARD_DIR, graph=sess.graph)
-    preprocessor = ImagePreprocessor([c.COLS, c.ROWS], c.COLOR_SPACE)
-    for step, input_arg, label_arg in preprocessor.preprocess_classes(steps, c.TRAIN_DIR,
-                                                                      c.ENCODING):
-        print('Step: {}/{}'.format(step, steps))
-        _, step_summary = sess.run([optimizer, summary],
-                                   feed_dict={input_: input_arg, label: label_arg})
-        writer.add_summary(step_summary, global_step=step)
-    tf.train.Saver().save(sess, c.SAVEMODEL_DIR)
-    print('\a')
-
-
-def train(steps, resuming):
-    """
-    Trains the model and saves the result.
-
-    # Parameters
-        steps (int):
-            - Amount of images to train on.
-        resuming (bool):
-            - Whether to train from scratch or resume training from a saved model.
-    """
-    if c.TENSORBOARD_DIR in os.listdir():
-        shutil.rmtree(c.TENSORBOARD_DIR)
-    sess = tf.Session()
-    if resuming:
-        saver = tf.train.import_meta_graph(c.SAVEMODEL_DIR + '.meta')
-        saver.restore(sess, c.SAVEMODEL_DIR)
-        graph = tf.get_default_graph()
-        input_ = graph.get_tensor_by_name('input:0')
-        label = graph.get_tensor_by_name('label:0')
-        optimizer = graph.get_operation_by_name('optimizer')
-    else:
-        input_ = tf.placeholder(tf.float32, shape=[1, c.ROWS, c.COLS, c.CHAN], name='input')
-        model = architecture.model(input_, name='model')
-        label = tf.placeholder(tf.float32, shape=c.LABEL_SHAPE, name='label')
-        objective = tf.sqrt(tf.reduce_mean(tf.squared_difference(label, model)), name='objective')
-        optimizer = tf.train.MomentumOptimizer(
-            0.0001, 0.9, use_nesterov=True).minimize(objective, name='optimizer')
-        tf.summary.scalar('objective_summary', objective)
-        sess.run(tf.global_variables_initializer())
-    summary = tf.summary.merge_all()
-    writer = tf.summary.FileWriter(c.TENSORBOARD_DIR, graph=sess.graph)
-    preprocessor = ImagePreprocessor([c.COLS, c.ROWS], c.COLOR_SPACE)
+    preprocessor = ImageDataPipeline(c.IN_SHAPE[1:3], c.COLORSPACE, [[0, 255], [0, 255], [0, 255]],
+                                     [[0, 1], [-1, 1], [-1, 1]])
     for step, input_arg, label_arg in preprocessor.preprocess_classes(steps, c.TRAIN_DIR,
                                                                       c.ENCODING):
         print('Step: {}/{}'.format(step, steps))
