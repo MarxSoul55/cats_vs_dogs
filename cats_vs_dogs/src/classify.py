@@ -9,7 +9,22 @@ import constants as c
 from model.pipelines import ImageDataPipeline
 
 
-def classify(path):
+def l2_error(a, b):
+    """
+    Calculates the l2 error between two arrays.
+
+    Parameters:
+        - a (np.ndarray)
+        - b (np.ndarray)
+            - Must have same shape as `a`.
+    Returns:
+        - A float representing the error.
+    """
+    return np.sqrt(np.sum((a - b) ** 2))
+
+
+def classify(path,
+             encoding):
     """
     Does one of 2 things:
     1. Given a path to an image file on disk (WITH A FILE-EXTENSION), classifies it.
