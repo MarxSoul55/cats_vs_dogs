@@ -9,7 +9,8 @@ import constants as c
 from model.pipelines import ImageDataPipeline
 
 
-def l2_error(a, b):
+def l2_error(a,
+             b):
     """
     Calculates the l2 error between two arrays.
 
