@@ -9,21 +9,6 @@ import constants as c
 from model.pipelines import ImageDataPipeline
 
 
-def l2_error(a,
-             b):
-    """
-    Calculates the l2 error between two arrays.
-
-    Parameters:
-        - a (np.ndarray)
-        - b (np.ndarray)
-            - Must have same shape as `a`.
-    Returns:
-        - A float representing the error.
-    """
-    return np.sqrt(np.sum((a - b) ** 2))
-
-
 def classify(path,
              encoding):
     """
@@ -63,8 +48,8 @@ def classify(path,
         labels = list(encoding.values())
         differences = []
         for label in labels:
-            difference = l2_error(label, prediction_tensor)
-            differences.append(difference)
+            l2_difference = np.sqrt(np.sum((label - prediction_tensor) ** 2))
+            differences.append(l2_difference)
         index_of_smallest_difference = differences.index(min(differences))
         return classes[index_of_smallest_difference]
     sess = tf.Session()
