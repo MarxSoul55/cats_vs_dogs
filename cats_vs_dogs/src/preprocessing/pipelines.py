@@ -97,7 +97,9 @@ class ImageDataPipeline:
                 - e.g. 'data/cats/train' (where 'train' holds the subdirs)
             - encoding (dict, str --> np.ndarray)
                 - Maps the name of the subdirectory (class) to a label.
-                - ex: {'cats': np.array([[1, 0]]), 'dogs': np.array([[0, 1]])}
+                    - e.g. {'cats': np.array([[1, 0]]), 'dogs': np.array([[0, 1]])}
+                        - Each label must have the same shape!
+                        - In this case, the two labels are of shape [1, 2].
         Yields:
             - A tuple (step, preprocessed_image_array, label_array) starting from step 1.
         """
