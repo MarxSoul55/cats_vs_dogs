@@ -3,6 +3,8 @@
 import os
 import shutil
 
+import tensorflow as tf
+
 import constants as c
 
 
