@@ -61,8 +61,18 @@ def load_graph(sess,
             - X/Y
                 - X is the name of the directory that holds saved data about the model.
                 - Y is the prefix for the .data, .index, and .meta files.
+    Returns:
+        - The variables necessary for the training loop.
+            - An input placeholder.
+            - A label placeholder.
+            - An optimizer.minimize method from TensorFlow.
     """
-    pass
+    saver = tf.train.import_meta_graph(savemodel_dir + '.meta')
+    saver.restore(sess, savemodel_dir)
+    input_ = sess.graph.get_tensor_by_name('input:0')
+    label = sess.graph.get_tensor_by_name('label:0')
+    optimizer = sess.graph.get_operation_by_name('optimizer')
+    return input_, label, optimizer
 
 
 def initialize_summary_nodes(tensorboard_dir):
