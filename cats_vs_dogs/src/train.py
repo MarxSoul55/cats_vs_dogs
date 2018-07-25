@@ -36,9 +36,10 @@ def build_graph(sess,
         - label_shape (list)
             - Shape of the label tensor.
     Returns:
-        - An input placeholder.
-        - A label placeholder.
-        - An optimizer.minimize method from TensorFlow.
+        - The variables necessary for the training loop.
+            - An input placeholder.
+            - A label placeholder.
+            - An optimizer.minimize method from TensorFlow.
     """
     input_ = tf.placeholder(tf.float32, shape=input_shape, name='input')
     output = architecture.primary(input_, name='model')
