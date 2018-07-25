@@ -37,19 +37,26 @@ class TrainingPipeline(ImageDataPipeline):
         if os.path.isdir(path):
             shutil.rmtree(path)
 
-    def build_graph(self):
+    def build_graph(self,
+                    input_shape,
+                    label_shape):
         """
         Builds a graph for the training process.
 
+        Parameters:
+            - input_shape (list)
+                - Shape of the input tensor.
+            - label_shape (list)
+                - Shape of the label tensor.
         Returns:
             - An input placeholder.
             - A label placeholder.
             - An optimizer.minimize method from TensorFlow.
         """
-        input_ = tf.placeholder(tf.float32, shape=c.IN_SHAPE, name='input')
+        input_ = tf.placeholder(tf.float32, shape=input_shape, name='input')
         output = architecture.primary(input_, name='model')
         self.sess.run(tf.global_variables_initializer())
-        label = tf.placeholder(tf.float32, shape=list(c.ENCODING.values())[0].shape)
+        label = tf.placeholder(tf.float32, shape=label_shape)
         objective = tf.sqrt(tf.reduce_mean(tf.squared_difference(label, output)), name='objective')
         optimizer = tf.train.MomentumOptimizer(0.0001, 0.9).minimize(objective, name='optimizer')
         tf.summary.scalar('objective_summary', objective)
