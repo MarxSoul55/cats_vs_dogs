@@ -91,3 +91,46 @@ def initialize_summary_nodes(tensorboard_dir):
     summary = tf.summary.merge_all()
     writer = tf.summary.FileWriter(tensorboard_dir, graph=self.sess.graph)
     return summary, writer
+
+
+def main(sess,
+         optimizer,
+         steps,
+         input_,
+         label,
+         summary,
+         writer,
+         savedir,
+         train_dir,
+         encoding,
+         rescale,
+         colorspace,
+         current_bounds,
+         desired_bounds,
+         dtype='float32'):
+    """
+    Implements the training loop and saves the resulting model.
+
+    Parameters:
+        - sess (tf.Session)
+            - Session that the graph will run on.
+        - steps (int)
+            - Number of gradient updates to perform (i.e. number of images to train on)
+        - input_, label
+            - See train.build_graph or train.load_graph for details.
+        - summary, writer
+            - See train.initialize_summary_nodes for details.
+        - savedir (str)
+            - Directory to save the model to.
+        - train_dir, encoding, rescale, colorspace, current_bounds, desired_bounds, dtype
+            - See preprocessing.pipelines.ImageDataPipeline for details.
+    """
+    preprocessor = ImageDataPipeline(rescale, colorspace, current_bounds, desired_bounds,
+                                     dtype=dtype)
+    for step, input_path, input_arg, label_arg in preprocessor.preprocess_classes(steps, train_dir,
+                                                                                  encoding):
+        _, step_summary = sess.run([optimizer, summary],
+                                   feed_dict={input_: input_arg, label: label_arg})
+        writer.add_summary(step_summary, global_step=step)
+    tf.train.Saver().save(sess, savedir)
+    print('\a')
