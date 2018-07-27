@@ -101,7 +101,7 @@ class ImageDataPipeline:
                         - Each label must have the same shape!
                         - In this case, the two labels are of shape [1, 2].
         Yields:
-            - A tuple (step, preprocessed_image_array, label_array) starting from step 1.
+            - A tuple (step, image_path, preprocessed_image_array, label_array) starting w/ step 1.
         """
         classes = os.listdir(train_dir)
         cursors = {}
@@ -126,4 +126,4 @@ class ImageDataPipeline:
                     cursors[class_] = 0
                 else:
                     cursors[class_] += 1
-        yield step, preprocessed_image, label
+        yield step, image_path, preprocessed_image, label
