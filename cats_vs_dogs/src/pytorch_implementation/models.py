@@ -4,7 +4,7 @@ import torch.nn as nn
 import torch.nn.functional as nnf
 
 
-class BabyResnet(nn.Module):
+class BabyResNet(nn.Module):
 
     """Definition for model: Baby Resnet"""
 

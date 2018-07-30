@@ -21,7 +21,7 @@ def main(steps,
         - resuming (bool)
             - Whether to resume training from a saved model or to start from scratch.
     """
-    model = models.BabyResnet()
+    model = models.BabyResNet()
     base_objective = torch.nn.MSELoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=0.001)
     preprocessor = ImageDataPipeline()
