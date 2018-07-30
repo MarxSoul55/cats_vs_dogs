@@ -269,4 +269,4 @@ class ImageDataPipeline:
                     cursors[class_] = 0
                 else:
                     cursors[class_] += 1
-        yield step, image_path, preprocessed_image, label
+                yield step, image_path, preprocessed_image, label
