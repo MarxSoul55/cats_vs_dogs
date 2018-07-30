@@ -1,14 +1,36 @@
 """Provides definitions for the model's architecture."""
 
-import torch
+import torch.nn as nn
+import torch.nn.functional as nnf
 
 
-class BabyResnet(torch.nn.Module):
+class BabyResnet(nn.Module):
 
     """Definition for model: Baby Resnet"""
 
     def __init__(self):
+        """
+        Defining layers with trainable variables.
+        """
         super().__init__()
+        # Conv Block 1
+        self.conv1 = nn.Conv2d(3, 32, 3, padding=1)
+        self.conv2 = nn.Conv2d(32, 32, 3, padding=1)
+        self.conv3 = nn.Conv2d(32, 32, 3, padding=1)
+        # Conv Block 2
+        self.conv4 = nn.Conv2d(32, 64, 3, padding=1)
+        self.conv5 = nn.Conv2d(64, 64, 3, padding=1)
+        self.conv6 = nn.Conv2d(64, 64, 3, padding=1)
+        # Conv Block 3
+        self.conv7 = nn.Conv2d(64, 128, 3, padding=1)
+        self.conv8 = nn.Conv2d(128, 128, 3, padding=1)
+        self.conv9 = nn.Conv2d(128, 128, 3, padding=1)
+        # Block 4
+        self.conv10 = nn.Conv2d(128, 256, 3, padding=1)
+        self.conv11 = nn.Conv2d(256, 256, 3, padding=1)
+        self.conv12 = nn.Conv2d(256, 256, 3, padding=1)
+        # Dense Block
+        self.dense1 = nn.Linear(8, 2)
 
     def forward(self,
                 input_):
@@ -23,43 +45,43 @@ class BabyResnet(torch.nn.Module):
             - A [1, 2] shape tensor.
         """
         # Conv Block 1
-        skip = torch.nn.Conv2d(3, 32, 3, padding=1)(input_)
-        x = torch.nn.ReLU()(skip)
-        x = torch.nn.Conv2d(32, 32, 3, padding=1)(x)
-        x = torch.nn.ReLU()(x)
-        x = torch.nn.Conv2d(32, 32, 3, padding=1)(x)
+        skip = self.conv1(input_)
+        x = nnf.relu(skip)
+        x = self.conv2(x)
+        x = nnf.relu(x)
+        x = self.conv3(x)
         x += skip
-        x = torch.nn.ReLU()(x)
-        x = torch.nn.MaxPool2d(2)(x)
+        x = nnf.relu(x)
+        x = nnf.max_pool2d(x, 2)
         # Conv Block 2
-        skip = torch.nn.Conv2d(32, 64, 3, padding=1)(x)
-        x = torch.nn.ReLU()(skip)
-        x = torch.nn.Conv2d(64, 64, 3, padding=1)(x)
-        x = torch.nn.ReLU()(x)
-        x = torch.nn.Conv2d(64, 64, 3, padding=1)(x)
+        skip = self.conv4(x)
+        x = nnf.relu(skip)
+        x = self.conv5(x)
+        x = nnf.relu(x)
+        x = self.conv6(x)
         x += skip
-        x = torch.nn.ReLU()(x)
-        x = torch.nn.MaxPool2d(2)(x)
+        x = nnf.relu(x)
+        x = nnf.max_pool2d(x, 2)
         # Conv Block 3
-        skip = torch.nn.Conv2d(64, 128, 3, padding=1)(x)
-        x = torch.nn.ReLU()(skip)
-        x = torch.nn.Conv2d(128, 128, 3, padding=1)(x)
-        x = torch.nn.ReLU()(x)
-        x = torch.nn.Conv2d(128, 128, 3, padding=1)(x)
+        skip = self.conv7(x)
+        x = nnf.relu(skip)
+        x = self.conv8(x)
+        x = nnf.relu(x)
+        x = self.conv9(x)
         x += skip
-        x = torch.nn.ReLU()(x)
-        x = torch.nn.MaxPool2d(2)(x)
+        x = nnf.relu(x)
+        x = nnf.max_pool2d(x, 2)
         # Conv Block 4
-        skip = torch.nn.Conv2d(128, 256, 3, padding=1)(x)
-        x = torch.nn.ReLU()(skip)
-        x = torch.nn.Conv2d(256, 256, 3, padding=1)(x)
-        x = torch.nn.ReLU()(x)
-        x = torch.nn.Conv2d(256, 256, 3, padding=1)(x)
+        skip = self.conv10(x)
+        x = nnf.relu(skip)
+        x = self.conv11(x)
+        x = nnf.relu(x)
+        x = self.conv12(x)
         x += skip
-        x = torch.nn.ReLU()(x)
-        x = torch.nn.MaxPool2d(2)(x)
+        x = nnf.relu(x)
+        x = nnf.max_pool2d(x, 2)
         # Dense Block
-        x = torch.nn.AvgPool2d(x.shape[2])
-        x = x.reshape(1, -1)
-        x = torch.nn.Linear(x.shape[1], 2)(x)
+        x = nnf.avg_pool2d(x, 8)
+        x = x.reshape(1, 8)
+        x = self.dense1(x)
         return x
