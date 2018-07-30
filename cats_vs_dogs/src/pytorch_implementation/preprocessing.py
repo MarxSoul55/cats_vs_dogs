@@ -6,8 +6,6 @@ import random
 import cv2
 import numpy as np
 
-import imops
-
 
 class ImageDataPipeline:
 
@@ -21,13 +19,14 @@ class ImageDataPipeline:
                  dtype='float32'):
         """
         Instance Attributes:
-            - For each attribute, see the function(s) listed in the imops module for details.
+            - These attributes are used by the core pipeline function `preprocess_image`.
+            - For each attribute, see the methods listed for details.
                 - rescale
-                    - imops.resize_image
+                    - resize_image
                 - colorspace
-                    - imops.convert_colorspace
+                    - convert_colorspace
                 - current_bounds, desired_bounds, dtype
-                    - imops.normalize_image
+                    - normalize_image
         """
         self.rescale = rescale
         self.colorspace = colorspace
@@ -191,10 +190,10 @@ class ImageDataPipeline:
         Returns:
             - The fully preprocessed image in NHWC format.
         """
-        image = imops.load_image(path)
-        image = imops.resize_image(image, self.rescale)
-        image = imops.convert_colorspace(image, self.colorspace)
-        image = imops.normalize_image(image, self.current_bounds, self.desired_bounds,
+        image = self.load_image(path)
+        image = self.resize_image(image, self.rescale)
+        image = self.convert_colorspace(image, self.colorspace)
+        image = self.normalize_image(image, self.current_bounds, self.desired_bounds,
                                       dtype=self.dtype)
         image = np.expand_dims(image, axis=0)
         return image
@@ -215,7 +214,7 @@ class ImageDataPipeline:
         """
         for filename in os.listdir(path):
             filepath = os.path.join(path, filename)
-            if not imops.valid_file(filepath):
+            if not self.valid_file(filepath):
                 continue
             preprocessed_image = self.preprocess_image(filepath)
             yield filename, preprocessed_image
@@ -262,7 +261,7 @@ class ImageDataPipeline:
                 else:
                     return
                 image_path = os.path.join(train_dir, class_, images[class_][cursors[class_]])
-                if not imops.valid_file(image_path):
+                if not self.valid_file(image_path):
                     continue
                 preprocessed_image = self.preprocess_image(image_path)
                 label = encoding[class_]
