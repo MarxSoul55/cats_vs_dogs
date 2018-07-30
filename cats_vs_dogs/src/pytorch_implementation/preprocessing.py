@@ -194,7 +194,7 @@ class ImageDataPipeline:
         image = self.resize_image(image, self.rescale)
         image = self.convert_colorspace(image, self.colorspace)
         image = self.normalize_image(image, self.current_bounds, self.desired_bounds,
-                                      dtype=self.dtype)
+                                     dtype=self.dtype)
         image = np.expand_dims(image, axis=0)
         return image
 
