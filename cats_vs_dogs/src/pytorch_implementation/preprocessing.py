@@ -16,17 +16,22 @@ class ImageDataPipeline:
                  colorspace='CIELAB',
                  current_bounds=[[0, 255], [0, 255], [0, 255]],
                  desired_bounds=[[0, 1], [-1, 1], [-1, 1]],
+                 mode='NCHW',
                  dtype='float32'):
         """
         Instance Attributes:
             - These attributes are used by the core pipeline function `preprocess_image`.
+                - This method is used as a building block for more complex pipelines.
+                    - i.e. `preprocess_directory` and `preprocess_classes`.
             - For each attribute, see the methods listed for details.
                 - rescale
-                    - resize_image
+                    - `resize_image`
                 - colorspace
-                    - convert_colorspace
+                    - `convert_colorspace`
+                - mode
+                    - `format_tensor`
                 - current_bounds, desired_bounds, dtype
-                    - normalize_image
+                    - `normalize_image`
         """
         self.rescale = rescale
         self.colorspace = colorspace
@@ -186,13 +191,14 @@ class ImageDataPipeline:
         Parameters:
             - image (np.ndarray)
                 - The input tensor which represents the image.
+                - Must be formatted in HWC.
             - mode (str)
                 - Either 'NHWC' or 'NCHW'.
         """
-        if mode == 'NHWC':
-            pass
-        elif mode == 'NCHW':
-            pass
+        image = np.expand_dims(image, axis=0)
+        if mode == 'NCHW':
+            image = image.transpose(axes=[0, 3, 1, 2])
+        return image
 
     def preprocess_image(self,
                          path):
@@ -212,7 +218,7 @@ class ImageDataPipeline:
         image = self.convert_colorspace(image, self.colorspace)
         image = self.normalize_image(image, self.current_bounds, self.desired_bounds,
                                      dtype=self.dtype)
-        image = np.expand_dims(image, axis=0)
+        image = self.format_tensor(image, self.mode)
         return image
 
     def preprocess_directory(self,
