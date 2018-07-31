@@ -90,7 +90,7 @@ class ImageDataPipeline:
         Resizes an image with bilinear interpolation.
 
         Parameters:
-            - image (tensor)
+            - image (np.ndarray)
                 - Encoded in RGB.
                 - Formatted in HWC.
                 - Datatype is uint8.
@@ -109,7 +109,7 @@ class ImageDataPipeline:
         Converts an RGB image to a different color space.
 
         Parameters:
-            - image (tensor)
+            - image (np.ndarray)
                 - Encoded in RGB.
                 - Formatted in HWC.
                 - Datatype is uint8.
@@ -154,7 +154,7 @@ class ImageDataPipeline:
         Changes the boundaries of the interval in which the image's numerical values lie.
 
         Parameters:
-            - image (tensor)
+            - image (np.ndarray)
                 - Formatted in HWC.
                 - Datatype is uint8.
             - current_bounds (list of lists of two ints each)
