@@ -176,7 +176,7 @@ class ImageDataPipeline:
                                      (desired_bounds[channel][1] - desired_bounds[channel][0]))
             image[:, :, channel] += desired_bounds[channel][0]
         return image
-    
+
     def format_tensor(self,
                       image,
                       mode):
