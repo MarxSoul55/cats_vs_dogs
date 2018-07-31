@@ -176,6 +176,23 @@ class ImageDataPipeline:
                                      (desired_bounds[channel][1] - desired_bounds[channel][0]))
             image[:, :, channel] += desired_bounds[channel][0]
         return image
+    
+    def format_tensor(self,
+                      image,
+                      mode):
+        """
+        Takes in a HWC tensor and converts to either NHWC or NCHW.
+
+        Parameters:
+            - image (np.ndarray)
+                - The input tensor which represents the image.
+            - mode (str)
+                - Either 'NHWC' or 'NCHW'.
+        """
+        if mode == 'NHWC':
+            pass
+        elif mode == 'NCHW':
+            pass
 
     def preprocess_image(self,
                          path):
