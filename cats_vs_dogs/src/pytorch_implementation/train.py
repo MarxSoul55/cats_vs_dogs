@@ -28,6 +28,7 @@ def main(steps,
     for step, im_path, im_array, im_label in preprocessor.preprocess_classes(steps,
                                                                              c.TRAIN_DIR,
                                                                              c.ENCODING):
+        im_array, im_label = torch.tensor(im_array), torch.tensor(im_label)
         optimizer.zero_grad()
         output = model(im_array)
         objective = torch.sqrt(base_objective(output, im_label))
