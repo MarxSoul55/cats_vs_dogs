@@ -21,14 +21,16 @@ def main(steps,
         - resuming (bool)
             - Whether to resume training from a saved model or to start from scratch.
     """
-    model = models.BabyResNet()
+    device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+    model = models.BabyResNet().to(device)
     base_objective = torch.nn.MSELoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=0.001)
     preprocessor = ImageDataPipeline()
     for step, im_path, im_array, im_label in preprocessor.preprocess_classes(steps,
                                                                              c.TRAIN_DIR,
                                                                              c.ENCODING):
-        im_array, im_label = torch.tensor(im_array), torch.tensor(im_label)
+        im_array, im_label = (torch.tensor(im_array, dtype=torch.float32).to(device),
+                              torch.tensor(im_label, dtype=torch.float32).to(device))
         optimizer.zero_grad()
         output = model(im_array)
         objective = torch.sqrt(base_objective(output, im_label))
