@@ -37,6 +37,7 @@ class ImageDataPipeline:
         self.colorspace = colorspace
         self.current_bounds = current_bounds
         self.desired_bounds = desired_bounds
+        self.mode = mode
         self.dtype = dtype
 
     def valid_file(self,
