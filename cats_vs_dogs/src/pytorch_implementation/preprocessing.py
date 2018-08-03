@@ -198,7 +198,7 @@ class ImageDataPipeline:
         """
         image = np.expand_dims(image, axis=0)
         if mode == 'NCHW':
-            image = image.transpose(axes=[0, 3, 1, 2])
+            image = image.transpose([0, 3, 1, 2])
         return image
 
     def preprocess_image(self,
