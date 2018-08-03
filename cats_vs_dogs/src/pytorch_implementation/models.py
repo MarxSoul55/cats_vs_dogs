@@ -30,7 +30,7 @@ class BabyResNet(nn.Module):
         self.conv11 = nn.Conv2d(256, 256, 3, padding=1)
         self.conv12 = nn.Conv2d(256, 256, 3, padding=1)
         # Dense Block
-        self.dense1 = nn.Linear(8, 2)
+        self.dense1 = nn.Linear(256, 2)
 
     def forward(self,
                 input_):
@@ -82,6 +82,6 @@ class BabyResNet(nn.Module):
         x = nnf.max_pool2d(x, 2)
         # Dense Block
         x = nnf.avg_pool2d(x, 8)
-        x = x.reshape(1, 8)
+        x = x.reshape(1, 256)
         x = self.dense1(x)
         return x
