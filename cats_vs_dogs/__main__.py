@@ -36,9 +36,10 @@ def main(args):
             training_prompt()
             pyti.src.train.main(pyti.constants.TRAIN_DIR, pyti.constants.ENCODING, args.steps,
                                 pyti.constants.SAVEPATH, resuming=args.resuming)
-        # TODO
         elif args.classify:
-            pass
+            predicted_label = pyti.src.classify.main(args.source, pyti.constants.SAVEPATH,
+                                                     pyti.constants.ENCODING)
+            print(predicted_label)
     # TODO
     elif args.implementation == 'tensorflow':
         pass
