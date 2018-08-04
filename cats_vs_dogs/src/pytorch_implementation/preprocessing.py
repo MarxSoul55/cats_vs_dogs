@@ -20,7 +20,8 @@ class ImageDataPipeline:
                  dtype='float32'):
         """
         Instance Attributes:
-            - These attributes are used by the core pipeline function `preprocess_image`.
+            - These attributes are used by the core pipeline function `preprocess_image` as
+              arguments to the lower level methods.
                 - This method is used as a building block for more complex pipelines.
                     - i.e. `preprocess_directory` and `preprocess_classes`.
             - For each attribute, see the methods listed for details.
