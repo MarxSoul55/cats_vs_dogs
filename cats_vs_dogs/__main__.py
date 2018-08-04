@@ -23,17 +23,14 @@ def training_prompt():
             print('Press either the Y or N key.')
 
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(
-        description='Need help? See: https://github.com/MarxSoul55/cats_vs_dogs#using-the-cli')
-    parser.add_argument('--train', action='store_true')
-    parser.add_argument('--resuming', action='store_true')
-    parser.add_argument('--steps', type=int)
-    parser.add_argument('--classify', action='store_true')
-    parser.add_argument('--source', type=str)
-    parser.add_argument('--implementation', type=str)
-    parser.set_defaults(resuming=False, implementation='pytorch')
-    args = parser.parse_args()
+def main(args):
+    """
+    Executes the program.
+
+    Parameters:
+        - args (argparse.Namespace)
+            - An object returned from `argparse.ArgumentParser().parse_args()`.
+    """
     if args.implementation == 'pytorch':
         if args.train:
             training_prompt()
@@ -45,3 +42,17 @@ if __name__ == '__main__':
     # TODO
     elif args.implementation == 'tensorflow':
         pass
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(
+        description='Need help? See: https://github.com/MarxSoul55/cats_vs_dogs#using-the-cli')
+    parser.add_argument('--train', action='store_true')
+    parser.add_argument('--resuming', action='store_true')
+    parser.add_argument('--steps', type=int)
+    parser.add_argument('--classify', action='store_true')
+    parser.add_argument('--source', type=str)
+    parser.add_argument('--implementation', type=str)
+    parser.set_defaults(resuming=False, implementation='pytorch')
+    args = parser.parse_args()
+    main(args)
