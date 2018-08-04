@@ -4,8 +4,24 @@ import argparse
 import msvcrt
 import sys
 
-from src.classify import classify
-from src.train import train
+from src import pytorch_implementation as pyti
+from src import tensorflow_implementation as tfi
+
+
+def training_prompt():
+    """
+    Prompts the user with a warning message about overwriting the saved model.
+    """
+    print('WARNING: Training will overwrite the saved model (if it exists). EXECUTE Y/N?')
+    while True:
+        resp = msvcrt.getch().decode().lower()
+        if resp == 'y':
+            return
+        elif resp == 'n':
+            sys.exit('Training aborted.')
+        else:
+            print('Press either the Y or N key.')
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
@@ -14,14 +30,17 @@ if __name__ == '__main__':
     parser.add_argument('--resuming', action='store_true')
     parser.add_argument('--steps', type=int)
     parser.add_argument('--classify', action='store_true')
-    parser.add_argument('--source')
-    parser.set_defaults(resuming=False)
+    parser.add_argument('--source', type=str)
+    parser.add_argument('--implementation', type=str)
+    parser.set_defaults(resuming=False, implementation='pytorch')
     args = parser.parse_args()
-    if args.train:
-        print('WARNING: Training will overwrite the saved model (if it exists). EXECUTE Y/N?')
-        if msvcrt.getch().decode().lower() == 'y':
-            train(args.steps, args.resuming)
-        else:
-            sys.exit('Program closed.')
-    elif args.classify:
-        print(classify(args.source))
+    if args.implementation == 'pytorch':
+        if args.train:
+            training_prompt()
+            pyti.train.main(args.steps, pyti.constants.SAVEPATH, resuming=args.resuming)
+        # TODO
+        elif args.classify:
+            pass
+    # TODO
+    elif args.implementation == 'tensorflow':
+        pass
