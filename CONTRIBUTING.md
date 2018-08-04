@@ -1,5 +1,6 @@
 ## Requested Contributions
-1. Figure out a way to get TensorFlow's [SavedModel](https://www.tensorflow.org/programmers_guide/saved_model#save_and_restore_models)
+* Figure out a way to get TensorFlow's [SavedModel](https://www.tensorflow.org/programmers_guide/saved_model#save_and_restore_models)
 to work as a replacement for `tf.train.Saver` for saving and loading not just the model, but also
-all relevant variables and operations (e.g. objective function, summary ops, etc.). Please make all
-contributions compliant with [PEP 8](https://pep8.org/).
+all relevant variables and operations (e.g. objective function, summary ops, etc.).
+    * Ensure that you're working with the *TensorFlow* implementation, not the *PyTorch* one!
+    * Please make all contributions compliant with [PEP 8](https://pep8.org/).
