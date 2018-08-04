@@ -242,7 +242,7 @@ class ImageDataPipeline:
             if not self.valid_file(filepath):
                 continue
             preprocessed_image = self.preprocess_image(filepath)
-            yield filename, preprocessed_image
+            yield filepath, preprocessed_image
 
     def preprocess_classes(self,
                            steps,
