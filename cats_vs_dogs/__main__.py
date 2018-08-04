@@ -30,7 +30,7 @@ def main(args):
 
     Parameters:
         - args (argparse.Namespace)
-            - An object returned from `argparse.ArgumentParser().parse_args()`.
+            - An object returned from `argparse.ArgumentParser.parse_args()`.
     """
     if args.implementation == 'pytorch':
         if args.train:
