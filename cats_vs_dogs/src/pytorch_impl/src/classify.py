@@ -62,11 +62,11 @@ def main(src,
     preprocessor = ImageDataPipeline()
     if os.path.isdir(src):
         results = {}
-        for im_path, im_tensor in preprocessor.preprocess_directory(src):
-            im_tensor = torch.tensor(im_tensor, dtype=torch.float32).to(device)
-            output = model(im_tensor)
-            results[im_path] = predicted_label(output, encoding)
+        for img_path, img_tensor in preprocessor.preprocess_directory(src):
+            img_tensor = torch.tensor(img_tensor, dtype=torch.float32).to(device)
+            output = model(img_tensor)
+            results[img_path] = predicted_label(output, encoding)
         return results
-    im_tensor = preprocessor.preprocess_image(src)
-    output = model(im_tensor)
+    img_tensor = preprocessor.preprocess_image(src)
+    output = model(img_tensor)
     return predicted_label(output, encoding)
