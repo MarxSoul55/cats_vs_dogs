@@ -34,15 +34,15 @@ def main(train_dir,
     base_objective = torch.nn.MSELoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=0.001)
     preprocessor = ImageDataPipeline()
-    for step, im_path, im_array, im_label in preprocessor.preprocess_classes(steps,
-                                                                             train_dir,
-                                                                             encoding):
-        im_array, im_label = (torch.tensor(im_array, dtype=torch.float32).to(device),
-                              torch.tensor(im_label, dtype=torch.float32).to(device))
+    for step, img_path, img_tensor, img_label in preprocessor.preprocess_classes(steps,
+                                                                                 train_dir,
+                                                                                 encoding):
+        img_tensor, img_label = (torch.tensor(img_tensor, dtype=torch.float32).to(device),
+                                 torch.tensor(img_label, dtype=torch.float32).to(device))
         optimizer.zero_grad()
-        output = model(im_array)
-        objective = torch.sqrt(base_objective(output, im_label))
+        output = model(img_tensor)
+        objective = torch.sqrt(base_objective(output, img_label))
         objective.backward()
         optimizer.step()
-        print('Step: {} | Image: {} | Objective: {}'.format(step, im_path, objective))
+        print('Step: {} | Image: {} | Objective: {}'.format(step, img_path, objective))
     torch.save(model, savepath)
