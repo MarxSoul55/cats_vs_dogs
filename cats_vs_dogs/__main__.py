@@ -4,8 +4,8 @@ import argparse
 import msvcrt
 import sys
 
-from src import pytorch_implementation as pyti
-from src import tensorflow_implementation as tfi
+from src import pytorch_impl as pyti
+from src import tensorflow_impl as tfi
 
 
 def training_prompt():
@@ -37,7 +37,8 @@ if __name__ == '__main__':
     if args.implementation == 'pytorch':
         if args.train:
             training_prompt()
-            pyti.train.main(args.steps, pyti.constants.SAVEPATH, resuming=args.resuming)
+            pyti.src.train.main(pyti.constants.TRAIN_DIR, pyti.constants.ENCODING, args.steps,
+                                pyti.constants.SAVEPATH, resuming=args.resuming)
         # TODO
         elif args.classify:
             pass
