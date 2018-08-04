@@ -32,8 +32,8 @@ def predicted_label(prediction_tensor,
     return classes[index_of_smallest_difference]
 
 
-def classify(path,
-             encoding):
+def main(path,
+         encoding):
     """
     Does one of 2 things:
     1. Given a path to an image file on disk (WITH A FILE-EXTENSION), classifies it.
