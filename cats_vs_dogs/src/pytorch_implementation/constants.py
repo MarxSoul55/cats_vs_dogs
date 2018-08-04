@@ -9,4 +9,4 @@ ENCODING = {'cats': np.array([[1, 0]]), 'dogs': np.array([[0, 1]])}
 # Provides `train_dir` argument for `preprocessing.ImagePreprocessor.preprocess_classes`.
 TRAIN_DIR = '../../data/train'
 # Path to the saved model.
-SAVEMODEL_DIR = '../../bin/saved/model.pth'
+SAVEPATH = '../../bin/saved/model.pth'
