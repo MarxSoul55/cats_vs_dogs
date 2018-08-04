@@ -3,10 +3,9 @@
 import os
 
 import numpy as np
-import tensorflow as tf
+import torch
 
-import constants as c
-from model.pipelines import ImageDataPipeline
+from preprocessing import ImageDataPipeline
 
 
 def predicted_label(prediction_tensor,
@@ -32,7 +31,8 @@ def predicted_label(prediction_tensor,
     return classes[index_of_smallest_difference]
 
 
-def main(path,
+def main(src,
+         model_savepath,
          encoding):
     """
     Does one of 2 things:
@@ -41,9 +41,12 @@ def main(path,
        subdirectories and files with unsupported formats).
 
     Parameters:
-        - path (str)
+        - src (str)
             - Can be a normal path to an image on disk.
             - Can also be a path to a directory.
+        - model_savepath (str)
+            - Path to a saved model on disk.
+            - This model is used for the classification.
         - encoding (dict, str --> np.ndarray)
             - Maps the name of the subdirectory (class) to a label.
                 - ex: {'cats': np.array([[1, 0]]), 'dogs': np.array([[0, 1]])}
@@ -54,18 +57,16 @@ def main(path,
         - If given path to an image file on disk, returns a string that is either 'cat' or 'dog'.
         - If given path to a directory, returns a dictionary {'filename': 'guessed animal'}
     """
-    sess = tf.Session()
-    loader = tf.train.import_meta_graph(c.SAVEMODEL_DIR + '.meta')
-    loader.restore(sess, c.SAVEMODEL_DIR)
-    input_ = sess.graph.get_tensor_by_name('input:0')
-    model = sess.graph.get_tensor_by_name('model/output/output:0')
+    device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+    model = torch.load(model_savepath).to(device)
     preprocessor = ImageDataPipeline()
-    if os.path.isdir(path):
+    if os.path.isdir(src):
         results = {}
-        for image_name, preprocessed_image in preprocessor.preprocess_directory(path):
-            prediction_tensor = sess.run(model, feed_dict={input_: preprocessed_image})
-            results[image_name] = predicted_label(prediction_tensor, encoding)
+        for im_path, im_tensor in preprocessor.preprocess_directory(src):
+            im_tensor = torch.tensor(im_tensor, dtype=torch.float32).to(device)
+            output = model(im_tensor)
+            results[im_path] = predicted_label(output, encoding)
         return results
-    preprocessed_image = preprocessor.preprocess_image(path)
-    prediction_tensor = sess.run(model, feed_dict={input_: preprocessed_image})
-    return predicted_label(prediction_tensor, encoding)
+    im_tensor = preprocessor.preprocess_image(src)
+    output = model(im_tensor)
+    return predicted_label(output, encoding)
