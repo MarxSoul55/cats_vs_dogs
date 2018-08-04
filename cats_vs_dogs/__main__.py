@@ -4,8 +4,9 @@ import argparse
 import msvcrt
 import sys
 
-from src import pytorch_impl as pyti
-from src import tensorflow_impl as tfi
+from src.pytorch_impl import constants as pyt_constants
+from src.pytorch_impl.src import classify as pyt_classify
+from src.pytorch_impl.src import train as pyt_train
 
 
 def training_prompt():
@@ -34,11 +35,11 @@ def main(args):
     if args.implementation == 'pytorch':
         if args.train:
             training_prompt()
-            pyti.src.train.main(pyti.constants.TRAIN_DIR, pyti.constants.ENCODING, args.steps,
-                                pyti.constants.SAVEPATH, resuming=args.resuming)
+            pyt_train.main(pyt_constants.TRAIN_DIR, pyt_constants.ENCODING, args.steps,
+                           pyt_constants.SAVEPATH, resuming=args.resuming)
         elif args.classify:
-            predicted_label = pyti.src.classify.main(args.source, pyti.constants.SAVEPATH,
-                                                     pyti.constants.ENCODING)
+            predicted_label = pyt_classify.main(args.source, pyt_constants.SAVEPATH,
+                                                pyt_constants.ENCODING)
             print(predicted_label)
     # TODO
     elif args.implementation == 'tensorflow':

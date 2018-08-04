@@ -2,8 +2,8 @@
 
 import torch
 
-import models
-from preprocessing import ImageDataPipeline
+from . import models
+from .preprocessing import ImageDataPipeline
 
 
 def main(train_dir,

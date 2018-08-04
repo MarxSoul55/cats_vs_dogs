@@ -5,7 +5,7 @@ import os
 import numpy as np
 import torch
 
-from preprocessing import ImageDataPipeline
+from .preprocessing import ImageDataPipeline
 
 
 def predicted_label(prediction_tensor,
