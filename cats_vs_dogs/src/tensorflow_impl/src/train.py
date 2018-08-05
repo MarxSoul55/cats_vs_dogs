@@ -5,7 +5,7 @@ import shutil
 
 import tensorflow as tf
 
-from .model import architecture
+from .model import architectures
 from .preprocessing import ImageDataPipeline
 
 
