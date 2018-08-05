@@ -2,7 +2,7 @@
 
 import tensorflow as tf
 
-from layers import averagepooling_2d, convolution_2d, dense, maxpooling_2d
+from .layers import averagepooling_2d, convolution_2d, dense, maxpooling_2d
 
 
 def baby_resnet(input_,
