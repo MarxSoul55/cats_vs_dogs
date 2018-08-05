@@ -39,6 +39,7 @@ def averagepooling_2d(input_,
 
 
 def convolution_2d(input_,
+                   input_chan,
                    output_chan,
                    filter_size=3,
                    strides=1,
@@ -56,6 +57,8 @@ def convolution_2d(input_,
         - input_ (tf.placeholder)
             - The input tensor.
             - Must be in NHWC format.
+        - input_chan (int)
+            - Number of channels in the input.
         - output_chan (int)
             - Amount of channels in output.
             - AKA the amount of filters/kernels.
@@ -81,7 +84,7 @@ def convolution_2d(input_,
         - The resulting tensor whose shape depends on the `padding` argument.
     """
     with tf.name_scope(name):
-        weight_shape = [filter_size, filter_size, input_.shape.as_list()[3], output_chan]
+        weight_shape = [filter_size, filter_size, input_chan, output_chan]
         weight_init = tf.orthogonal_initializer(gain=1.0, dtype=dtype)
         weight = tf.Variable(initial_value=weight_init(weight_shape, dtype=dtype), name='weight')
         bias = tf.Variable(initial_value=tf.constant(0, dtype=dtype, shape=[output_chan]),
@@ -96,6 +99,7 @@ def convolution_2d(input_,
 
 
 def dense(input_,
+          input_col,
           output_col,
           activation=None,
           dtype=tf.float32,
@@ -108,8 +112,10 @@ def dense(input_,
     Parameters:
         - input_ (tensor)
             - A rank-2 tensor of shape [samples, columns].
+        - input_col (int)
+            - Columns of the input vector; AKA number of input neurons.
         - output_col (int)
-            - Output neurons
+            - Output neurons.
             - AKA length of the output vector.
         - activation (tf.something)
             - Additional activation that may be applied.
@@ -123,7 +129,7 @@ def dense(input_,
         - A resulting tensor with shape [batch_size, output_col].
     """
     with tf.name_scope(name):
-        weight_shape = [input_.shape.as_list()[1], output_col]
+        weight_shape = [input_col, output_col]
         weight_init = tf.orthogonal_initializer(gain=1.0, dtype=dtype)
         weight = tf.Variable(initial_value=weight_init(weight_shape, dtype=dtype), name='weight')
         bias = tf.Variable(initial_value=tf.constant(0, dtype=dtype, shape=[output_col]),
