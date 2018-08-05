@@ -33,7 +33,7 @@ def predicted_label(prediction_tensor,
 
 
 def main(path,
-             encoding):
+         encoding):
     """
     Does one of 2 things:
     1. Given a path to an image file on disk (WITH A FILE-EXTENSION), classifies it.
