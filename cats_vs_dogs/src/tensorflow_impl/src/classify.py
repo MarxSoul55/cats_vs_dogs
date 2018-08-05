@@ -9,7 +9,30 @@ import constants as c
 from .preprocessing import ImageDataPipeline
 
 
-def classify(path,
+def predicted_label(prediction_tensor,
+                    encoding):
+        """
+        Generates the predicted label by comparing the tensor prediction to `encoding`.
+
+        Parameters:
+            - prediction (np.ndarray)
+                - The prediction as represented by the model's tensor output.
+            - encoding (dict, str --> np.ndarray)
+                - See the parent function for details.
+        Returns:
+            - A string; the predicted label.
+        """
+        classes = list(encoding.keys())
+        labels = list(encoding.values())
+        differences = []
+        for label in labels:
+            l2_difference = np.sqrt(np.sum((label - prediction_tensor) ** 2))
+            differences.append(l2_difference)
+        index_of_smallest_difference = differences.index(min(differences))
+        return classes[index_of_smallest_difference]
+
+
+def main(path,
              encoding):
     """
     Does one of 2 things:
@@ -31,27 +54,6 @@ def classify(path,
         - If given path to an image file on disk, returns a string that is either 'cat' or 'dog'.
         - If given path to a directory, returns a dictionary {'filename': 'guessed animal'}
     """
-    def predicted_label(prediction_tensor,
-                        encoding):
-        """
-        Generates the predicted label by comparing the tensor prediction to `encoding`.
-
-        Parameters:
-            - prediction (np.ndarray)
-                - The prediction as represented by the model's tensor output.
-            - encoding (dict, str --> np.ndarray)
-                - See the parent function for details.
-        Returns:
-            - A string; the predicted label.
-        """
-        classes = list(encoding.keys())
-        labels = list(encoding.values())
-        differences = []
-        for label in labels:
-            l2_difference = np.sqrt(np.sum((label - prediction_tensor) ** 2))
-            differences.append(l2_difference)
-        index_of_smallest_difference = differences.index(min(differences))
-        return classes[index_of_smallest_difference]
     sess = tf.Session()
     loader = tf.train.import_meta_graph(c.SAVEMODEL_DIR + '.meta')
     loader.restore(sess, c.SAVEMODEL_DIR)
