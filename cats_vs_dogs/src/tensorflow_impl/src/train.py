@@ -9,12 +9,12 @@ from .model import architecture
 from .preprocessing import ImageDataPipeline
 
 
-def train(train_dir,
-          encoding,
-          steps,
-          savepath,
-          tensorboard_dir,
-          resuming=True):
+def main(train_dir,
+         encoding,
+         steps,
+         savepath,
+         tensorboard_dir,
+         resuming=True):
     """
     Builds up a graph of operations from scratch to train a model.
 
