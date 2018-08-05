@@ -51,7 +51,7 @@ def train(train_dir,
         tf.summary.scalar('objective_summary', objective)
     summary = tf.summary.merge_all()
     writer = tf.summary.FileWriter(tensorboard_dir, graph=sess.graph)
-    preprocessor = ImageDataPipeline()
+    preprocessor = ImageDataPipeline(mode='NHWC')
     for step, img_path, img_tensor, img_label in preprocessor.preprocess_classes(steps, train_dir,
                                                                                  encoding):
         print('Step: {} | Image: {}'.format(step, img_path))
