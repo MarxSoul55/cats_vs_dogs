@@ -13,10 +13,13 @@ def baby_resnet(input_,
     Parameters:
         - input_ (tf.placeholder)
             - Placeholder for the input data.
+            - This model is designed to take in tensors of shape [1, 128, 128, 3] (NHWC).
         - name (str)
             - The name of the scope of the model's operations.
     Returns:
-        - The output of the model.
+        - When used with `sess.run`:
+            - The output of the model.
+            - A [1, 2] shape tensor.
     """
     with tf.name_scope(name):
         skip = convolution_2d(input_, 3, 32, activation=tf.nn.elu, name='conv1')

@@ -39,7 +39,7 @@ class BabyResNet(nn.Module):
 
         Parameters:
             - input_ (tensor)
-                - Shape must be [1, 3, 128, 128] as in NCHW.
+                - This model is designed to take in tensors of shape [1, 3, 128, 128] (NCHW).
         Returns:
             - The output of the model.
             - A [1, 2] shape tensor.
