@@ -6,7 +6,7 @@ import numpy as np
 import tensorflow as tf
 
 import constants as c
-from model.pipelines import ImageDataPipeline
+from .preprocessing import ImageDataPipeline
 
 
 def classify(path,
