@@ -5,8 +5,8 @@ import tensorflow as tf
 from layers import averagepooling_2d, convolution_2d, dense, maxpooling_2d
 
 
-def primary(input_,
-            name=None):
+def baby_resnet(input_,
+                name=None):
     """
     Builds the model's architecture on the graph.
 
