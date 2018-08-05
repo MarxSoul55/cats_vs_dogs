@@ -47,7 +47,7 @@ def main(train_dir,
         sess.run(tf.global_variables_initializer())
         label = tf.placeholder(tf.float32, name='label')
         objective = tf.sqrt(tf.reduce_mean(tf.squared_difference(label, output)), name='objective')
-        optimizer = tf.train.GradientDescentOptimizer(0.001).minimize(objective, name='optimizer')
+        optimizer = tf.train.GradientDescentOptimizer(0.0001).minimize(objective, name='optimizer')
         tf.summary.scalar('objective_summary', objective)
     summary = tf.summary.merge_all()
     writer = tf.summary.FileWriter(tensorboard_dir, graph=sess.graph)
