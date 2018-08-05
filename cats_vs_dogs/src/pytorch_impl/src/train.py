@@ -44,3 +44,4 @@ def main(train_dir,
         optimizer.step()
         print('Step: {} | Image: {} | Objective: {}'.format(step, img_path, objective))
     torch.save(model.state_dict(), savepath)
+    print('\a')
