@@ -9,7 +9,7 @@ COLORSPACE = 'CIELAB'
 # Provides `encoding` argument for `preprocessing.ImagePreprocessor.preprocess_classes`.
 # ALL LABELS MUST BE RANK 1 TENSORS! (i.e. shape=[1, X] where X is some integer)
 # For obvious reasons, the labels' shapes must also match the model's output shape.
-ENCODING = {'cats': np.array([[1, 0]]), 'dogs': np.array([[0, 1]])}
+ENCODING = {'cat': np.array([[1, 0]]), 'dog': np.array([[0, 1]])}
 # Provides `train_dir` argument for `preprocessing.ImagePreprocessor.preprocess_classes`.
 TRAIN_DIR = '../data/train'
 # X/Y : X is the name of the directory that will hold saved data about the model.
