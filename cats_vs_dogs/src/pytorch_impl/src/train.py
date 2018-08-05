@@ -27,10 +27,9 @@ def main(train_dir,
             - Whether to resume training from a saved model or to start from scratch.
     """
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+    model = models.BabyResNet().to(device)
     if resuming:
-        model = torch.load(savepath).to(device)
-    else:
-        model = models.BabyResNet().to(device)
+        model.load_state_dict(torch.load(savepath))
     base_objective = torch.nn.MSELoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=0.001)
     preprocessor = ImageDataPipeline()
@@ -45,4 +44,4 @@ def main(train_dir,
         objective.backward()
         optimizer.step()
         print('Step: {} | Image: {} | Objective: {}'.format(step, img_path, objective))
-    torch.save(model, savepath)
+    torch.save(model.state_dict(), savepath)

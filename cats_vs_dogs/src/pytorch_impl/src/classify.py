@@ -5,6 +5,7 @@ import os
 import numpy as np
 import torch
 
+from . import models
 from .preprocessing import ImageDataPipeline
 
 
@@ -58,15 +59,17 @@ def main(src,
         - If given path to a directory, returns a dictionary {'filename': 'guessed animal'}
     """
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
-    model = torch.load(model_savepath).to(device)
+    model = models.BabyResNet().to(device)
+    model.load_state_dict(torch.load(model_savepath))
+    model.eval()
     preprocessor = ImageDataPipeline()
     if os.path.isdir(src):
         results = {}
         for img_path, img_tensor in preprocessor.preprocess_directory(src):
             img_tensor = torch.tensor(img_tensor, dtype=torch.float32).to(device)
-            output = model(img_tensor)
+            output = model(img_tensor).cpu().detach().numpy()
             results[img_path] = predicted_label(output, encoding)
         return results
-    img_tensor = preprocessor.preprocess_image(src)
-    output = model(img_tensor)
+    img_tensor = torch.tensor(preprocessor.preprocess_image(src), dtype=torch.float32).to(device)
+    output = model(img_tensor).cpu().detach().numpy()
     return predicted_label(output, encoding)
