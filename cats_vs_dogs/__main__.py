@@ -41,12 +41,29 @@ def main(args):
             pyt_train.main(pyt_constants.TRAIN_DIR, pyt_constants.ENCODING, args.steps,
                            pyt_constants.SAVEPATH, resuming=args.resuming)
         elif args.classify:
-            predicted_label = pyt_classify.main(args.source, pyt_constants.SAVEPATH,
-                                                pyt_constants.ENCODING)
-            print(predicted_label)
-    # TODO
+            prediction = pyt_classify.main(args.source, pyt_constants.SAVEPATH,
+                                           pyt_constants.ENCODING)
+            if type(prediction) == str:
+                print(prediction)
+            elif type(prediction) == dict:
+                keys, values = list(prediction.keys()), list(prediction.values())
+                for key, value in zip(keys, values):
+                    print(key, value)
     elif args.implementation == 'tensorflow':
-        pass
+        if args.train:
+            training_prompt()
+            tf_train.main(tf_constants.TRAIN_DIR, tf_constants.ENCODING, args.steps,
+                          tf_constants.SAVEPATH, tf_constants.TENSORBOARD_DIR,
+                          resuming=args.resuming)
+        elif args.classify:
+            prediction = tf_classify.main(args.source, tf_constants.SAVEPATH,
+                                          tf_constants.ENCODING)
+            if type(prediction) == str:
+                print(prediction)
+            elif type(prediction) == dict:
+                keys, values = list(prediction.keys()), list(prediction.values())
+                for key, value in zip(keys, values):
+                    print(key, value)
 
 
 if __name__ == '__main__':
