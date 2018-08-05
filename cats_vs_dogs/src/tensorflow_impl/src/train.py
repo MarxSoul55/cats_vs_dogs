@@ -43,7 +43,7 @@ def main(train_dir,
         optimizer = sess.graph.get_operation_by_name('optimizer')
     else:
         input_ = tf.placeholder(tf.float32, name='input')
-        output = architecture.baby_resnet(input_, name='model')
+        output = architectures.baby_resnet(input_, name='model')
         sess.run(tf.global_variables_initializer())
         label = tf.placeholder(tf.float32, name='label')
         objective = tf.sqrt(tf.reduce_mean(tf.squared_difference(label, output)), name='objective')
