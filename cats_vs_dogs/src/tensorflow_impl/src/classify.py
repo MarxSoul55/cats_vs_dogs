@@ -5,7 +5,6 @@ import os
 import numpy as np
 import tensorflow as tf
 
-import constants as c
 from .preprocessing import ImageDataPipeline
 
 
