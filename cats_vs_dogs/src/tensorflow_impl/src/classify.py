@@ -34,7 +34,7 @@ def predicted_label(prediction_tensor,
 
 def main(src,
          model_savepath,
-         encoding):s
+         encoding):
     """
     Does one of 2 things:
     1. Given a path to an image file on disk (WITH A FILE-EXTENSION), classifies it.
@@ -60,17 +60,17 @@ def main(src,
         - If given path to a directory, returns a dictionary {'filename': 'guessed animal'}
     """
     sess = tf.Session()
-    loader = tf.train.import_meta_graph(c.SAVEMODEL_DIR + '.meta')
-    loader.restore(sess, c.SAVEMODEL_DIR)
+    loader = tf.train.import_meta_graph(model_savepath + '.meta')
+    loader.restore(sess, model_savepath)
     input_ = sess.graph.get_tensor_by_name('input:0')
     model = sess.graph.get_tensor_by_name('model/output/output:0')
     preprocessor = ImageDataPipeline(mode='NHWC')
-    if os.path.isdir(path):
+    if os.path.isdir(src):
         results = {}
-        for image_name, preprocessed_image in preprocessor.preprocess_directory(path):
+        for image_name, preprocessed_image in preprocessor.preprocess_directory(src):
             prediction_tensor = sess.run(model, feed_dict={input_: preprocessed_image})
             results[image_name] = predicted_label(prediction_tensor, encoding)
         return results
-    preprocessed_image = preprocessor.preprocess_image(path)
+    preprocessed_image = preprocessor.preprocess_image(src)
     prediction_tensor = sess.run(model, feed_dict={input_: preprocessed_image})
     return predicted_label(prediction_tensor, encoding)
