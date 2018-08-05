@@ -30,7 +30,6 @@ def main(train_dir,
     model = models.BabyResNet().to(device)
     if resuming:
         model.load_state_dict(torch.load(savepath))
-    base_objective = torch.nn.MSELoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=0.001)
     preprocessor = ImageDataPipeline()
     for step, img_path, img_tensor, img_label in preprocessor.preprocess_classes(steps,
@@ -40,7 +39,7 @@ def main(train_dir,
                                  torch.tensor(img_label, dtype=torch.float32).to(device))
         optimizer.zero_grad()
         output = model(img_tensor)
-        objective = torch.sqrt(base_objective(output, img_label))
+        objective = torch.sqrt(torch.nn.functional.mse_loss(output, img_label))
         objective.backward()
         optimizer.step()
         print('Step: {} | Image: {} | Objective: {}'.format(step, img_path, objective))
