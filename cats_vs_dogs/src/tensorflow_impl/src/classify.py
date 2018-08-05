@@ -32,8 +32,9 @@ def predicted_label(prediction_tensor,
         return classes[index_of_smallest_difference]
 
 
-def main(path,
-         encoding):
+def main(src,
+         model_savepath,
+         encoding):s
     """
     Does one of 2 things:
     1. Given a path to an image file on disk (WITH A FILE-EXTENSION), classifies it.
@@ -41,9 +42,13 @@ def main(path,
        subdirectories and files with unsupported formats).
 
     Parameters:
-        - path (str)
+        - src (str)
             - Can be a normal path to an image on disk.
             - Can also be a path to a directory.
+        - model_savepath (str)
+            - Path to a saved model on disk.
+            - This model is used for the classification.
+            - e.g. X/Y where Y is the prefix of the .meta, .index, etc. files for TensorFlow.
         - encoding (dict, str --> np.ndarray)
             - Maps the name of the subdirectory (class) to a label.
                 - ex: {'cats': np.array([[1, 0]]), 'dogs': np.array([[0, 1]])}
