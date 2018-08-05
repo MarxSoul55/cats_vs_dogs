@@ -12,7 +12,6 @@ def baby_resnet(input_,
 
     Parameters:
         - input_ (tf.placeholder)
-            - Placeholder for the input data.
             - This model is designed to take in tensors of shape [1, 128, 128, 3] (NHWC).
         - name (str)
             - The name of the scope of the model's operations.
