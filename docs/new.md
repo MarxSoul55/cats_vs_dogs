@@ -64,26 +64,26 @@ You should add the following folders inside of the package `cats_vs_dogs` (folde
     * data/train/dog (will contain the images of dogs from Kaggle)
     * data/test (will contain the test images from Kaggle)
 ### *Using the CLI*
-4. Now you need to learn how to use `model.py`, which acts as the interface by which you'll train
-and test the model. There are five commands you should know:
-    * `python model.py --train --steps 25000`
-        * The `--train` tells the program to train the model, and the `--steps` tells the program how many
-          "steps" it should take. By steps, I mean parameter-updates, which are performed
+4. Now you need to learn how to use `__main__.py`, which acts as the interface by which you'll
+train and test the model. You should first navigate to the parent directory of `cats_vs_dogs` which
+contains the `__main__.py` file. These are the commands you should know:
+    * `python cats_vs_dogs --train --steps 25000`
+        * The `--train` tells the program to train the model, and the `--steps` tells the program
+          how many "steps" it should take. By steps, I mean parameter-updates, which are performed
           image-after-image. In more technical terms, I'm doing stochastic gradient-descent with
           `batch_size=1`. Why did I not implement minibatch gradient-descent? Lack of computing
           resources. I don't personally have a lot of RAM on my machine, so I didn't bother.
         * In this example, I train on all 25000 images from Kaggle's training-set. You can tell
           because of the `--steps 25000`. But what if I used something like `--steps 26000`? The Kaggle
           dataset only contains 25000 images total! Simple, my preprocessing-function that I wrote
-          in `preprocessing.py` will simply start over at the beginning of the directory. It's
-          seamless, so don't worry about it.
+          in `preprocessing.py` will simply loop back over to images it's seen already and train on
+          them again. It's seamless, so don't worry about it.
         * During training, the preprocessor will preprocess an image for the model to train on from
           the first class (in this case either `cats` or `dogs`) and will then preprocess an image
           from the second class. After it does so, it will loop back around to the first class and
-          pick some image that it hasn't trained on yet (order of picking is random, since we
-          want to train on everything). Then it'll do the same for the second class, and continue
-          looping over and over until it reaches the amount of steps that was specified by the
-          user.
+          pick another image from it (note: order of picking is random). Then it'll do the same for
+          the second class, and so on, and continue looping over and over until it reaches the
+          amount of steps that was specified by the user.
         * After the training is complete, the program generate (or overwrite if exists) two
           directories:
             * saved_model :floppy_disk: (self-explanatory)
