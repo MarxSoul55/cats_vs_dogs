@@ -7,13 +7,31 @@ import sys
 
 from PyInquirer import prompt
 
-import questions
 from src.pytorch_impl import constants as pyt_constants
 from src.pytorch_impl.src import classify as pyt_classify
 from src.pytorch_impl.src import train as pyt_train
 from src.tensorflow_impl import constants as tf_constants
 from src.tensorflow_impl.src import classify as tf_classify
 from src.tensorflow_impl.src import train as tf_train
+
+
+def yes_or_no(message):
+    """
+    Prompts the user with a custom yes-or-no prompt.
+
+    Parameters:
+        - message (str)
+            - Message to be printed to the user.
+    Returns:
+        - A string; either 'y' or 'n'.
+    """
+    print(message)
+    while True:
+        resp = msvcrt.getch().decode().lower()
+        if resp == 'y' or resp == 'n':
+            return resp
+        else:
+            print('Press either the Y or N key.')
 
 
 def save_config(train_dir,
@@ -36,7 +54,24 @@ def save_config(train_dir,
             - See the `src.train` module in the specific implementation for details.
 
     """
-    pass
+    data = {
+        'train_dir': train_dir,
+        'encoding': encoding,
+        'savepath': savepath
+    }
+    with open('config.pkl') as f:
+        pickle.dump(data, f)
+
+
+def load_config():
+    """
+    Loads configuration data from `config.pkl`.
+
+    Returns:
+        - A dictionary with keys for 'train_dir', 'encoding', and 'savepath'.
+    """
+    with open('config.pkl') as f:
+        return pickle.load(f)
 
 
 def main():
