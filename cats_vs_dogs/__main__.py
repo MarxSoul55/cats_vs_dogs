@@ -1,4 +1,4 @@
-"""Entry point."""
+"""Entry point script; implements CLI."""
 
 import argparse
 import msvcrt
