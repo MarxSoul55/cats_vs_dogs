@@ -26,6 +26,12 @@ def save_config(train_dir,
         - train_dir (str)
             - Path to the directory of classes.
             - e.g. 'data/train', where 'train' holds subdirs with images in them.
+            - IMPORTANT: This directory should also hold a file called `label.pkl`.
+                - A (pickled) dictionary of numpy arrays.
+                - Maps the name of the subdirectory (class) to a label.
+                    - e.g. {'cats': np.array([[1, 0]]), 'dogs': np.array([[0, 1]])}
+                        - Each label must have the same shape!
+                        - In this case, the two labels are of shape [1, 2].
         - savepath
             - See the `src.train` module in the specific implementation for details.
     """
