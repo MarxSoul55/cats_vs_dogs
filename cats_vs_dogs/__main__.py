@@ -2,6 +2,8 @@
 
 import argparse
 import msvcrt
+import os
+import pickle
 import sys
 
 from src.pytorch_impl.src import classify as pyt_classify
@@ -72,8 +74,14 @@ def main(args):
             print_prediction(prediction)
 
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
+def parse_arguments():
+    """
+    Parses the CLI for specific arguments via the `argparse` library.
+
+    Returns:
+        - A dictionary mapping each argument to the given value.
+        - Each string value is lowercased to prevent case sensitivity issues.
+    """
     train_help = '(flag) Tells program to train the model.'
     resuming_help = ('(flag) Tells program to resume training off of a saved model '
                      'whose path is given by the --savepath arg.')
@@ -94,6 +102,12 @@ if __name__ == '__main__':
                            'important paths instead of the CLI args for `train_dir`, '
                            '`label_dict_path`, and `savepath`. SETTING THESE ARGS FOR THE '
                            'TENSORFLOW IMPLEMENTATION IS POINTLESS!')
+    save_paths_config_help = ('(flag) Values entered for --train_dir, --label_dict_path, and '
+                              '--savepath will be saved to a dictionary mapping those names to '
+                              'the values that were passed into them. This dictionary will be '
+                              'saved into `paths.pkl`, so future entry of those CLI args will '
+                              'no longer be necessary so long as the .pkl file exists.')
+    parser = argparse.ArgumentParser()
     parser.add_argument('--train', action='store_true', help=train_help)
     parser.add_argument('--resuming', action='store_true', help=resuming_help)
     parser.add_argument('--train_dir', type=str, help=train_dir_help)
@@ -103,7 +117,25 @@ if __name__ == '__main__':
     parser.add_argument('--classify', action='store_true', help=classify_help)
     parser.add_argument('--source', type=str, help=source_help)
     parser.add_argument('--implementation', type=str, help=implementation_help)
-
+    parser.add_argument('--save_paths_config', action='store_true', help=save_paths_config_help)
     parser.set_defaults(resuming=False, implementation='pytorch')
     args = parser.parse_args()
+    if args.save_paths_config:
+        paths = {'train_dir': args.train_dir, 'label_dict_path': args.label_dict_path,
+                 'savepath': args.savepath}
+        with open('cats_vs_dogs/paths.pkl', 'wb') as f:
+            pickle.dump(paths, f)
+    if 'paths.pkl' in os.listdir('cats_vs_dogs'):
+        with open('cats_vs_dogs/paths.pkl', 'rb') as f:
+            paths = pickle.load(f)
+        args.train_dir = paths['train_dir']
+        args.label_dict_path = paths['label_dict_path']
+        args.savepath = paths['savepath']
+    args_dict = vars(args)
+    args_dict = {key: value.lower() for key, value in args_dict.iteritems() if type(value) == str}
+    return vars(args)
+
+
+if __name__ == '__main__':
+    args = parse_arguments()
     main(args)
