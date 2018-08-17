@@ -3,7 +3,7 @@
 CONFIGURATION_QUESTION = [
     {
         'type': 'list',
-        'name': 'use_saved_config',
+        'name': 'config_request',
         'message': 'Previous paths for the training dir and model\'s savepath have been found.',
         'choices': [
             'Use them instead of entering new ones.',

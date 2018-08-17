@@ -53,8 +53,8 @@ def load_config():
 
 def main():
     if 'config.pkl' in os.listdir():
-        use_saved_config = prompt(questions.CONFIGURATION_QUESTION)['use_saved_config']
-        if use_saved_config:
+        config_request = prompt(questions.CONFIGURATION_QUESTION)['config_request']
+        if config_request == 'Use them instead of entering new ones.':
             config = load_config()
         else:
             config = {}
