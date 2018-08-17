@@ -1,73 +1,79 @@
-"""Entry point script; implements CLI."""
+"""Entry point."""
 
+import argparse
+import msvcrt
 import sys
-
-from pyfiglet import Figlet
-from PyInquirer import prompt
 
 from src.pytorch_impl import constants as pyt_constants
 from src.pytorch_impl.src import classify as pyt_classify
 from src.pytorch_impl.src import train as pyt_train
-
-# User must select operation first.
-OPERATION_QUESTION = [
-    {
-        'type': 'list',
-        'name': 'selected_operation',
-        'message': 'Select operation to perform:',
-        'choices': [
-            'Train model on dataset.',
-            'Test model on testset.',
-            'Classify an image or directory of images.',
-            'Exit.'
-        ]
-    }
-]
-# User wants to train? Setup all relevant arguments.
-TRAINING_MENU = [
-    {
-        'type': 'list',
-        'name': 'resuming',
-        'message': 'Are you training from scratch, or from a saved model?',
-        'choices': [
-            'Training from scratch.',
-            'Training from a saved model.'
-        ]
-    },
-    {
-        'type': 'input',
-        'name': 'train_dir',
-        'message': 'Enter the path to the directory that contains the subdirs (classes):'
-    },
-    {
-        'type': 'input',
-        'name': 'steps',
-        'message': 'Enter number of steps (gradient updates of SGD) to perform: (e.g. 1000)',
-        'filter': lambda x: int(x)
-    },
-    {
-        'type': 'input',
-        'name': 'savepath',
-        'message': 'Enter path to save trained model to: (e.g. X/Y.pth)'
-    }
-]
+from src.tensorflow_impl import constants as tf_constants
+from src.tensorflow_impl.src import classify as tf_classify
+from src.tensorflow_impl.src import train as tf_train
 
 
-def main():
-    print(Figlet(font='slant').renderText('cats_vs_dogs'))
-    selected_operation = prompt(OPERATION_QUESTION)['selected_operation']
-    if selected_operation == 'Train model on dataset.':
-        train_vars = prompt(TRAINING_MENU)
-        resuming = True if train_vars['resuming'] == 'Training from a saved model.' else False
-        pyt_train.main(train_vars['train_dir'], train_vars['steps'], train_vars['savepath'],
-                       resuming=resuming)
-    elif selected_operation == 'Test model on testset.':
-        pass
-    elif selected_operation == 'Classify an image or directory of images.':
-        pass
-    elif selected_operation == 'Exit.':
-        sys.exit()
+def training_prompt():
+    """
+    Prompts the user with a warning message about overwriting the saved model.
+    """
+    print('WARNING: Training will overwrite the saved model (if it exists). EXECUTE Y/N?')
+    while True:
+        resp = msvcrt.getch().decode().lower()
+        if resp == 'y':
+            return
+        elif resp == 'n':
+            sys.exit('Training aborted.')
+        else:
+            print('Press either the Y or N key.')
+
+
+def main(args):
+    """
+    Executes the program.
+
+    Parameters:
+        - args (argparse.Namespace)
+            - An object returned from `argparse.ArgumentParser.parse_args()`.
+    """
+    if args.implementation == 'pytorch':
+        if args.train:
+            training_prompt()
+            pyt_train.main(pyt_constants.TRAIN_DIR, pyt_constants.ENCODING, args.steps,
+                           pyt_constants.SAVEPATH, resuming=args.resuming)
+        elif args.classify:
+            prediction = pyt_classify.main(args.source, pyt_constants.SAVEPATH,
+                                           pyt_constants.ENCODING)
+            if type(prediction) == str:
+                print(prediction)
+            elif type(prediction) == dict:
+                keys, values = list(prediction.keys()), list(prediction.values())
+                for key, value in zip(keys, values):
+                    print(key, value)
+    elif args.implementation == 'tensorflow':
+        if args.train:
+            training_prompt()
+            tf_train.main(tf_constants.TRAIN_DIR, tf_constants.ENCODING, args.steps,
+                          tf_constants.SAVEPATH, tf_constants.TENSORBOARD_DIR,
+                          resuming=args.resuming)
+        elif args.classify:
+            prediction = tf_classify.main(args.source, tf_constants.SAVEPATH,
+                                          tf_constants.ENCODING)
+            if type(prediction) == str:
+                print(prediction)
+            elif type(prediction) == dict:
+                keys, values = list(prediction.keys()), list(prediction.values())
+                for key, value in zip(keys, values):
+                    print(key, value)
 
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--train', action='store_true')
+    parser.add_argument('--resuming', action='store_true')
+    parser.add_argument('--steps', type=int)
+    parser.add_argument('--classify', action='store_true')
+    parser.add_argument('--source', type=str)
+    parser.add_argument('--implementation', type=str)
+    parser.set_defaults(resuming=False, implementation='pytorch')
+    args = parser.parse_args()
+    main(args)
