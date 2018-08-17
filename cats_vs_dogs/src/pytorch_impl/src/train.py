@@ -7,7 +7,6 @@ from .preprocessing import ImageDataPipeline
 
 
 def main(train_dir,
-         encoding,
          steps,
          savepath,
          resuming=True):
@@ -15,9 +14,9 @@ def main(train_dir,
     Trains the model and saves the result.
 
     Parameters:
-        - train_dir, encoding
-            - Parameters for the preprocessor.
-            - See `preprocessing.ImageDataPipeline.preprocess_classes` for details.
+        - train_dir (str)
+            - Path to the directory of classes.
+            - e.g. 'data/train', where 'train' holds subdirs with images in them.
         - steps (int)
             - Number of gradient updates (samples to train on).
         - savepath (str)
@@ -33,8 +32,7 @@ def main(train_dir,
     optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
     preprocessor = ImageDataPipeline()
     for step, img_path, img_tensor, img_label in preprocessor.preprocess_classes(steps,
-                                                                                 train_dir,
-                                                                                 encoding):
+                                                                                 train_dir):
         img_tensor, img_label = (torch.tensor(img_tensor, dtype=torch.float32).to(device),
                                  torch.tensor(img_label, dtype=torch.float32).to(device))
         optimizer.zero_grad()
