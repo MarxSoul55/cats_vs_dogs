@@ -1,6 +1,7 @@
 """Provides class which implements a customizable pipeline."""
 
 import os
+import pickle
 import random
 
 import cv2
@@ -246,8 +247,7 @@ class ImageDataPipeline:
 
     def preprocess_classes(self,
                            steps,
-                           train_dir,
-                           encoding):
+                           train_dir):
         """
         Given a directory of subdirectories of images, preprocesses an image from the 1st subdir,
         then the 2nd, then the Nth, and then loops back towards the 1st and gets another image,
@@ -262,21 +262,18 @@ class ImageDataPipeline:
             - train_dir (str)
                 - Path to the directory of classes.
                 - e.g. 'data/train', where 'train' holds subdirs with images in them.
-            - encoding (dict, str --> np.ndarray)
-                - Maps the name of the subdirectory (class) to a label.
-                    - e.g. {'cats': np.array([[1, 0]]), 'dogs': np.array([[0, 1]])}
-                        - Each label must have the same shape!
-                        - In this case, the two labels are of shape [1, 2].
         Yields:
             - A tuple (step, image_path, preprocessed_image_array, label_array) starting w/ step 1.
         """
-        classes = os.listdir(train_dir)
+        classes = [directory for directory in os.listdir(train_dir) if directory != 'label.pkl']
         cursors = {}
         images = {}
         for class_ in classes:
             cursors[class_] = 0
             images[class_] = os.listdir(os.path.join(train_dir, class_))
             random.shuffle(images[class_])
+        with open('label.pkl', 'rb') as f:
+            label_dict = pickle.load(f)
         step = 0
         while True:
             for class_ in classes:
@@ -288,7 +285,7 @@ class ImageDataPipeline:
                 if not self.valid_file(image_path):
                     continue
                 preprocessed_image = self.preprocess_image(image_path)
-                label = encoding[class_]
+                label = label_dict[class_]
                 if cursors[class_] == (len(images[class_]) - 1):
                     cursors[class_] = 0
                 else:
