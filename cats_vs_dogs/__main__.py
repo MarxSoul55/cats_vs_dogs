@@ -38,8 +38,7 @@ def main(args):
     if args.implementation == 'pytorch':
         if args.train:
             training_prompt()
-            pyt_train.main(pyt_constants.TRAIN_DIR, args.steps, pyt_constants.SAVEPATH,
-                           resuming=args.resuming)
+            pyt_train.main(args.train_dir, args.steps, args.savepath, resuming=args.resuming)
         elif args.classify:
             prediction = pyt_classify.main(args.source, pyt_constants.SAVEPATH,
                                            pyt_constants.ENCODING)
@@ -70,7 +69,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--train', action='store_true')
     parser.add_argument('--resuming', action='store_true')
+    parser.add_argument('--train_dir', type=str)
     parser.add_argument('--steps', type=int)
+    parser.add_argument('--savepath', type=str)
     parser.add_argument('--classify', action='store_true')
     parser.add_argument('--source', type=str)
     parser.add_argument('--implementation', type=str)
