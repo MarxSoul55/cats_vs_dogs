@@ -247,7 +247,8 @@ class ImageDataPipeline:
 
     def preprocess_classes(self,
                            steps,
-                           train_dir):
+                           train_dir,
+                           label_dict_path):
         """
         Given a directory of subdirectories of images, preprocesses an image from the 1st subdir,
         then the 2nd, then the Nth, and then loops back towards the 1st and gets another image,
@@ -265,12 +266,12 @@ class ImageDataPipeline:
             - train_dir (str)
                 - Path to the directory of classes.
                 - e.g. 'data/train', where 'train' holds subdirs with images in them.
-                - IMPORTANT: This directory should also hold a file called `label.pkl`.
-                    - A (pickled) dictionary of numpy arrays.
-                    - Maps the name of the subdirectory (class) to a label.
-                        - e.g. {'cats': np.array([[1, 0]]), 'dogs': np.array([[0, 1]])}
-                            - Each label must have the same shape!
-                            - In this case, the two labels are of shape [1, 2].
+            - label_dict_path (str)
+                - Path to a .pkl file, which holds a dictionary of numpy arrays.
+                - Maps the name of the subdirectory (class) to a label.
+                    - e.g. {'cats': np.array([[1, 0]]), 'dogs': np.array([[0, 1]])}
+                        - Each label must have the same shape!
+                        - In this case, the two labels are of shape [1, 2].
         Yields:
             - A tuple (step, image_path, preprocessed_image_array, label_array) starting w/ step 1.
         """
@@ -281,8 +282,7 @@ class ImageDataPipeline:
             cursors[class_] = 0
             images[class_] = os.listdir(os.path.join(train_dir, class_))
             random.shuffle(images[class_])
-        label_path = os.path.join(train_dir, 'label.pkl')
-        with open(label_path, 'rb') as f:
+        with open(label_dict_path, 'rb') as f:
             label_dict = pickle.load(f)
         step = 0
         while True:
