@@ -1,7 +1,6 @@
 """Provides class which implements a customizable pipeline."""
 
 import os
-import pickle
 import random
 
 import cv2
@@ -281,8 +280,6 @@ class ImageDataPipeline:
             cursors[class_] = 0
             images[class_] = os.listdir(os.path.join(train_dir, class_))
             random.shuffle(images[class_])
-        with open(label_dict_path, 'rb') as f:
-            label_dict = pickle.load(f)
         step = 0
         while True:
             for class_ in classes:
