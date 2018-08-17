@@ -1,16 +1,5 @@
 """Holds constants for PyInquirer's prompt function."""
-# Does a configuration exist? If so, call this question.
-CONFIGURATION_QUESTION = [
-    {
-        'type': 'list',
-        'name': 'config_request',
-        'message': 'Previous paths for the training dir and model\'s savepath have been found.',
-        'choices': [
-            'Use them instead of entering new ones.',
-            'Manually enter new paths.'
-        ]
-    }
-]
+
 # What operation does the user wish to perform?
 OPERATION_QUESTION = [
     {
@@ -20,43 +9,39 @@ OPERATION_QUESTION = [
         'choices': [
             'Train model on dataset.',
             'Test model on testset.',
-            'Classify an image or directory of images.'
+            'Classify an image or directory of images.',
+            'Exit.'
         ]
     }
 ]
-# User wants to train? Set up the paths if necessary.
 # TODO: Clarify train_dir_message for path requirements (needs to be rel. to repo root)
 # TODO: Add deeper explanation for train_dir in CLI???
 # TODO: Does PyTorch need the savepath to already exist???
-train_dir_message = ('Enter path to dataset: '
-                     '(e.g. X/Y where Y holds class1_dir_pics, class2_dir_pics, etc.)')
-TRAINING_PATH_QUESTIONS = [
-    {
-        'type': 'input',
-        'name': 'train_dir',
-        'message': train_dir_message
-    },
-
-    {
-        'type': 'input',
-        'name': 'savepath',
-        'message': 'Enter path to save trained model to: (e.g. X/Y.pth)'
-    }
-]
-TRAINING_VARIABLE_QUESTIONS = [
+# User wants to train? Setup all relevant arguments.
+TRAINING_MENU = [
     {
         'type': 'list',
         'name': 'resuming',
-        'message': 'Train from scratch, or from a saved model?',
+        'message': 'Are you training from scratch, or from a saved model?',
         'choices': [
-            'Train from scratch.',
-            'Train from a saved model.'
+            'Training from scratch.',
+            'Training from a saved model.'
         ]
+    },
+    {
+        'type': 'input',
+        'name': 'train_dir',
+        'message': 'Enter the path to the directory that contains the subdirs (classes):'
     },
     {
         'type': 'input',
         'name': 'steps',
         'message': 'Enter number of steps (gradient updates of SGD) to perform: (e.g. 1000)',
         'filter': lambda x: int(x)
+    },
+    {
+        'type': 'input',
+        'name': 'savepath',
+        'message': 'Enter path to save trained model to: (e.g. X/Y.pth)'
     }
 ]
