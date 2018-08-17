@@ -278,7 +278,8 @@ class ImageDataPipeline:
             cursors[class_] = 0
             images[class_] = os.listdir(os.path.join(train_dir, class_))
             random.shuffle(images[class_])
-        with open('label.pkl', 'rb') as f:
+        label_path = os.path.join(train_dir, 'label.pkl')
+        with open(label_path, 'rb') as f:
             label_dict = pickle.load(f)
         step = 0
         while True:
