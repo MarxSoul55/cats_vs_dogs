@@ -252,7 +252,7 @@ class ImageDataPipeline:
         Given a directory of subdirectories of images, preprocesses an image from the 1st subdir,
         then the 2nd, then the Nth, and then loops back towards the 1st and gets another image,
         etc.
-        
+
         After all images in a subdir have been preprocessed (given that `steps` is big enough),
         preprocessing will start over at the beginning of the subdir in question.
 
