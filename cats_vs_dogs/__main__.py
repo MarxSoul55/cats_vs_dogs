@@ -4,7 +4,6 @@ import argparse
 import msvcrt
 import sys
 
-from src.pytorch_impl import constants as pyt_constants
 from src.pytorch_impl.src import classify as pyt_classify
 from src.pytorch_impl.src import train as pyt_train
 from src.tensorflow_impl import constants as tf_constants
