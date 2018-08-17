@@ -36,7 +36,7 @@ def save_config(train_dir,
         'train_dir': train_dir,
         'savepath': savepath
     }
-    with open('config.pkl') as f:
+    with open('config.pkl', 'wb') as f:
         pickle.dump(data, f)
 
 
@@ -47,7 +47,7 @@ def load_config():
     Returns:
         - A dictionary with keys for 'train_dir', 'encoding', and 'savepath'.
     """
-    with open('config.pkl') as f:
+    with open('config.pkl', 'rb') as f:
         return pickle.load(f)
 
 
