@@ -273,7 +273,8 @@ class ImageDataPipeline:
         Yields:
             - A tuple (step, image_path, preprocessed_image_array, label_array) starting w/ step 1.
         """
-        classes = [item for item in os.listdir(train_dir) if os.path.isdir(item)]
+        classes = [item for item in os.listdir(train_dir)
+                   if os.path.isdir(os.path.join(train_dir, item))]
         cursors = {}
         images = {}
         for class_ in classes:
