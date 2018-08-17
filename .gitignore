@@ -26,3 +26,6 @@ archive/
 
 # No storing binary files.
 bin/
+
+# No .pkl files.
+*.pkl
