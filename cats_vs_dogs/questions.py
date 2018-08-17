@@ -25,9 +25,10 @@ OPERATION_QUESTION = [
     }
 ]
 # User wants to train? Set up the paths if necessary.
+# TODO: Clarify train_dir_message for path requirements (needs to be rel. to repo root)
 # TODO: Add deeper explanation for train_dir in CLI???
 # TODO: Does PyTorch need the savepath to already exist???
-train_dir_message = ('Enter location of dataset; either absolute path or relative to repo root. '
+train_dir_message = ('Enter path to dataset: '
                      '(e.g. X/Y where Y holds class1_dir_pics, class2_dir_pics, etc.)')
 TRAINING_PATH_QUESTIONS = [
     {
