@@ -38,8 +38,8 @@ def main(args):
     if args.implementation == 'pytorch':
         if args.train:
             training_prompt()
-            pyt_train.main(pyt_constants.TRAIN_DIR, pyt_constants.ENCODING, args.steps,
-                           pyt_constants.SAVEPATH, resuming=args.resuming)
+            pyt_train.main(pyt_constants.TRAIN_DIR, args.steps, pyt_constants.SAVEPATH,
+                           resuming=args.resuming)
         elif args.classify:
             prediction = pyt_classify.main(args.source, pyt_constants.SAVEPATH,
                                            pyt_constants.ENCODING)
