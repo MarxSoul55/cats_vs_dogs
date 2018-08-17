@@ -248,7 +248,7 @@ class ImageDataPipeline:
     def preprocess_classes(self,
                            steps,
                            train_dir,
-                           label_dict_path):
+                           label_dict):
         """
         Given a directory of subdirectories of images, preprocesses an image from the 1st subdir,
         then the 2nd, then the Nth, and then loops back towards the 1st and gets another image,
@@ -266,8 +266,7 @@ class ImageDataPipeline:
             - train_dir (str)
                 - Path to the directory of classes.
                 - e.g. 'data/train', where 'train' holds subdirs with images in them.
-            - label_dict_path (str)
-                - Path to a .pkl file, which holds a dictionary of numpy arrays.
+            - label_dict (dict, str -> np.ndarray)
                 - Maps the name of the subdirectory (class) to a label.
                     - e.g. {'cats': np.array([[1, 0]]), 'dogs': np.array([[0, 1]])}
                         - Each label must have the same shape!

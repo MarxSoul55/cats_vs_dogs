@@ -2,6 +2,7 @@
 
 import argparse
 import msvcrt
+import pickle
 import sys
 
 from src.pytorch_impl.src import classify as pyt_classify
@@ -82,11 +83,20 @@ def parse_arguments():
     parser.add_argument('--classify', action='store_true', help=classify_help)
     parser.add_argument('--source', type=str, help=source_help)
     parser.add_argument('--implementation', type=str, help=implementation_help)
-    parser.set_defaults(resuming=False, implementation='pytorch')
-    args = parser.parse_args()
-    args_dict = vars(args)
-    args_dict = {key: value.lower() for key, value in args_dict.items() if type(value) == str}
-    return vars(args)
+    parser.set_defaults(train=False,
+                        resuming=False,
+                        train_dir=None,
+                        label_dict_path=None,
+                        savepath=None,
+                        steps=None,
+                        classify=False,
+                        source=None,
+                        implementation='pytorch')
+    args = vars(parser.parse_args())
+    with open(args['label_dict_path'], 'rb') as f:
+        args['label_dict'] = pickle.load(f)
+        del args['label_dict_path']
+    return args
 
 
 def main(args):
@@ -100,11 +110,11 @@ def main(args):
     if args['implementation'] == 'pytorch':
         if args['train']:
             training_prompt()
-            pyt_train.main(args['train_dir'], args['label_dict_path'], args['steps'],
+            pyt_train.main(args['train_dir'], args['label_dict'], args['steps'],
                            args['savepath'], resuming=args['resuming'])
         elif args['classify']:
             prediction = pyt_classify.main(args['source'], args['savepath'],
-                                           args['label_dict_path'])
+                                           args['label_dict'])
             print_prediction(prediction)
     elif args['implementation'] == 'tensorflow':
         if args['train']:
