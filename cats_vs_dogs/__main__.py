@@ -23,7 +23,7 @@ def main():
     elif selected_operation == 'Classify an image or directory of images.':
         pass
     elif selected_operation == 'Exit.':
-        sys.exit('Program exited.')
+        sys.exit()
 
 
 if __name__ == '__main__':
