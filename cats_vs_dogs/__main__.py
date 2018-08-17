@@ -59,10 +59,7 @@ def main():
         config = {}
     selected_operation = prompt(questions.OPERATION_QUESTION)['selected_operation']
     if selected_operation == 'Train model on dataset.':
-        if len(config) == 0:
-            train_dir = prompt(questions.TRAIN_DIR_QUESTION)['train_dir']
-            classes = os.listdir(train_dir)
-            pass
+        pass
     elif selected_operation == 'Test model on testset.':
         pass
     elif selected_operation == 'Classify an image or directory of images.':
