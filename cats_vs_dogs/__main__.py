@@ -29,7 +29,7 @@ def save_config(train_dir,
                     - e.g. {'cats': np.array([[1, 0]]), 'dogs': np.array([[0, 1]])}
                         - Each label must have the same shape!
                         - In this case, the two labels are of shape [1, 2].
-        - savepath
+        - savepath (str)
             - See the `src.train` module in the specific implementation for details.
     """
     data = {
