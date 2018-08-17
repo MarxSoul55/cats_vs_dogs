@@ -6,6 +6,7 @@ import os
 import pickle
 import sys
 
+from pyfiglet import Figlet
 from PyInquirer import prompt
 
 import questions
@@ -52,6 +53,7 @@ def load_config():
 
 
 def main():
+    print(Figlet(font='slant').renderText('cats_vs_dogs'))
     if 'config.pkl' in os.listdir():
         config_request = prompt(questions.CONFIGURATION_QUESTION)['config_request']
         if config_request == 'Use them instead of entering new ones.':
