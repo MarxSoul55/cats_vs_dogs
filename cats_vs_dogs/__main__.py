@@ -51,7 +51,7 @@ def main(args):
         - args (argparse.Namespace)
             - An object returned from `argparse.ArgumentParser.parse_args`.
     """
-    if args.implementation == 'pytorch':
+    if args.implementation.lower() == 'pytorch':
         if args.train:
             training_prompt()
             pyt_train.main(args.train_dir, args.label_dict_path, args.steps, args.savepath,
@@ -59,7 +59,7 @@ def main(args):
         elif args.classify:
             prediction = pyt_classify.main(args.source, args.savepath, args.label_dict_path)
             print_prediction(prediction)
-    elif args.implementation == 'tensorflow':
+    elif args.implementation.lower() == 'tensorflow':
         if args.train:
             training_prompt()
             tf_train.main(tf_constants.TRAIN_DIR, tf_constants.ENCODING, args.steps,
