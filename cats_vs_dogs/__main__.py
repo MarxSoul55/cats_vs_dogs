@@ -62,7 +62,13 @@ def main():
         config = {}
     selected_operation = prompt(questions.OPERATION_QUESTION)['selected_operation']
     if selected_operation == 'Train model on dataset.':
-        pass
+        if len(config) == 0:
+            config = prompt(questions.TRAINING_PATH_QUESTIONS)
+            print('These paths will be saved in `config.pkl`.')
+            save_config(config['train_dir'], config['savepath'])
+        training_variables = prompt(questions.TRAINING_VARIABLE_QUESTIONS)
+        pyt_train(config['train_dir'], training_variables['steps'], config['savepath'],
+                  resuming=training_variables['resuming'])
     elif selected_operation == 'Test model on testset.':
         pass
     elif selected_operation == 'Classify an image or directory of images.':
