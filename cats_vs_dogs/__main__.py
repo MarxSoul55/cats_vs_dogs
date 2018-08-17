@@ -46,34 +46,6 @@ def print_prediction(prediction):
             print(key, value)
 
 
-def main(args):
-    """
-    Executes the program.
-
-    Parameters:
-        - args (argparse.Namespace)
-            - An object returned from `argparse.ArgumentParser.parse_args`.
-    """
-    if args.implementation.lower() == 'pytorch':
-        if args.train:
-            training_prompt()
-            pyt_train.main(args.train_dir, args.label_dict_path, args.steps, args.savepath,
-                           resuming=args.resuming)
-        elif args.classify:
-            prediction = pyt_classify.main(args.source, args.savepath, args.label_dict_path)
-            print_prediction(prediction)
-    elif args.implementation.lower() == 'tensorflow':
-        if args.train:
-            training_prompt()
-            tf_train.main(tf_constants.TRAIN_DIR, tf_constants.ENCODING, args.steps,
-                          tf_constants.SAVEPATH, tf_constants.TENSORBOARD_DIR,
-                          resuming=args.resuming)
-        elif args.classify:
-            prediction = tf_classify.main(args.source, tf_constants.SAVEPATH,
-                                          tf_constants.ENCODING)
-            print_prediction(prediction)
-
-
 def parse_arguments():
     """
     Parses the CLI for specific arguments via the `argparse` library.
@@ -132,8 +104,37 @@ def parse_arguments():
         args.label_dict_path = paths['label_dict_path']
         args.savepath = paths['savepath']
     args_dict = vars(args)
-    args_dict = {key: value.lower() for key, value in args_dict.iteritems() if type(value) == str}
+    args_dict = {key: value.lower() for key, value in args_dict.items() if type(value) == str}
     return vars(args)
+
+
+def main(args):
+    """
+    Executes the program.
+
+    Parameters:
+        - args (dict)
+            - A dictionary converted from an argparse.Namespace object.
+    """
+    if args['implementation'] == 'pytorch':
+        if args['train']:
+            training_prompt()
+            pyt_train.main(args['train_dir'], args['label_dict_path'], args['steps'],
+                           args['savepath'], resuming=args['resuming'])
+        elif args['classify']:
+            prediction = pyt_classify.main(args['source'], args['savepath'],
+                                           args['label_dict_path'])
+            print_prediction(prediction)
+    elif args['implementation'] == 'tensorflow':
+        if args['train']:
+            training_prompt()
+            tf_train.main(tf_constants.TRAIN_DIR, tf_constants.ENCODING, args['steps'],
+                          tf_constants.SAVEPATH, tf_constants.TENSORBOARD_DIR,
+                          resuming=args['resuming'])
+        elif args['classify']:
+            prediction = tf_classify.main(args['source'], tf_constants.SAVEPATH,
+                                          tf_constants.ENCODING)
+            print_prediction(prediction)
 
 
 if __name__ == '__main__':
