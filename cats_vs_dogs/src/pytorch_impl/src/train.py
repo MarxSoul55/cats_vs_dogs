@@ -1,5 +1,8 @@
 """Provides interface for training the model."""
 
+import os
+from pathlib import Path
+
 import torch
 
 from . import models
@@ -48,5 +51,8 @@ def main(train_dir,
         objective.backward()
         optimizer.step()
         print('Step: {} | Image: {} | Objective: {}'.format(step, img_path, objective))
+    savedir = Path(Path(savepath).parent)
+    if not os.path.exists(savedir):
+        os.makedirs(savedir)
     torch.save(model.state_dict(), savepath)
     print('\a')
