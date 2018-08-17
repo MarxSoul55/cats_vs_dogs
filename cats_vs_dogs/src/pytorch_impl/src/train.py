@@ -10,6 +10,7 @@ from .preprocessing import ImageDataPipeline
 
 
 def main(train_dir,
+         label_dict_path,
          steps,
          savepath,
          resuming=True):
@@ -20,12 +21,12 @@ def main(train_dir,
         - train_dir (str)
             - Path to the directory of classes.
             - e.g. 'data/train', where 'train' holds subdirs with images in them.
-            - IMPORTANT: This directory should also hold a file called `label.pkl`.
-                - A (pickled) dictionary of numpy arrays.
-                - Maps the name of the subdirectory (class) to a label.
-                    - e.g. {'cats': np.array([[1, 0]]), 'dogs': np.array([[0, 1]])}
-                        - Each label must have the same shape!
-                        - In this case, the two labels are of shape [1, 2].
+        - label_dict_path (str)
+            - Path to a .pkl file, which holds a dictionary of numpy arrays.
+            - Maps the name of the subdirectory (class) to a label.
+                - e.g. {'cats': np.array([[1, 0]]), 'dogs': np.array([[0, 1]])}
+                    - Each label must have the same shape!
+                    - In this case, the two labels are of shape [1, 2].
         - steps (int)
             - Number of gradient updates (samples to train on).
         - savepath (str)
@@ -41,7 +42,8 @@ def main(train_dir,
     optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
     preprocessor = ImageDataPipeline()
     for step, img_path, img_tensor, img_label in preprocessor.preprocess_classes(steps,
-                                                                                 train_dir):
+                                                                                 train_dir,
+                                                                                 label_dict_path):
         img_tensor, img_label = (torch.tensor(img_tensor, dtype=torch.float32).to(device),
                                  torch.tensor(img_label, dtype=torch.float32).to(device))
         optimizer.zero_grad()
