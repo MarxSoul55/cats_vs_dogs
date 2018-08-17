@@ -33,7 +33,7 @@ def predicted_label(prediction_tensor,
 
 
 def main(src,
-         model_savepath,
+         savepath,
          label_dict):
     """
     Does one of 2 things:
@@ -45,7 +45,7 @@ def main(src,
         - src (str)
             - Can be a normal path to an image on disk.
             - Can also be a path to a directory.
-        - model_savepath (str)
+        - savepath (str)
             - Path to a saved model on disk.
             - This model is used for the classification.
         - label_dict (dict, str --> np.ndarray)
@@ -60,7 +60,7 @@ def main(src,
     """
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     model = models.BabyResNet().to(device)
-    model.load_state_dict(torch.load(model_savepath))
+    model.load_state_dict(torch.load(savepath))
     model.eval()
     preprocessor = ImageDataPipeline()
     if os.path.isdir(src):
