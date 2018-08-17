@@ -38,10 +38,10 @@ def main(args):
     if args.implementation == 'pytorch':
         if args.train:
             training_prompt()
-            pyt_train.main(args.train_dir, args.steps, args.savepath, resuming=args.resuming)
+            pyt_train.main(args.train_dir, args.label_dict_path, args.steps, args.savepath,
+                           resuming=args.resuming)
         elif args.classify:
-            prediction = pyt_classify.main(args.source, pyt_constants.SAVEPATH,
-                                           pyt_constants.ENCODING)
+            prediction = pyt_classify.main(args.source, args.savepath, args.label_dict_path)
             if type(prediction) == str:
                 print(prediction)
             elif type(prediction) == dict:
@@ -70,6 +70,7 @@ if __name__ == '__main__':
     parser.add_argument('--train', action='store_true')
     parser.add_argument('--resuming', action='store_true')
     parser.add_argument('--train_dir', type=str)
+    parser.add_argument('--label_dict_path', type=str)
     parser.add_argument('--steps', type=int)
     parser.add_argument('--savepath', type=str)
     parser.add_argument('--classify', action='store_true')
