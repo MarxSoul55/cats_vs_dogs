@@ -16,8 +16,9 @@ def main():
     selected_operation = prompt(questions.OPERATION_QUESTION)['selected_operation']
     if selected_operation == 'Train model on dataset.':
         train_vars = prompt(questions.TRAINING_MENU)
+        resuming = True if train_vars['resuming'] == 'Training from a saved model.' else False
         pyt_train.main(train_vars['train_dir'], train_vars['steps'], train_vars['savepath'],
-                       resuming=train_vars['resuming'])
+                       resuming=resuming)
     elif selected_operation == 'Test model on testset.':
         pass
     elif selected_operation == 'Classify an image or directory of images.':
