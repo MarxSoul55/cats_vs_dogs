@@ -97,7 +97,7 @@ def parse_arguments():
     classify_help = ('(flag) Tells program to classify something using the saved '
                      'model from the --savepath arg.')
     source_help = '(str) A path to either an image or directory of images to classify.'
-    implementation_help = ('(str) Either \'pytorch\' (recommended) or \'tensorflow\'. Note that '
+    implementation_help = ('(str) Either \'pytorch\' (default) or \'tensorflow\'. Note that '
                            'the TensorFlow implementation uses a `constants` module to hold '
                            'important paths instead of the CLI args for `train_dir`, '
                            '`label_dict_path`, and `savepath`. SETTING THESE ARGS FOR THE '
