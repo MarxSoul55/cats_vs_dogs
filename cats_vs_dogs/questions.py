@@ -14,9 +14,7 @@ OPERATION_QUESTION = [
         ]
     }
 ]
-# TODO: Clarify train_dir_message for path requirements (needs to be rel. to repo root)
 # TODO: Add deeper explanation for train_dir in CLI???
-# TODO: Does PyTorch need the savepath to already exist???
 # User wants to train? Setup all relevant arguments.
 TRAINING_MENU = [
     {
