@@ -73,15 +73,36 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--train', action='store_true')
-    parser.add_argument('--resuming', action='store_true')
-    parser.add_argument('--train_dir', type=str)
-    parser.add_argument('--label_dict_path', type=str)
-    parser.add_argument('--steps', type=int)
-    parser.add_argument('--savepath', type=str)
-    parser.add_argument('--classify', action='store_true')
-    parser.add_argument('--source', type=str)
-    parser.add_argument('--implementation', type=str)
+    train_help = '(flag) Tells program to train the model.'
+    resuming_help = ('(flag) Tells program to resume training off of a saved model '
+                     'whose path is given by the --savepath arg.')
+    train_dir_help = ('(str) Tells program where training dataset is; this directory should '
+                      'contain subdirectories (representing each class) of images.')
+    label_dict_path_help = ('(str) This path should point to a .pkl file of a dictionary mapping '
+                            'strings (specifically, the names of the subdirectories in the '
+                            '--train_dir arg) to numpy arrays. The shape of each label should '
+                            'be the same and it should match the output shape of the model.')
+    steps_help = '(int) Indicates how many images to train on (one gradient update per image).'
+    savepath_help = ('(str) Path that indicates where the model will be saved and loaded from. '
+                     'File extension should be: .pth')
+    classify_help = ('(flag) Tells program to classify something using the saved '
+                     'model from the --savepath arg.')
+    source_help = '(str) A path to either an image or directory of images to classify.'
+    implementation_help = ('(str) Either \'pytorch\' (recommended) or \'tensorflow\'. Note that '
+                           'the TensorFlow implementation uses a `constants` module to hold '
+                           'important paths instead of the CLI args for `train_dir`, '
+                           '`label_dict_path`, and `savepath`. SETTING THESE ARGS FOR THE '
+                           'TENSORFLOW IMPLEMENTATION IS POINTLESS!')
+    parser.add_argument('--train', action='store_true', help=train_help)
+    parser.add_argument('--resuming', action='store_true', help=resuming_help)
+    parser.add_argument('--train_dir', type=str, help=train_dir_help)
+    parser.add_argument('--label_dict_path', type=str, help=label_dict_path_help)
+    parser.add_argument('--steps', type=int, help=steps_help)
+    parser.add_argument('--savepath', type=str, help=savepath_help)
+    parser.add_argument('--classify', action='store_true', help=classify_help)
+    parser.add_argument('--source', type=str, help=source_help)
+    parser.add_argument('--implementation', type=str, help=implementation_help)
+
     parser.set_defaults(resuming=False, implementation='pytorch')
     args = parser.parse_args()
     main(args)
