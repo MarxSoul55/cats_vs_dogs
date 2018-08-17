@@ -292,9 +292,8 @@ class ImageDataPipeline:
                 if not self.valid_file(image_path):
                     continue
                 preprocessed_image = self.preprocess_image(image_path)
-                label = label_dict[class_]
                 if cursors[class_] == (len(images[class_]) - 1):
                     cursors[class_] = 0
                 else:
                     cursors[class_] += 1
-                yield step, image_path, preprocessed_image, label
+                yield step, image_path, preprocessed_image, label_dict[class_]
