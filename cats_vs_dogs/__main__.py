@@ -18,7 +18,6 @@ from src.tensorflow_impl.src import train as tf_train
 
 
 def save_config(train_dir,
-                encoding,
                 savepath):
     """
     Saves dataset and model information to disk.
@@ -26,20 +25,12 @@ def save_config(train_dir,
     Parameters:
         - train_dir (str)
             - Path to the directory of classes.
-            - May be relative or absolute.
-            - e.g. 'data/train' (where 'train' holds the subdirs)
-        - encoding (dict, str --> np.ndarray)
-            - Maps the name of the subdirectory (class) to a label.
-                - e.g. {'cats': np.array([[1, 0]]), 'dogs': np.array([[0, 1]])}
-                    - Each label must have the same shape!
-                    - In this case, the two labels are of shape [1, 2].
+            - e.g. 'data/train', where 'train' holds subdirs with images in them.
         - savepath
             - See the `src.train` module in the specific implementation for details.
-
     """
     data = {
         'train_dir': train_dir,
-        'encoding': encoding,
         'savepath': savepath
     }
     with open('config.pkl') as f:
