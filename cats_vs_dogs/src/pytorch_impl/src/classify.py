@@ -10,20 +10,20 @@ from .preprocessing import ImageDataPipeline
 
 
 def predicted_label(prediction_tensor,
-                    encoding):
+                    label_dict):
     """
-    Generates the predicted label by comparing the tensor prediction to `encoding`.
+    Generates the predicted label by comparing the tensor prediction to `label_dict`.
 
     Parameters:
         - prediction (np.ndarray)
             - The prediction as represented by the model's tensor output.
-        - encoding (dict, str --> np.ndarray)
+        - label_dict (dict, str --> np.ndarray)
             - See the parent function for details.
     Returns:
         - A string; the predicted label.
     """
-    classes = list(encoding.keys())
-    labels = list(encoding.values())
+    classes = list(label_dict.keys())
+    labels = list(label_dict.values())
     differences = []
     for label in labels:
         l2_difference = np.sqrt(np.sum((label - prediction_tensor) ** 2))
@@ -34,7 +34,7 @@ def predicted_label(prediction_tensor,
 
 def main(src,
          model_savepath,
-         encoding):
+         label_dict):
     """
     Does one of 2 things:
     1. Given a path to an image file on disk (WITH A FILE-EXTENSION), classifies it.
@@ -48,7 +48,7 @@ def main(src,
         - model_savepath (str)
             - Path to a saved model on disk.
             - This model is used for the classification.
-        - encoding (dict, str --> np.ndarray)
+        - label_dict (dict, str --> np.ndarray)
             - Maps the name of the subdirectory (class) to a label.
                 - ex: {'cats': np.array([[1, 0]]), 'dogs': np.array([[0, 1]])}
                 - Each label must have the same shape!
@@ -68,8 +68,8 @@ def main(src,
         for img_path, img_tensor in preprocessor.preprocess_directory(src):
             img_tensor = torch.tensor(img_tensor, dtype=torch.float32).to(device)
             output = model(img_tensor).cpu().detach().numpy()
-            results[img_path] = predicted_label(output, encoding)
+            results[img_path] = predicted_label(output, label_dict)
         return results
     img_tensor = torch.tensor(preprocessor.preprocess_image(src), dtype=torch.float32).to(device)
     output = model(img_tensor).cpu().detach().numpy()
-    return predicted_label(output, encoding)
+    return predicted_label(output, label_dict)
