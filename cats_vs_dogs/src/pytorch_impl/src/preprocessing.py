@@ -261,7 +261,7 @@ class ImageDataPipeline:
                 - Amount of step-input-label triplets to generate.
             - train_dir (str)
                 - Path to the directory of classes.
-                - e.g. 'data/train' (where 'train' holds directories 'cat' and 'dog' which have pictures of cats and dogs respectively)
+                - e.g. 'data/train', where 'train' holds subdirs with images in them.
             - encoding (dict, str --> np.ndarray)
                 - Maps the name of the subdirectory (class) to a label.
                     - e.g. {'cats': np.array([[1, 0]]), 'dogs': np.array([[0, 1]])}
