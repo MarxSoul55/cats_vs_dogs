@@ -22,12 +22,33 @@ OPERATION_QUESTION = [
 ]
 # User wants to train? Set up all relevant variables.
 # TODO: Add deeper explanation for train_dir in CLI???
+# TODO: Does PyTorch need the savepath to already exist???
 train_dir_message = ('Enter location of dataset; either absolute path or relative to repo root. '
                      '(e.g. X/Y where Y holds class1_dir_pics, class2_dir_pics, etc.)')
 TRAINING_QUESTIONS = [
     {
+        'type': 'list',
+        'name': 'resuming',
+        'message': 'Train from scratch, or from a saved model?',
+        'choices': [
+            'Train from scratch.',
+            'Train from a saved model.'
+        ]
+    },
+    {
         'type': 'input',
         'name': 'train_dir',
         'message': train_dir_message
+    },
+    {
+        'type': 'input',
+        'name': 'steps',
+        'message': 'Enter number of steps (gradient updates of SGD) to perform: (e.g. 1000)',
+        'filter': lambda x: int(x)
+    },
+    {
+        'type': 'input',
+        'name': 'savepath',
+        'message': 'Enter path to save trained model to: (e.g. X/Y.pth)'
     }
 ]
