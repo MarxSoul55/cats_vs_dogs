@@ -105,8 +105,9 @@ def main(args):
     Executes the program.
 
     Parameters:
-        - args (dict)
-            - A dictionary converted from an argparse.Namespace object.
+        - args (dict, str -> ?)
+            - A dictionary converted from an `argparse.Namespace` object.
+            - Maps CLI arguments to their values.
     """
     if args['implementation'] == 'pytorch':
         if args['train']:
