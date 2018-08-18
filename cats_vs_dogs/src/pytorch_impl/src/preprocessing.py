@@ -144,6 +144,7 @@ class ImageDataPipeline:
             image = cv2.cvtColor(image, cv2.COLOR_RGB2LAB)
         elif colorspace == 'GRAYSCALE':
             image = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+            image = np.expand_dims(image, axis=2)
         elif colorspace == 'RGB+GRAYSCALE':
             gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
             image = np.dstack((image, gray))
