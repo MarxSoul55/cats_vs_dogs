@@ -248,23 +248,25 @@ class ImageDataPipeline:
     def preprocess_classes(self,
                            steps,
                            train_dir,
-                           encoding):
+                           label_dict):
         """
         Given a directory of subdirectories of images, preprocesses an image from the 1st subdir,
         then the 2nd, then the Nth, and then loops back towards the 1st and gets another image,
-        etc. The order of the images in each subdir is randomized. After all images in a subdir
-        have been preprocessed (given that `steps` is big enough), preprocessing will start over at
-        the beginning of the subdir in question. The order of images within each subdir is
-        randomized at the start, but not randomized again afterwards.
+        etc.
+
+        After all images in a subdir have been preprocessed (given that `steps` is big enough),
+        preprocessing will start over at the beginning of the subdir in question.
+
+        The order of images within each subdir is randomized at the start, but not randomized again
+        afterwards.
 
         Parameters:
             - steps (int)
                 - Amount of step-input-label triplets to generate.
             - train_dir (str)
                 - Path to the directory of classes.
-                - May be relative or absolute.
-                - e.g. 'data/train' (where 'train' holds the subdirs)
-            - encoding (dict, str --> np.ndarray)
+                - e.g. 'data/train', where 'train' holds subdirs with images in them.
+            - label_dict (dict, str -> np.ndarray)
                 - Maps the name of the subdirectory (class) to a label.
                     - e.g. {'cats': np.array([[1, 0]]), 'dogs': np.array([[0, 1]])}
                         - Each label must have the same shape!
@@ -291,9 +293,8 @@ class ImageDataPipeline:
                 if not self.valid_file(image_path):
                     continue
                 preprocessed_image = self.preprocess_image(image_path)
-                label = encoding[class_]
                 if cursors[class_] == (len(images[class_]) - 1):
                     cursors[class_] = 0
                 else:
                     cursors[class_] += 1
-                yield step, image_path, preprocessed_image, label
+                yield step, image_path, preprocessed_image, label_dict[class_]
