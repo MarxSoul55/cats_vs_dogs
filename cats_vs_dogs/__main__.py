@@ -75,10 +75,10 @@ def parse_arguments():
                         source=None,
                         implementation='pytorch')
     args = vars(parser.parse_args())
-    if args['implementation'] == 'pytorch':
-        with open(args['label_dict_path'], 'rb') as f:
-            args['label_dict'] = pickle.load(f)
-            del args['label_dict_path']
+    # Load the label_dict from the saved file.
+    with open(args['label_dict_path'], 'rb') as f:
+        args['label_dict'] = pickle.load(f)
+        del args['label_dict_path']
     return args
 
 
