@@ -54,16 +54,16 @@ def parse_arguments():
         - Each string value is lowercased to prevent case sensitivity issues.
     """
     parser = argparse.ArgumentParser()
-    parser.add_argument('--train', action='store_true', help=train_help)
-    parser.add_argument('--resuming', action='store_true', help=resuming_help)
-    parser.add_argument('--train_dir', type=str, help=train_dir_help)
-    parser.add_argument('--label_dict_path', type=str, help=label_dict_path_help)
-    parser.add_argument('--savepath', type=str, help=savepath_help)
-    parser.add_argument('--tensorboard_dir', type=str, help=tensorboard_dir_help)
-    parser.add_argument('--steps', type=int, help=steps_help)
-    parser.add_argument('--classify', action='store_true', help=classify_help)
-    parser.add_argument('--source', type=str, help=source_help)
-    parser.add_argument('--implementation', type=str, help=implementation_help)
+    parser.add_argument('--train', action='store_true')
+    parser.add_argument('--resuming', action='store_true')
+    parser.add_argument('--train_dir', type=str)
+    parser.add_argument('--label_dict_path', type=str)
+    parser.add_argument('--savepath', type=str)
+    parser.add_argument('--tensorboard_dir', type=str)
+    parser.add_argument('--steps', type=int)
+    parser.add_argument('--classify', action='store_true')
+    parser.add_argument('--source', type=str)
+    parser.add_argument('--implementation', type=str)
     parser.set_defaults(train=False,
                         resuming=False,
                         train_dir=None,
