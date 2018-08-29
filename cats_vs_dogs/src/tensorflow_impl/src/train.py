@@ -10,7 +10,7 @@ from .preprocessing import ImageDataPipeline
 
 
 def main(train_dir,
-         encoding,
+         label_dict,
          steps,
          savepath,
          tensorboard_dir,
@@ -22,6 +22,11 @@ def main(train_dir,
         - train_dir, encoding
             - Parameters for the preprocessor.
             - See `preprocessing.ImageDataPipeline.preprocess_classes` for details.
+        - label_dict (dict, str -> np.ndarray)
+            - Maps the name of the subdirectory (class) to a label.
+                - e.g. {'cats': np.array([[1, 0]]), 'dogs': np.array([[0, 1]])}
+                    - Each label must have the same shape!
+                    - In this case, the two labels are of shape [1, 2].
         - steps (int)
             - Number of gradient updates (samples to train on).
         - savepath (str)
@@ -58,7 +63,7 @@ def main(train_dir,
     # Define preprocessor and begin training the model.
     preprocessor = ImageDataPipeline(mode='NHWC')
     for step, img_path, img_tensor, img_label in preprocessor.preprocess_classes(steps, train_dir,
-                                                                                 encoding):
+                                                                                 label_dict):
         print('Step: {} | Image: {}'.format(step, img_path))
         _, step_summary = sess.run([optimizer, summary],
                                    feed_dict={input_: img_tensor, label: img_label})
