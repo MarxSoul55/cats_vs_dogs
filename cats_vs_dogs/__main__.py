@@ -53,7 +53,8 @@ def parse_arguments():
         - Each string value is lowercased to prevent case sensitivity issues.
     """
     # Specification for CLI args.
-    parser = argparse.ArgumentParser()
+    description = 'See for help: https://github.com/MarxSoul55/cats_vs_dogs/wiki'
+    parser = argparse.ArgumentParser(description=description)
     parser.add_argument('--train', action='store_true')
     parser.add_argument('--resuming', action='store_true')
     parser.add_argument('--train_dir', type=str)
