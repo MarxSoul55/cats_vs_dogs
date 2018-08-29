@@ -105,12 +105,10 @@ def main(args):
     elif args['implementation'] == 'tensorflow':
         if args['train']:
             training_prompt()
-            tf_train.main(tf_constants.TRAIN_DIR, tf_constants.ENCODING, args['steps'],
-                          tf_constants.SAVEPATH, tf_constants.TENSORBOARD_DIR,
-                          resuming=args['resuming'])
+            tf_train.main(args['train_dir'], args['label_dict'], args['steps'], args['savepath'],
+                          args['tensorboard_dir'], resuming=args['resuming'])
         elif args['classify']:
-            prediction = tf_classify.main(args['source'], tf_constants.SAVEPATH,
-                                          tf_constants.ENCODING)
+            prediction = tf_classify.main(args['source'], args['savepath'], args['label_dict'])
             print_prediction(prediction)
 
 
