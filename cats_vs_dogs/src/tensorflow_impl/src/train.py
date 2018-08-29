@@ -32,15 +32,18 @@ def main(train_dir,
         - resuming (bool)
             - Whether to resume training from a saved model or to start from scratch.
     """
+    # TensorFlow doesn't overwrite the old directory by default.
     if os.path.isdir(tensorboard_dir):
         shutil.rmtree(tensorboard_dir)
     sess = tf.Session()
+    # If resuming, load the graph from the saved directory.
     if resuming:
         loader = tf.train.import_meta_graph(savepath + '.meta')
         loader.restore(sess, savepath)
         input_ = sess.graph.get_tensor_by_name('input:0')
         label = sess.graph.get_tensor_by_name('label:0')
         optimizer = sess.graph.get_operation_by_name('optimizer')
+    # Else, we have to build from scratch.
     else:
         input_ = tf.placeholder(tf.float32, name='input')
         output = architectures.baby_resnet(input_, name='model')
@@ -49,8 +52,10 @@ def main(train_dir,
         objective = tf.sqrt(tf.reduce_mean(tf.squared_difference(label, output)), name='objective')
         optimizer = tf.train.GradientDescentOptimizer(0.0001).minimize(objective, name='optimizer')
         tf.summary.scalar('objective_summary', objective)
+    # Merge summary ops and create writer object to record the results.
     summary = tf.summary.merge_all()
     writer = tf.summary.FileWriter(tensorboard_dir, graph=sess.graph)
+    # Define preprocessor and begin training the model.
     preprocessor = ImageDataPipeline(mode='NHWC')
     for step, img_path, img_tensor, img_label in preprocessor.preprocess_classes(steps, train_dir,
                                                                                  encoding):
@@ -59,4 +64,5 @@ def main(train_dir,
                                    feed_dict={input_: img_tensor, label: img_label})
         writer.add_summary(step_summary, global_step=step)
     tf.train.Saver().save(sess, savepath)
+    # Make a noise to indicate end of training.
     print('\a')
