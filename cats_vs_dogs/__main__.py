@@ -96,19 +96,29 @@ def main(args):
     if args['implementation'] == 'pytorch':
         if args['train']:
             training_prompt()
-            pyt_train.main(args['train_dir'], args['label_dict'], args['steps'],
-                           args['savepath'], resuming=args['resuming'])
+            pyt_train.main(args['train_dir'],
+                           args['label_dict'],
+                           args['steps'],
+                           args['savepath'],
+                           resuming=args['resuming'])
         elif args['classify']:
-            prediction = pyt_classify.main(args['source'], args['savepath'],
+            prediction = pyt_classify.main(args['source'],
+                                           args['savepath'],
                                            args['label_dict'])
             print_prediction(prediction)
     elif args['implementation'] == 'tensorflow':
         if args['train']:
             training_prompt()
-            tf_train.main(args['train_dir'], args['label_dict'], args['steps'], args['savepath'],
-                          args['tensorboard_dir'], resuming=args['resuming'])
+            tf_train.main(args['train_dir'],
+                          args['label_dict'],
+                          args['steps'],
+                          args['savepath'],
+                          args['tensorboard_dir'],
+                          resuming=args['resuming'])
         elif args['classify']:
-            prediction = tf_classify.main(args['source'], args['savepath'], args['label_dict'])
+            prediction = tf_classify.main(args['source'],
+                                          args['savepath'],
+                                          args['label_dict'])
             print_prediction(prediction)
 
 
