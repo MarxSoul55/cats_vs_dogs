@@ -58,11 +58,13 @@ def main(src,
         - If given path to an image file on disk, returns a string that is either 'cat' or 'dog'.
         - If given path to a directory, returns a dictionary {'filename': 'guessed animal'}
     """
+    # Initialize device, model, and preprocessor.
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     model = models.BabyResNet().to(device)
     model.load_state_dict(torch.load(savepath))
     model.eval()
     preprocessor = ImageDataPipeline()
+    # If path leads to a directory, classify each image in it.
     if os.path.isdir(src):
         results = {}
         for img_path, img_tensor in preprocessor.preprocess_directory(src):
@@ -70,6 +72,7 @@ def main(src,
             output = model(img_tensor).cpu().detach().numpy()
             results[img_path] = predicted_label(output, label_dict)
         return results
+    # Else, classify one image.
     img_tensor = torch.tensor(preprocessor.preprocess_image(src), dtype=torch.float32).to(device)
     output = model(img_tensor).cpu().detach().numpy()
     return predicted_label(output, label_dict)
