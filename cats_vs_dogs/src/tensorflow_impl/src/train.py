@@ -19,9 +19,9 @@ def main(train_dir,
     Builds up a graph of operations from scratch to train a model.
 
     Parameters:
-        - train_dir, encoding
-            - Parameters for the preprocessor.
-            - See `preprocessing.ImageDataPipeline.preprocess_classes` for details.
+        - train_dir (str)
+            - Path to the directory of classes.
+            - e.g. 'data/train', where 'train' holds subdirs with images in them.
         - label_dict (dict, str -> np.ndarray)
             - Maps the name of the subdirectory (class) to a label.
                 - e.g. {'cats': np.array([[1, 0]]), 'dogs': np.array([[0, 1]])}
