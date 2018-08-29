@@ -53,6 +53,7 @@ def parse_arguments():
         - A dictionary mapping each argument to the given value.
         - Each string value is lowercased to prevent case sensitivity issues.
     """
+    # Specification for CLI args.
     parser = argparse.ArgumentParser()
     parser.add_argument('--train', action='store_true')
     parser.add_argument('--resuming', action='store_true')
@@ -74,6 +75,7 @@ def parse_arguments():
                         classify=False,
                         source=None,
                         implementation='pytorch')
+    # Parse arguments and convert to dict.
     args = vars(parser.parse_args())
     # Load the label_dict from the saved file.
     with open(args['label_dict_path'], 'rb') as f:
