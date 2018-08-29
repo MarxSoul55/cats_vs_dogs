@@ -64,6 +64,7 @@ def parse_arguments():
                             'be the same and it should match the output shape of the model.')
     savepath_help = ('(str) Path that indicates where the model will be saved and loaded from. '
                      'File extension should be: .pth')
+    tensorboard_dir_help = '(str) Tells program what directory to save tensorboard info in.'
     steps_help = '(int) Indicates how many images to train on (one gradient update per image).'
     classify_help = ('(flag) Tells program to classify something using the saved '
                      'model from the --savepath arg.')
@@ -79,6 +80,7 @@ def parse_arguments():
     parser.add_argument('--train_dir', type=str, help=train_dir_help)
     parser.add_argument('--label_dict_path', type=str, help=label_dict_path_help)
     parser.add_argument('--savepath', type=str, help=savepath_help)
+    parser.add_argument('--tensorboard_dir', type=str, help=tensorboard_dir_help)
     parser.add_argument('--steps', type=int, help=steps_help)
     parser.add_argument('--classify', action='store_true', help=classify_help)
     parser.add_argument('--source', type=str, help=source_help)
@@ -88,6 +90,7 @@ def parse_arguments():
                         train_dir=None,
                         label_dict_path=None,
                         savepath=None,
+                        tensorboard_dir=None,
                         steps=None,
                         classify=False,
                         source=None,
