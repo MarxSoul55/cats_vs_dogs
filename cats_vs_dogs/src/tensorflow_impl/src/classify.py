@@ -58,18 +58,21 @@ def main(src,
         - If given path to an image file on disk, returns a string that is either 'cat' or 'dog'.
         - If given path to a directory, returns a dictionary {'filename': 'guessed animal'}
     """
+    # Load the model and placeholder input.
     sess = tf.Session()
     loader = tf.train.import_meta_graph(model_savepath + '.meta')
     loader.restore(sess, model_savepath)
     input_ = sess.graph.get_tensor_by_name('input:0')
     model = sess.graph.get_tensor_by_name('model/output/output:0')
     preprocessor = ImageDataPipeline(mode='NHWC')
+    # If path leads to a directory, classify each image in it.
     if os.path.isdir(src):
         results = {}
         for image_name, preprocessed_image in preprocessor.preprocess_directory(src):
             prediction_tensor = sess.run(model, feed_dict={input_: preprocessed_image})
             results[image_name] = predicted_label(prediction_tensor, label_dict)
         return results
+    # Else, classify one image.
     preprocessed_image = preprocessor.preprocess_image(src)
     prediction_tensor = sess.run(model, feed_dict={input_: preprocessed_image})
     return predicted_label(prediction_tensor, label_dict)
