@@ -10,25 +10,25 @@ from .preprocessing import ImageDataPipeline
 
 def predicted_label(prediction_tensor,
                     label_dict):
-        """
-        Generates the predicted label by comparing the tensor prediction to `label_dict`.
+    """
+    Generates the predicted label by comparing the tensor prediction to `label_dict`.
 
-        Parameters:
-            - prediction (np.ndarray)
-                - The prediction as represented by the model's tensor output.
-            - label_dict (dict, str --> np.ndarray)
-                - See the parent function for details.
-        Returns:
-            - A string; the predicted label.
-        """
-        classes = list(label_dict.keys())
-        labels = list(label_dict.values())
-        differences = []
-        for label in labels:
-            l2_difference = np.sqrt(np.sum((label - prediction_tensor) ** 2))
-            differences.append(l2_difference)
-        index_of_smallest_difference = differences.index(min(differences))
-        return classes[index_of_smallest_difference]
+    Parameters:
+        - prediction (np.ndarray)
+            - The prediction as represented by the model's tensor output.
+        - label_dict (dict, str --> np.ndarray)
+            - See the parent function for details.
+    Returns:
+        - A string; the predicted label.
+    """
+    classes = list(label_dict.keys())
+    labels = list(label_dict.values())
+    differences = []
+    for label in labels:
+        l2_difference = np.sqrt(np.sum((label - prediction_tensor) ** 2))
+        differences.append(l2_difference)
+    index_of_smallest_difference = differences.index(min(differences))
+    return classes[index_of_smallest_difference]
 
 
 def main(src,
