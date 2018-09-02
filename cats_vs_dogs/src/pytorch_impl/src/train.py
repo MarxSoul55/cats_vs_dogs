@@ -52,7 +52,7 @@ def main(train_dir,
         objective = torch.sqrt(torch.nn.functional.mse_loss(output, img_label))
         objective.backward()
         optimizer.step()
-        print('Step: {} | Image: {} | Objective: {}'.format(step, img_path, objective))
+        print('Step: {}/{} | Image: {} | Objective: {}'.format(step, steps, img_path, objective))
     # Create savedir if nonexistent, and save the model.
     savedir = Path(Path(savepath).parent)
     if not os.path.exists(savedir):
