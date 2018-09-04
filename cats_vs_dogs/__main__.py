@@ -75,9 +75,8 @@ def parse_arguments():
                         classify=False,
                         source=None,
                         implementation='pytorch')
-    # Parse arguments and convert to dict.
+    # Parse args into dict, and load label_dict from given path.
     args = vars(parser.parse_args())
-    # Load the label_dict from the saved file.
     with open(args['label_dict_path'], 'rb') as f:
         args['label_dict'] = pickle.load(f)
         del args['label_dict_path']
