@@ -93,33 +93,20 @@ def main(args):
             - A dictionary converted from an `argparse.Namespace` object.
             - Maps CLI arguments to their values.
     """
-    if args['implementation'] == 'pytorch':
-        if args['train']:
-            training_prompt()
-            pyt_train.main(args['train_dir'],
-                           args['label_dict'],
-                           args['steps'],
-                           args['savepath'],
+    if args['train']:
+        training_prompt()
+        if args['implementation'] == 'pytorch':
+            pyt_train.main(args['train_dir'], args['label_dict'], args['steps'], args['savepath'],
                            resuming=args['resuming'])
-        elif args['classify']:
-            prediction = pyt_classify.main(args['source'],
-                                           args['savepath'],
-                                           args['label_dict'])
-            print_prediction(prediction)
-    elif args['implementation'] == 'tensorflow':
-        if args['train']:
-            training_prompt()
-            tf_train.main(args['train_dir'],
-                          args['label_dict'],
-                          args['steps'],
-                          args['savepath'],
-                          args['tensorboard_dir'],
-                          resuming=args['resuming'])
-        elif args['classify']:
-            prediction = tf_classify.main(args['source'],
-                                          args['savepath'],
-                                          args['label_dict'])
-            print_prediction(prediction)
+        elif args['implementation'] == 'tensorflow':
+            tf_train.main(args['train_dir'], args['label_dict'], args['steps'], args['savepath'],
+                          args['tensorboard_dir'], resuming=args['resuming'])
+    elif args['classify']:
+        if args['implementation'] == 'pytorch':
+            prediction = pyt_classify.main(args['source'], args['savepath'], args['label_dict'])
+        elif args['implementation'] == 'tensorflow':
+            prediction = tf_classify.main(args['source'], args['savepath'], args['label_dict'])
+        print_prediction(prediction)
 
 
 if __name__ == '__main__':
