@@ -29,3 +29,6 @@ bin/
 
 # No .pkl files.
 *.pkl
+
+# No pytest files.
+.pytest_cache/
