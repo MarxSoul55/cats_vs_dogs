@@ -2,9 +2,9 @@
 
 import argparse
 import msvcrt
-import pickle
 import sys
 
+import config
 from src.pytorch_impl.src import classify as pyt_classify
 from src.pytorch_impl.src import train as pyt_train
 from src.tensorflow_impl.src import classify as tf_classify
@@ -57,57 +57,52 @@ def parse_arguments():
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument('--train', action='store_true')
     parser.add_argument('--resuming', action='store_true')
-    parser.add_argument('--train_dir', type=str)
-    parser.add_argument('--label_dict_path', type=str)
-    parser.add_argument('--savepath', type=str)
-    parser.add_argument('--tensorboard_dir', type=str)
     parser.add_argument('--steps', type=int)
     parser.add_argument('--classify', action='store_true')
     parser.add_argument('--source', type=str)
     parser.add_argument('--implementation', type=str)
     parser.set_defaults(train=False,
                         resuming=False,
-                        train_dir=None,
-                        label_dict_path=None,
-                        savepath=None,
-                        tensorboard_dir=None,
                         steps=None,
                         classify=False,
                         source=None,
                         implementation='pytorch')
-    # Parse args into dict, and load label_dict from given path.
     args = vars(parser.parse_args())
-    with open(args['label_dict_path'], 'rb') as f:
-        args['label_dict'] = pickle.load(f)
-        del args['label_dict_path']
     return args
 
 
-def main(args):
+def main(cli_args):
     """
     Executes the program.
 
     Parameters:
-        - args (dict, str -> ?)
+        - cli_args (dict, str -> ?)
             - A dictionary converted from an `argparse.Namespace` object.
             - Maps CLI arguments to their values.
     """
-    if args['train']:
+    if cli_args['train']:
         training_prompt()
-        if args['implementation'] == 'pytorch':
-            pyt_train.main(args['train_dir'], args['label_dict'], args['steps'], args['savepath'],
-                           resuming=args['resuming'])
-        elif args['implementation'] == 'tensorflow':
-            tf_train.main(args['train_dir'], args['label_dict'], args['steps'], args['savepath'],
-                          args['tensorboard_dir'], resuming=args['resuming'])
-    elif args['classify']:
-        if args['implementation'] == 'pytorch':
-            prediction = pyt_classify.main(args['source'], args['savepath'], args['label_dict'])
-        elif args['implementation'] == 'tensorflow':
-            prediction = tf_classify.main(args['source'], args['savepath'], args['label_dict'])
+        if cli_args['implementation'] == 'pytorch':
+            pyt_train.main(config.TRAIN_DIR,
+                           config.LABEL_DICT,
+                           cli_args['steps'],
+                           config.SAVEPATH,
+                           resuming=cli_args['resuming'])
+        elif cli_args['implementation'] == 'tensorflow':
+            tf_train.main(config.TRAIN_DIR,
+                          config.LABEL_DICT,
+                          cli_args['steps'],
+                          config.SAVEPATH,
+                          config.TENSORBOARD_DIR,
+                          resuming=cli_args['resuming'])
+    elif cli_args['classify']:
+        if cli_args['implementation'] == 'pytorch':
+            prediction = pyt_classify.main(cli_args['source'], config.SAVEPATH, config.LABEL_DICT)
+        elif cli_args['implementation'] == 'tensorflow':
+            prediction = tf_classify.main(cli_args['source'], config.SAVEPATH, config.LABEL_DICT)
         print_prediction(prediction)
 
 
 if __name__ == '__main__':
-    args = parse_arguments()
-    main(args)
+    cli_args = parse_arguments()
+    main(cli_args)
