@@ -16,7 +16,7 @@ LABEL_DICT = {
 # The model will also be loaded from this area for resuming training and classification.
 # If using PyTorch version: path to a .pth file. This file encapsulates the saved model.
 # If using TensorFlow version: path to a directory. TensorFlow uses multiple files to save a model.
-SAVEPATH = 'cats_vs_dogs/bin/babyresnet.pth'
+SAVEPATH = 'cats_vs_dogs/bin/pyt_impl/babyresnet.pth'
 # ONLY NEEDED FOR TENSORFLOW VERSION!
 # This controls what directory TensorBoard information will be saved to.
-TENSORBOARD_DIR = 'cats_vs_dogs/bin/tensorboard'
+TENSORBOARD_DIR = 'cats_vs_dogs/bin/tf_impl/tensorboard'
