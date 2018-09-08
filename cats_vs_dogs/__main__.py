@@ -37,11 +37,11 @@ def print_prediction(prediction):
             - Type depends on whether a single image or a directory of images was classified.
     """
     if type(prediction) == str:
-        print(prediction)
+        print('Prediction: {}'.format(prediction))
     elif type(prediction) == dict:
         keys, values = list(prediction.keys()), list(prediction.values())
         for key, value in zip(keys, values):
-            print(key, value)
+            print('{}: {}'.format(key, value))
 
 
 def parse_arguments():
