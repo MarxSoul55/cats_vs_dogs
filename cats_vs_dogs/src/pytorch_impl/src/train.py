@@ -37,14 +37,17 @@ def main(train_dir,
         - resuming (bool)
             - Whether to resume training from a saved model or to start from scratch.
     """
+    # Initialize model and send to device.
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     print('Using device: {}'.format(device))
     model = models.BabyResNet().to(device)
     if resuming:
         model.load_state_dict(torch.load(savepath))
+    # Declare optimizer, preprocessor, and list to record errors.
     optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)
     preproc = ImageDataPipeline()
     errors = []
+    # Begin training on samples, labels from train_dir, label_dict respectively.
     for step, path, image, label in tqdm(preproc.preprocess_classes(steps, train_dir, label_dict),
                                          desc='Progress', total=steps, ncols=99, unit='image'):
         optimizer.zero_grad()
@@ -54,11 +57,14 @@ def main(train_dir,
         error.backward()
         errors.append(error)
         optimizer.step()
+    # PyTorch requires the parent directory of the savepath to exist. Ensure it does.
     savedir = Path(Path(savepath).parent)
     if not os.path.exists(savedir):
         os.makedirs(savedir)
+    # Save model and ring a bell to notify user.
     torch.save(model.state_dict(), savepath)
     print('\a')
+    # Plot errors.
     plt.plot(np.array(list(range(1, steps + 1))), np.array(errors))
     plt.xlabel('Steps')
     plt.ylabel('Error')
