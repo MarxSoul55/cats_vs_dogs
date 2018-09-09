@@ -3,6 +3,7 @@
 import os
 from pathlib import Path
 
+import numpy as np
 import torch
 from matplotlib import pyplot as plt
 from tqdm import tqdm
@@ -43,17 +44,22 @@ def main(train_dir,
         model.load_state_dict(torch.load(savepath))
     optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)
     preproc = ImageDataPipeline()
+    errors = []
     for step, path, image, label in tqdm(preproc.preprocess_classes(steps, train_dir, label_dict),
                                          desc='Progress', total=steps, ncols=99, unit='image'):
         optimizer.zero_grad()
         image, label = torch.tensor(image).to(device), torch.tensor(label).to(device)
         output = model(image)
-        objective = torch.sqrt(torch.nn.functional.mse_loss(output, label))
-        objective.backward()
+        error = torch.sqrt(torch.nn.functional.mse_loss(output, label))
+        error.backward()
+        errors.append(error)
         optimizer.step()
-        # print('Step: {}/{} | Image: {} | Objective: {}'.format(step, steps, img_path, objective))
     savedir = Path(Path(savepath).parent)
     if not os.path.exists(savedir):
         os.makedirs(savedir)
     torch.save(model.state_dict(), savepath)
     print('\a')
+    plt.plot(np.array(list(range(1, steps + 1))), np.array(errors))
+    plt.xlabel('Steps')
+    plt.ylabel('Error')
+    plt.show()
