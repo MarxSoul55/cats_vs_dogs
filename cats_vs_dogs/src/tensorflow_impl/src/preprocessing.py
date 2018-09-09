@@ -145,11 +145,11 @@ class ImageDataPipeline:
         elif colorspace == 'GRAYSCALE':
             image = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
             image = np.expand_dims(image, axis=2)
+        elif colorspace == 'HSV':
+            image = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)
         elif colorspace == 'RGB+GRAYSCALE':
             gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
             image = np.dstack((image, gray))
-        elif colorspace == 'HSV':
-            image = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)
         return image
 
     def normalize_image(self,
@@ -169,6 +169,7 @@ class ImageDataPipeline:
                 - e.g. For a uint8 image with 2 channels: [[0, 255], [0, 255]]
             - desired_bounds (list of lists of two ints each)
                 - The desired boundaries for the new tensor.
+                - e.g. To turn uint8 image with 2 channels to 0 -> 1: [[0, 1], [0, 1]]
             - dtype (str)
                 - A numpy-compatible datatype.
         Returns:
