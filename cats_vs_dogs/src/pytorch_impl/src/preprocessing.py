@@ -145,11 +145,11 @@ class ImageDataPipeline:
         elif colorspace == 'GRAYSCALE':
             image = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
             image = np.expand_dims(image, axis=2)
+        elif colorspace == 'HSV':
+            image = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)
         elif colorspace == 'RGB+GRAYSCALE':
             gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
             image = np.dstack((image, gray))
-        elif colorspace == 'HSV':
-            image = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)
         return image
 
     def normalize_image(self,
