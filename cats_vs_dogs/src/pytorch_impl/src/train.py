@@ -44,9 +44,9 @@ def main(train_dir,
     preproc = ImageDataPipeline()
     for step, path, image, label in tqdm(preproc.preprocess_classes(steps, train_dir, label_dict),
                                          desc='Progress', total=steps, ncols=99, unit='image'):
+        optimizer.zero_grad()
         image, label = (torch.tensor(image, dtype=torch.float32).to(device),
                         torch.tensor(label, dtype=torch.float32).to(device))
-        optimizer.zero_grad()
         output = model(image)
         objective = torch.sqrt(torch.nn.functional.mse_loss(output, label))
         objective.backward()
