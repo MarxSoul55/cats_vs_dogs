@@ -19,7 +19,7 @@ def training_prompt():
     while True:
         resp = msvcrt.getch().decode().lower()
         if resp == 'y':
-            print('Beginning training...')
+            print('Loading...')
             return
         elif resp == 'n':
             sys.exit('Training aborted.')
