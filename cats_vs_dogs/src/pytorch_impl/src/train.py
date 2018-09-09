@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 
 import torch
+from tqdm import tqdm
 
 from . import models
 from .preprocessing import ImageDataPipeline
@@ -42,9 +43,11 @@ def main(train_dir,
     optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)
     # Initialize preprocessor and begin training the model.
     preprocessor = ImageDataPipeline()
-    for step, img_path, img_tensor, img_label in preprocessor.preprocess_classes(steps,
-                                                                                 train_dir,
-                                                                                 label_dict):
+    for step, img_path, img_tensor, img_label in tqdm(preprocessor.preprocess_classes(steps,
+                                                                                      train_dir,
+                                                                                      label_dict),
+                                                      desc='Progress', total=steps, ncols=99,
+                                                      unit='img'):
         img_tensor, img_label = (torch.tensor(img_tensor, dtype=torch.float32).to(device),
                                  torch.tensor(img_label, dtype=torch.float32).to(device))
         optimizer.zero_grad()
@@ -52,7 +55,7 @@ def main(train_dir,
         objective = torch.sqrt(torch.nn.functional.mse_loss(output, img_label))
         objective.backward()
         optimizer.step()
-        print('Step: {}/{} | Image: {} | Objective: {}'.format(step, steps, img_path, objective))
+        # print('Step: {}/{} | Image: {} | Objective: {}'.format(step, steps, img_path, objective))
     # Create savedir if nonexistent, and save the model.
     savedir = Path(Path(savepath).parent)
     if not os.path.exists(savedir):
