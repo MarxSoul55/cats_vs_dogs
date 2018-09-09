@@ -47,7 +47,7 @@ def main(train_dir,
     optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)
     preproc = ImageDataPipeline()
     errors = []
-    # Begin training on samples, labels from train_dir, label_dict respectively.
+    # Begin training.
     for step, path, image, label in tqdm(preproc.preprocess_classes(steps, train_dir, label_dict),
                                          desc='Progress', total=steps, ncols=99, unit='image'):
         optimizer.zero_grad()
