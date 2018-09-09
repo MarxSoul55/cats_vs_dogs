@@ -35,13 +35,11 @@ def main(train_dir,
         - resuming (bool)
             - Whether to resume training from a saved model or to start from scratch.
     """
-    # Initialize device, model, and optimizer.
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     model = models.BabyResNet().to(device)
     if resuming:
         model.load_state_dict(torch.load(savepath))
     optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)
-    # Initialize preprocessor and begin training the model.
     preproc = ImageDataPipeline()
     for step, path, image, label in tqdm(preproc.preprocess_classes(steps, train_dir, label_dict),
                                          desc='Progress', total=steps, ncols=99, unit='image'):
@@ -53,10 +51,8 @@ def main(train_dir,
         objective.backward()
         optimizer.step()
         # print('Step: {}/{} | Image: {} | Objective: {}'.format(step, steps, img_path, objective))
-    # Create savedir if nonexistent, and save the model.
     savedir = Path(Path(savepath).parent)
     if not os.path.exists(savedir):
         os.makedirs(savedir)
     torch.save(model.state_dict(), savepath)
-    # Play a noise to signify end of training.
     print('\a')
