@@ -36,6 +36,7 @@ def main(train_dir,
             - Whether to resume training from a saved model or to start from scratch.
     """
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+    print('Using device: {}'.format(device))
     model = models.BabyResNet().to(device)
     if resuming:
         model.load_state_dict(torch.load(savepath))
