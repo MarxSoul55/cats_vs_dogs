@@ -180,7 +180,7 @@ class ImageDataPipeline:
         image = image.astype(dtype)
         number_of_channels = image.shape[2]
         for channel in range(0, number_of_channels):
-            image[:, :, channel] += -current_bounds[channel][0]
+            image[:, :, channel] -= current_bounds[channel][0]
             image[:, :, channel] /= (current_bounds[channel][1] /
                                      (desired_bounds[channel][1] - desired_bounds[channel][0]))
             image[:, :, channel] += desired_bounds[channel][0]
