@@ -42,17 +42,14 @@ def main(train_dir,
         model.load_state_dict(torch.load(savepath))
     optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)
     # Initialize preprocessor and begin training the model.
-    preprocessor = ImageDataPipeline()
-    for step, img_path, img_tensor, img_label in tqdm(preprocessor.preprocess_classes(steps,
-                                                                                      train_dir,
-                                                                                      label_dict),
-                                                      desc='Progress', total=steps, ncols=99,
-                                                      unit='img'):
-        img_tensor, img_label = (torch.tensor(img_tensor, dtype=torch.float32).to(device),
-                                 torch.tensor(img_label, dtype=torch.float32).to(device))
+    preproc = ImageDataPipeline()
+    for step, path, image, label in tqdm(preproc.preprocess_classes(steps, train_dir, label_dict),
+                                         desc='Progress', total=steps, ncols=99, unit='image'):
+        image, label = (torch.tensor(image, dtype=torch.float32).to(device),
+                        torch.tensor(label, dtype=torch.float32).to(device))
         optimizer.zero_grad()
-        output = model(img_tensor)
-        objective = torch.sqrt(torch.nn.functional.mse_loss(output, img_label))
+        output = model(image)
+        objective = torch.sqrt(torch.nn.functional.mse_loss(output, label))
         objective.backward()
         optimizer.step()
         # print('Step: {}/{} | Image: {} | Objective: {}'.format(step, steps, img_path, objective))
