@@ -61,7 +61,7 @@ def main(train_dir,
     savedir = Path(Path(savepath).parent)
     if not os.path.exists(savedir):
         os.makedirs(savedir)
-    # Save model and ring a bell to notify user.
+    # Save model and ring a bell to notify user of training's conclusion.
     torch.save(model.state_dict(), savepath)
     print('\a')
     # Plot errors.
