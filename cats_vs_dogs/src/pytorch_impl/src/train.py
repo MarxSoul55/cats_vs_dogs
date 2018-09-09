@@ -54,8 +54,8 @@ def main(train_dir,
         image, label = torch.tensor(image).to(device), torch.tensor(label).to(device)
         output = model(image)
         error = torch.sqrt(torch.nn.functional.mse_loss(output, label))
-        error.backward()
         errors.append(error)
+        error.backward()
         optimizer.step()
     # PyTorch requires the parent directory of the savepath to exist. Ensure it does.
     savedir = Path(Path(savepath).parent)
