@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 
 import torch
+from matplotlib import pyplot as plt
 from tqdm import tqdm
 
 from . import models
