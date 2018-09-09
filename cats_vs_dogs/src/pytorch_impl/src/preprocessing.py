@@ -169,6 +169,7 @@ class ImageDataPipeline:
                 - e.g. For a uint8 image with 2 channels: [[0, 255], [0, 255]]
             - desired_bounds (list of lists of two ints each)
                 - The desired boundaries for the new tensor.
+                - e.g. To turn uint8 image with 2 channels to 0 -> 1: [[0, 1], [0, 1]]
             - dtype (str)
                 - A numpy-compatible datatype.
         Returns:
