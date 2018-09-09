@@ -39,7 +39,7 @@ def main(train_dir,
     model = models.BabyResNet().to(device)
     if resuming:
         model.load_state_dict(torch.load(savepath))
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)
+    optimizer = torch.optim.Adam(model.parameters(), lr=1E-4)
     # Initialize preprocessor and begin training the model.
     preprocessor = ImageDataPipeline()
     for step, img_path, img_tensor, img_label in preprocessor.preprocess_classes(steps,
