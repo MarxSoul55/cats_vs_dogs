@@ -1,7 +1,7 @@
 """Provides interface for training the model."""
 
 import os
-from pathlib import Path
+import pathlib
 
 import numpy as np
 import torch
@@ -10,6 +10,24 @@ from tqdm import tqdm
 
 from . import models
 from .preprocessing import ImageDataPipeline
+
+
+def save(model, path):
+    """
+    Saves the model.
+
+    Parameters:
+        - model (class def)
+            - Model definition to save.
+        - path (str)
+            - Path where the model will be saved to.
+            - e.g. hello/world/saved_model_file.pth
+    """
+    # PyTorch requires parent directory of savepath to exist. Ensure it does.
+    parentdir = pathlib.Path(path).parent
+    if not os.path.exists(parentdir):
+        os.makedirs(parentdir)
+    torch.save(model.state_dict(), path)
 
 
 def main(train_dir,
@@ -57,12 +75,7 @@ def main(train_dir,
         errors.append(error)
         error.backward()
         optimizer.step()
-    # PyTorch requires the parent directory of the savepath to exist. Ensure it does.
-    savedir = Path(Path(savepath).parent)
-    if not os.path.exists(savedir):
-        os.makedirs(savedir)
-    # Save model and ring a bell to notify user of training's conclusion.
-    torch.save(model.state_dict(), savepath)
+    save(model, savepath)
     print('\a')
     # Plot errors.
     plt.plot(np.array(list(range(1, steps + 1))), np.array(errors))
