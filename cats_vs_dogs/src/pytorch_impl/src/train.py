@@ -18,7 +18,8 @@ def save(model, path):
 
     Parameters:
         - model (class def)
-            - Model definition to save.
+            - Model to save.
+            - Note that the state of the model is saved, but not the definition.
         - path (str)
             - Path where the model will be saved to.
             - e.g. hello/world/saved_model_file.pth
