@@ -66,7 +66,7 @@ def main(train_dir,
                     - Each label must have the same shape!
                     - In this case, the two labels are of shape [1, 2].
         - steps (int)
-            - Number of gradient updates (samples to train on).
+            - Number of parameter updates (minibatches trained on).
         - savepath (str)
             - Path where the model will be saved/loaded from.
             - e.g. hello/world/save_model.pth
