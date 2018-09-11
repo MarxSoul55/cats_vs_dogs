@@ -14,12 +14,11 @@ from .preprocessing import ImageDataPipeline
 
 def save(model, path):
     """
-    Saves the model.
+    Saves the model's parameter states.
 
     Parameters:
         - model (class def)
-            - Model to save.
-            - Note that the state of the model is saved, but not the definition.
+            - The class definition should inherit from torch.nn.Module.
         - path (str)
             - Path where the model will be saved to.
             - e.g. hello/world/saved_model_file.pth
