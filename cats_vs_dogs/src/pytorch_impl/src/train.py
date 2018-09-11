@@ -31,6 +31,23 @@ def save(model, path):
     torch.save(model.state_dict(), path)
 
 
+def plot(steps, errors):
+    """
+    Plots error over the steps.
+
+    Parameters:
+        - steps (int)
+            - Number of parameter updates (minibatches trained on).
+        - errors (list of floats)
+            - Represents the errors for each corresponding step.
+            - e.g. error[0] is error for step 1
+    """
+    plt.plot(np.array(list(range(1, steps + 1))), np.array(errors))
+    plt.xlabel('Step')
+    plt.ylabel('Error')
+    plt.show()
+
+
 def main(train_dir,
          label_dict,
          steps,
@@ -78,8 +95,4 @@ def main(train_dir,
         optimizer.step()
     save(model, savepath)
     print('\a')
-    # Plot errors.
-    plt.plot(np.array(list(range(1, steps + 1))), np.array(errors))
-    plt.xlabel('Steps')
-    plt.ylabel('Error')
-    plt.show()
+    plot(steps, errors)
