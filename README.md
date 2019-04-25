@@ -1,7 +1,3 @@
-**ATTN: This project is being superseded by [Iris](https://github.com/MarxSoul55/Iris), a pipeline for supervised learning and classification of images with convolutional neural networks. Iris is designed to be more general-purpose project, capable of dealing with any number of classes of a variety of types, not just the two classes—cats and dogs—featured in this project.**
-
-**With regards to this project—at least for now, I will cease development. I wish to fully "flesh out" Iris' features before resuming development on this one, if I ever choose to do so. I love this project, and have quite a bit of nostalgia for it, but for the time being—this is it.**
-
 ![Logo](https://github.com/MarxSoul55/cats_vs_dogs/blob/master/logo/Logotype%20CatsvsDogs%20Horizontal.png)
 
 *Thanks to [nunojesus](https://github.com/nunojesus) for designing this logo!*
